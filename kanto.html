@@ -1,1 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanto Pokémon Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .game-bg-red { background: linear-gradient(135deg, #fee2e2 0%, #dc2626 100%); }
+        .game-bg-blue { background: linear-gradient(135deg, #e0e7ff 0%, #2563eb 100%); }
+        .game-bg-yellow { background: linear-gradient(135deg, #fef08a 0%, #eab308 100%); }
+        .game-bg-pokedex { background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); }
+        
+        .checkbox-anim { transition: all 0.2s ease-in-out; }
+        .checkbox-anim:checked { transform: scale(1.1); }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
 
+    <nav class="bg-slate-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold tracking-wider cursor-pointer text-red-400" onclick="navigate('pokedex')">Kanto Tracker 1ª Gen</span>
+                </div>
+                <div class="flex items-center space-x-1 md:space-x-4 overflow-x-auto">
+                    <button onclick="navigate('pokedex')" id="nav-pokedex" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition whitespace-nowrap">Pokédex</button>
+                    <button onclick="navigate('Rojo')" id="nav-Rojo" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-red-400 hover:bg-red-900 hover:text-white transition whitespace-nowrap">Rojo</button>
+                    <button onclick="navigate('Azul')" id="nav-Azul" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-blue-400 hover:bg-blue-900 hover:text-white transition whitespace-nowrap">Azul</button>
+                    <button onclick="navigate('Amarillo')" id="nav-Amarillo" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-yellow-400 hover:bg-yellow-700 hover:text-white transition whitespace-nowrap">Amarillo</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full"></main>
+
+    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-sm mt-auto">
+        <p id="storage-status">Kanto Tracker - Conectando con los servidores del PC de Bill...</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Generando la Pokédex de Kanto (1 al 151)
+        const rawPokedex = [
+            "Bulbasaur|Nv. 16 ➔ Ivysaur", "Ivysaur|Nv. 32 ➔ Venusaur", "Venusaur|Etapa final",
+            "Charmander|Nv. 16 ➔ Charmeleon", "Charmeleon|Nv. 36 ➔ Charizard", "Charizard|Etapa final",
+            "Squirtle|Nv. 16 ➔ Wartortle", "Wartortle|Nv. 36 ➔ Blastoise", "Blastoise|Etapa final",
+            "Caterpie|Nv. 7 ➔ Metapod", "Metapod|Nv. 10 ➔ Butterfree", "Butterfree|Etapa final",
+            "Weedle|Nv. 7 ➔ Kakuna", "Kakuna|Nv. 10 ➔ Beedrill", "Beedrill|Etapa final",
+            "Pidgey|Nv. 18 ➔ Pidgeotto", "Pidgeotto|Nv. 36 ➔ Pidgeot", "Pidgeot|Etapa final",
+            "Rattata|Nv. 20 ➔ Raticate", "Raticate|Etapa final",
+            "Spearow|Nv. 20 ➔ Fearow", "Fearow|Etapa final",
+            "Ekans|Nv. 22 ➔ Arbok", "Arbok|Etapa final",
+            "Pikachu|P. Trueno ➔ Raichu", "Raichu|Etapa final",
+            "Sandshrew|Nv. 22 ➔ Sandslash", "Sandslash|Etapa final",
+            "Nidoran♀|Nv. 16 ➔ Nidorina", "Nidorina|P. Lunar ➔ Nidoqueen", "Nidoqueen|Etapa final",
+            "Nidoran♂|Nv. 16 ➔ Nidorino", "Nidorino|P. Lunar ➔ Nidoking", "Nidoking|Etapa final",
+            "Clefairy|P. Lunar ➔ Clefable", "Clefable|Etapa final",
+            "Vulpix|P. Fuego ➔ Ninetales", "Ninetales|Etapa final",
+            "Jigglypuff|P. Lunar ➔ Wigglytuff", "Wigglytuff|Etapa final",
+            "Zubat|Nv. 22 ➔ Golbat", "Golbat|Etapa final",
+            "Oddish|Nv. 21 ➔ Gloom", "Gloom|P. Hoja ➔ Vileplume", "Vileplume|Etapa final",
+            "Paras|Nv. 24 ➔ Parasect", "Parasect|Etapa final",
+            "Venonat|Nv. 31 ➔ Venomoth", "Venomoth|Etapa final",
+            "Diglett|Nv. 26 ➔ Dugtrio", "Dugtrio|Etapa final",
+            "Meowth|Nv. 28 ➔ Persian", "Persian|Etapa final",
+            "Psyduck|Nv. 33 ➔ Golduck", "Golduck|Etapa final",
+            "Mankey|Nv. 28 ➔ Primeape", "Primeape|Etapa final",
+            "Growlithe|P. Fuego ➔ Arcanine", "Arcanine|Etapa final",
+            "Poliwag|Nv. 25 ➔ Poliwhirl", "Poliwhirl|P. Agua ➔ Poliwrath", "Poliwrath|Etapa final",
+            "Abra|Nv. 16 ➔ Kadabra", "Kadabra|Intercambio ➔ Alakazam", "Alakazam|Etapa final",
+            "Machop|Nv. 28 ➔ Machoke", "Machoke|Intercambio ➔ Machamp", "Machamp|Etapa final",
+            "Bellsprout|Nv. 21 ➔ Weepinbell", "Weepinbell|P. Hoja ➔ Victreebel", "Victreebel|Etapa final",
+            "Tentacool|Nv. 30 ➔ Tentacruel", "Tentacruel|Etapa final",
+            "Geodude|Nv. 25 ➔ Graveler", "Graveler|Intercambio ➔ Golem", "Golem|Etapa final",
+            "Ponyta|Nv. 40 ➔ Rapidash", "Rapidash|Etapa final",
+            "Slowpoke|Nv. 37 ➔ Slowbro", "Slowbro|Etapa final",
+            "Magnemite|Nv. 30 ➔ Magneton", "Magneton|Etapa final",
+            "Farfetch'd|Sin evolución",
+            "Doduo|Nv. 31 ➔ Dodrio", "Dodrio|Etapa final",
+            "Seel|Nv. 34 ➔ Dewgong", "Dewgong|Etapa final",
+            "Grimer|Nv. 38 ➔ Muk", "Muk|Etapa final",
+            "Shellder|P. Agua ➔ Cloyster", "Cloyster|Etapa final",
+            "Gastly|Nv. 25 ➔ Haunter", "Haunter|Intercambio ➔ Gengar", "Gengar|Etapa final",
+            "Onix|Sin evolución",
+            "Drowzee|Nv. 26 ➔ Hypno", "Hypno|Etapa final",
+            "Krabby|Nv. 28 ➔ Kingler", "Kingler|Etapa final",
+            "Voltorb|Nv. 30 ➔ Electrode", "Electrode|Etapa final",
+            "Exeggcute|P. Hoja ➔ Exeggutor", "Exeggutor|Etapa final",
+            "Cubone|Nv. 28 ➔ Marowak", "Marowak|Etapa final",
+            "Hitmonlee|Sin evolución", "Hitmonchan|Sin evolución",
+            "Lickitung|Sin evolución",
+            "Koffing|Nv. 35 ➔ Weezing", "Weezing|Etapa final",
+            "Rhyhorn|Nv. 42 ➔ Rhydon", "Rhydon|Etapa final",
+            "Chansey|Sin evolución",
+            "Tangela|Sin evolución",
+            "Kangaskhan|Sin evolución",
+            "Horsea|Nv. 32 ➔ Seadra", "Seadra|Etapa final",
+            "Goldeen|Nv. 33 ➔ Seaking", "Seaking|Etapa final",
+            "Staryu|P. Agua ➔ Starmie", "Starmie|Etapa final",
+            "Mr. Mime|Sin evolución",
+            "Scyther|Sin evolución",
+            "Jynx|Sin evolución",
+            "Electabuzz|Sin evolución",
+            "Magmar|Sin evolución",
+            "Pinsir|Sin evolución",
+            "Tauros|Sin evolución",
+            "Magikarp|Nv. 20 ➔ Gyarados", "Gyarados|Etapa final",
+            "Lapras|Sin evolución",
+            "Ditto|Sin evolución",
+            "Eevee|Piedra Elemental ➔ Vap/Jolt/Flareon", "Vaporeon|Etapa final", "Jolteon|Etapa final", "Flareon|Etapa final",
+            "Porygon|Sin evolución",
+            "Omanyte|Nv. 40 ➔ Omastar", "Omastar|Etapa final",
+            "Kabuto|Nv. 40 ➔ Kabutops", "Kabutops|Etapa final",
+            "Aerodactyl|Sin evolución",
+            "Snorlax|Sin evolución",
+            "Articuno|Sin evolución", "Zapdos|Sin evolución", "Moltres|Sin evolución",
+            "Dratini|Nv. 30 ➔ Dragonair", "Dragonair|Nv. 55 ➔ Dragonite", "Dragonite|Etapa final",
+            "Mewtwo|Sin evolución", "Mew|Sin evolución"
+        ];
+
+        const pokedex = rawPokedex.map((data, index) => {
+            const [name, evo] = data.split('|');
+            return { id: index + 1, name, evo };
+        });
+
+        // Datos de rutas resumidos para Kanto
+        const routeData = {
+            "Rojo": [
+                { name: "Pueblo Paleta", encounters: [{ id: 1, rate: "Elegir", method: "Inicial" }, { id: 4, rate: "Elegir", method: "Inicial" }, { id: 7, rate: "Elegir", method: "Inicial" }] },
+                { name: "Rutas Principales (Exclusivos Rojo)", encounters: [{ id: 23, rate: "Común", method: "Hierba (Ruta 4, 11, 23)" }, { id: 43, rate: "Común", method: "Hierba (Ruta 5, 12, 13, 24)" }, { id: 56, rate: "Común", method: "Hierba (Ruta 5, 6, 9)" }, { id: 58, rate: "Común", method: "Hierba (Ruta 7, 8, Mansión)" }] },
+                { name: "Zona Safari & Casino (Exclusivos Rojo)", encounters: [{ id: 123, rate: "Raro", method: "Zona Safari / Casino" }, { id: 125, rate: "Raro", method: "Central Energía" }] },
+                { name: "Zonas Generales", encounters: [{ id: 16, rate: "Común", method: "Primeras Rutas" }, { id: 19, rate: "Común", method: "Primeras Rutas" }, { id: 25, rate: "Raro", method: "Bosque Verde" }] },
+                { name: "Regalos y Eventos", encounters: [{ id: 131, rate: "100%", method: "Regalo (Silph S.A.)" }, { id: 133, rate: "100%", method: "Regalo (Mansión Azulona)" }, { id: 143, rate: "100%", method: "Flauta Poké (Rutas 12 y 16)" }] },
+                { name: "Intercambios NPC", encounters: [{ id: 122, rate: "100%", method: "Por Abra (Ruta 2)" }, { id: 83, rate: "100%", method: "Por Spearow (Ciudad Carmín)" }] },
+                { name: "Legendarios", encounters: [{ id: 144, rate: "Único", method: "Islas Espuma" }, { id: 145, rate: "Único", method: "Central Energía" }, { id: 146, rate: "Único", method: "Calle Victoria" }, { id: 150, rate: "Único", method: "Cueva Celeste" }] }
+            ],
+            "Azul": [
+                { name: "Pueblo Paleta", encounters: [{ id: 1, rate: "Elegir", method: "Inicial" }, { id: 4, rate: "Elegir", method: "Inicial" }, { id: 7, rate: "Elegir", method: "Inicial" }] },
+                { name: "Rutas Principales (Exclusivos Azul)", encounters: [{ id: 27, rate: "Común", method: "Hierba (Ruta 4, 11, 23)" }, { id: 69, rate: "Común", method: "Hierba (Ruta 5, 12, 13, 24)" }, { id: 52, rate: "Común", method: "Hierba (Ruta 5, 6)" }, { id: 37, rate: "Común", method: "Hierba (Ruta 7, 8, Mansión)" }] },
+                { name: "Zona Safari & Casino (Exclusivos Azul)", encounters: [{ id: 127, rate: "Raro", method: "Zona Safari / Casino" }, { id: 126, rate: "Raro", method: "Mansión Pokémon" }] },
+                { name: "Zonas Generales", encounters: [{ id: 16, rate: "Común", method: "Primeras Rutas" }, { id: 19, rate: "Común", method: "Primeras Rutas" }, { id: 25, rate: "Raro", method: "Bosque Verde" }] },
+                { name: "Regalos y Eventos", encounters: [{ id: 131, rate: "100%", method: "Regalo (Silph S.A.)" }, { id: 133, rate: "100%", method: "Regalo (Mansión Azulona)" }, { id: 143, rate: "100%", method: "Flauta Poké (Rutas 12 y 16)" }] },
+                { name: "Intercambios NPC", encounters: [{ id: 122, rate: "100%", method: "Por Abra (Ruta 2)" }, { id: 83, rate: "100%", method: "Por Spearow (Ciudad Carmín)" }] },
+                { name: "Legendarios", encounters: [{ id: 144, rate: "Único", method: "Islas Espuma" }, { id: 145, rate: "Único", method: "Central Energía" }, { id: 146, rate: "Único", method: "Calle Victoria" }, { id: 150, rate: "Único", method: "Cueva Celeste" }] }
+            ],
+            "Amarillo": [
+                { name: "Pueblo Paleta", encounters: [{ id: 25, rate: "100%", method: "Inicial (Obligatorio)" }] },
+                { name: "Obtención de Iniciales Clásicos", encounters: [{ id: 1, rate: "Regalo", method: "Ciudad Celeste (Felicidad alta)" }, { id: 4, rate: "Regalo", method: "Ruta 24 (Del entrenador)" }, { id: 7, rate: "Regalo", method: "Ciudad Carmín (Tras medalla Trueno)" }] },
+                { name: "Rutas Principales (Cambios Amarillo)", encounters: [{ id: 16, rate: "Común", method: "Primeras Rutas" }, { id: 19, rate: "Común", method: "Primeras Rutas" }, { id: 32, rate: "Común", method: "Ruta 2, 9, 22" }, { id: 29, rate: "Común", method: "Ruta 2, 9, 22" }, { id: 56, rate: "Común", method: "Ruta 5, 6, 22" }] },
+                { name: "Zona Safari", encounters: [{ id: 128, rate: "Común", method: "Zona Safari" }, { id: 114, rate: "Poco común", method: "Zona Safari" }] },
+                { name: "Regalos y Eventos", encounters: [{ id: 131, rate: "100%", method: "Regalo (Silph S.A.)" }, { id: 133, rate: "100%", method: "Regalo (Mansión Azulona)" }, { id: 143, rate: "100%", method: "Flauta Poké (Rutas 12 y 16)" }] },
+                { name: "Intercambios NPC", encounters: [{ id: 68, rate: "100%", method: "Por Cubone (Ciudad Macho)" }, { id: 111, rate: "100%", method: "Por Golduck (Ruta 18)" }] },
+                { name: "Legendarios", encounters: [{ id: 144, rate: "Único", method: "Islas Espuma" }, { id: 145, rate: "Único", method: "Central Energía" }, { id: 146, rate: "Único", method: "Calle Victoria" }, { id: 150, rate: "Único", method: "Cueva Celeste" }] }
+            ]
+        };
+
+        let caughtState = {}; 
+        let currentView = 'pokedex';
+        let searchQuery = '';
+        let filterState = 'all'; 
+        
+        let db, auth, userId;
+        const appId = 'kanto-tracker';
+
+        function getPokemonName(id) {
+            const p = pokedex.find(p => p.id === id);
+            return p ? p.name : `Desconocido (${id})`;
+        }
+
+        function isAvailableInGame(pokemonId, gameName) {
+            if (!routeData[gameName]) return false;
+            for (let route of routeData[gameName]) {
+                if (route.encounters.some(e => e.id === pokemonId)) return true;
+            }
+            return false;
+        }
+
+        window.toggleCaught = async function(pokemonId) {
+            caughtState[pokemonId] = !caughtState[pokemonId];
+            renderCurrentView(); 
+            localStorage.setItem('kantoTrackerData', JSON.stringify(caughtState));
+            
+            if (db && userId) {
+                try {
+                    const docRef = doc(db, 'artifacts', appId, 'users', userId, 'trackerData', 'caughtState');
+                    await setDoc(docRef, caughtState);
+                } catch (error) { console.error("Error:", error); }
+            }
+        }
+
+        window.navigate = function(viewName) {
+            currentView = viewName;
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('bg-slate-700'));
+            document.getElementById(`nav-${viewName}`).classList.add('bg-slate-700');
+            renderCurrentView();
+            window.scrollTo(0, 0);
+        }
+
+        window.updateSearch = function(value) {
+            searchQuery = value.toLowerCase();
+            renderCurrentView();
+        }
+
+        window.updateFilter = function(value) {
+            filterState = value;
+            renderCurrentView();
+        }
+
+        function renderCurrentView() {
+            const container = document.getElementById('app-content');
+            if (currentView === 'pokedex') {
+                container.innerHTML = generatePokedexHTML();
+                document.body.className = "bg-gray-100 text-gray-800 min-h-screen flex flex-col game-bg-pokedex";
+            } else {
+                container.innerHTML = generateGamePageHTML(currentView);
+                const bgColors = { 'Rojo': 'game-bg-red', 'Azul': 'game-bg-blue', 'Amarillo': 'game-bg-yellow' };
+                document.body.className = `text-gray-800 min-h-screen flex flex-col ${bgColors[currentView]}`;
+            }
+        }
+
+        function generatePokedexHTML() {
+            const totalCaught = Object.values(caughtState).filter(v => v).length;
+            const progressPercent = Math.round((totalCaught / pokedex.length) * 100);
+
+            let html = `
+                <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-200">
+                    <div class="p-6 bg-slate-800 text-white border-b border-gray-700">
+                        <h1 class="text-3xl font-extrabold flex flex-wrap items-center gap-3">
+                            Pokédex de Kanto
+                            <span class="text-sm font-normal bg-red-600 px-3 py-1 rounded-full text-red-100">
+                                ${totalCaught} / ${pokedex.length} Atrapados
+                            </span>
+                        </h1>
+                        <div class="w-full bg-slate-700 rounded-full h-2.5 mt-4">
+                            <div class="bg-red-500 h-2.5 rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
+                        </div>
+                        <div class="mt-6 flex flex-col sm:flex-row gap-4">
+                            <input type="text" placeholder="Buscar por nombre o número..." class="px-4 py-2 rounded-lg text-gray-800 w-full sm:w-1/2 focus:ring-2 focus:ring-red-500 outline-none" value="${searchQuery}" onkeyup="updateSearch(this.value)">
+                            <select class="px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-red-500 outline-none cursor-pointer" onchange="updateFilter(this.value)">
+                                <option value="all" ${filterState === 'all' ? 'selected' : ''}>Todos los Pokémon</option>
+                                <option value="caught" ${filterState === 'caught' ? 'selected' : ''}>Solo Atrapados</option>
+                                <option value="missing" ${filterState === 'missing' ? 'selected' : ''}>Faltantes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="uppercase tracking-wider border-b-2 border-gray-200 bg-gray-50 text-gray-600 font-bold">
+                                <tr>
+                                    <th class="px-6 py-4 text-center">Atrapado</th>
+                                    <th class="px-6 py-4 text-center">Nº</th>
+                                    <th class="px-6 py-4">Sprite</th>
+                                    <th class="px-6 py-4">Pokémon</th>
+                                    <th class="px-6 py-4">Evolución</th>
+                                    <th class="px-6 py-4">Disponibilidad Destacada</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+            `;
+
+            const filteredPokedex = pokedex.filter(poke => {
+                const isCaught = caughtState[poke.id] || false;
+                const matchesSearch = poke.name.toLowerCase().includes(searchQuery) || String(poke.id).includes(searchQuery);
+                let matchesFilter = true;
+                if (filterState === 'caught') matchesFilter = isCaught;
+                if (filterState === 'missing') matchesFilter = !isCaught;
+                return matchesSearch && matchesFilter;
+            });
+
+            if (filteredPokedex.length === 0) {
+                html += `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No se encontraron Pokémon.</td></tr>`;
+            }
+
+            filteredPokedex.forEach(poke => {
+                const isCaught = caughtState[poke.id] || false;
+                let badges = '';
+                const games = [
+                    { name: 'Rojo', color: 'bg-red-100 text-red-700 border-red-300' },
+                    { name: 'Azul', color: 'bg-blue-100 text-blue-700 border-blue-300' },
+                    { name: 'Amarillo', color: 'bg-yellow-100 text-yellow-700 border-yellow-300' }
+                ];
+
+                games.forEach(g => {
+                    if (isAvailableInGame(poke.id, g.name)) {
+                        badges += `<button onclick="navigate('${g.name}')" class="px-2 py-1 text-xs border rounded-md font-semibold mr-2 transition hover:opacity-70 ${g.color}">${g.name}</button>`;
+                    }
+                });
+
+                if (badges === '') badges = `<span class="text-xs text-gray-400 italic">Otras rutas/Evolución</span>`;
+
+                html += `
+                    <tr class="hover:bg-gray-50 transition duration-150 ${isCaught ? 'bg-red-50/50' : ''}">
+                        <td class="px-6 py-4 text-center">
+                            <input type="checkbox" class="w-6 h-6 text-red-600 rounded border-gray-300 focus:ring-red-500 cursor-pointer checkbox-anim" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${poke.id})">
+                        </td>
+                        <td class="px-6 py-4 text-center font-mono text-gray-500">#${String(poke.id).padStart(3, '0')}</td>
+                        <td class="px-6 py-2">
+                            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.id}.png" alt="${poke.name}" class="w-12 h-12 inline-block object-contain pixelated" onerror="this.style.display='none'">
+                        </td>
+                        <td class="px-6 py-4 font-bold text-gray-800 text-base">${poke.name}</td>
+                        <td class="px-6 py-4 text-sm font-medium text-red-700">${poke.evo}</td>
+                        <td class="px-6 py-4">${badges}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table></div></div>`;
+            return html;
+        }
+
+        function generateGamePageHTML(gameName) {
+            const routes = routeData[gameName];
+            let headerStyles = '';
+            if (gameName === 'Rojo') headerStyles = 'bg-red-600 text-white';
+            if (gameName === 'Azul') headerStyles = 'bg-blue-600 text-white';
+            if (gameName === 'Amarillo') headerStyles = 'bg-yellow-400 text-gray-900';
+
+            let html = `
+                <div class="mb-8">
+                    <div class="rounded-xl shadow-lg overflow-hidden border border-white/20 mb-8">
+                        <div class="p-8 ${headerStyles}">
+                            <h1 class="text-4xl font-extrabold mb-2">Edición ${gameName}</h1>
+                            <p class="text-lg opacity-90">Lugares clave y Pokémon exclusivos de esta versión.</p>
+                        </div>
+                    </div>
+                    <div class="space-y-8">
+            `;
+
+            if (!routes || routes.length === 0) {
+                html += `<p class="text-center text-gray-600 py-10 bg-white/50 rounded-xl">Datos no disponibles.</p>`;
+            } else {
+                routes.forEach(route => {
+                    html += `
+                        <div class="bg-white/90 backdrop-blur-sm rounded-xl shadow-md overflow-hidden">
+                            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                                <h2 class="text-xl font-bold text-gray-800">${route.name}</h2>
+                            </div>
+                            <div class="p-0 overflow-x-auto">
+                                <table class="w-full text-left text-sm whitespace-nowrap">
+                                    <thead class="bg-gray-100/50 text-gray-600 text-xs uppercase font-semibold">
+                                        <tr>
+                                            <th class="px-6 py-3 w-16 text-center">Atrapado</th>
+                                            <th class="px-6 py-3">Pokémon</th>
+                                            <th class="px-6 py-3">Ratio</th>
+                                            <th class="px-6 py-3">Método / Ubicación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-100">
+                    `;
+
+                    route.encounters.forEach(encounter => {
+                        const pokeName = getPokemonName(encounter.id);
+                        const isCaught = caughtState[encounter.id] || false;
+                        
+                        html += `
+                            <tr class="hover:bg-gray-50/80 transition ${isCaught ? 'bg-red-50/20' : ''}">
+                                <td class="px-6 py-3 text-center">
+                                    <input type="checkbox" class="w-5 h-5 text-red-600 rounded border-gray-300 cursor-pointer checkbox-anim focus:ring-red-500" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${encounter.id})">
+                                </td>
+                                <td class="px-6 py-3 font-semibold flex items-center gap-3">
+                                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${encounter.id}.png" alt="${pokeName}" class="w-10 h-10 object-contain" onerror="this.style.display='none'">
+                                    <span>${pokeName} <span class="text-xs text-gray-400 font-mono ml-1">#${encounter.id}</span></span>
+                                </td>
+                                <td class="px-6 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">${encounter.rate}</span></td>
+                                <td class="px-6 py-3 text-gray-600">${encounter.method}</td>
+                            </tr>
+                        `;
+                    });
+                    html += `</tbody></table></div></div>`;
+                });
+            }
+            html += `</div></div>`;
+            return html;
+        }
+
+        async function setupCloudStorage() {
+            try {
+                const localData = localStorage.getItem('kantoTrackerData');
+                if (localData) {
+                    caughtState = JSON.parse(localData);
+                    renderCurrentView();
+                }
+
+                if (typeof __firebase_config === 'undefined') return;
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                
+                userId = auth.currentUser?.uid;
+                if (!userId) return;
+
+                document.getElementById('storage-status').textContent = "Kanto Tracker - Conectado al PC de Bill (Nube activa).";
+                const docRef = doc(db, 'artifacts', appId, 'users', userId, 'trackerData', 'caughtState');
+                
+                onSnapshot(docRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        caughtState = { ...caughtState, ...snapshot.data() };
+                        renderCurrentView();
+                    }
+                });
+            } catch (error) {
+                document.getElementById('storage-status').textContent = "Kanto Tracker - Guardado de manera local en tu Pokédex.";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            navigate('pokedex');
+            setupCloudStorage();
+        });
+    </script>
+</body>
+</html>
