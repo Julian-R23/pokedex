@@ -243,6 +243,12 @@
             return p ? p.name : `Desconocido (${id})`;
         }
 
+        function getWikidexUrl(name) {
+            // Reemplaza espacios por guiones bajos para que la URL de Wikidex funcione (ej. "Mr. Mime" -> "Mr._Mime")
+            const safeName = name.replace(/ /g, '_');
+            return `https://www.wikidex.net/wiki/${safeName}`;
+        }
+        
         function isAvailableInGame(pokemonId, gameName) {
             if (!routeData[gameName]) return false;
             for (let route of routeData[gameName]) {
@@ -406,7 +412,9 @@
                                  class="w-12 h-12 inline-block object-contain pixelated"
                                  onerror="this.style.display='none'">
                         </td>
-                        <td class="px-6 py-4 font-bold text-gray-800 text-base">${poke.name}</td>
+                        <td class="px-6 py-4 font-bold text-base">
+                            <a href="${getWikidexUrl(poke.name)}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline transition" title="Ver en Wikidex">${poke.name}</a>
+                        </td>
                         <td class="px-6 py-4 text-sm font-medium text-emerald-700">${poke.evo}</td>
                         <td class="px-6 py-4">${badges}</td>
                     </tr>
@@ -481,7 +489,10 @@
                                          alt="${pokeName}" 
                                          class="w-10 h-10 object-contain"
                                          onerror="this.style.display='none'">
-                                    <span>${pokeName} <span class="text-xs text-gray-400 font-mono ml-1">#${encounter.id}</span></span>
+                                    <span>
+                                        <a href="${getWikidexUrl(pokeName)}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline transition" title="Ver en Wikidex">${pokeName}</a> 
+                                        <span class="text-xs text-gray-400 font-mono ml-1">#${encounter.id}</span>
+                                    </span>
                                 </td>
                                 <td class="px-6 py-3">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
