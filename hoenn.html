@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoenn Pokémon Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .game-bg-ruby { background: linear-gradient(135deg, #fee2e2 0%, #ef4444 100%); }
+        .game-bg-sapphire { background: linear-gradient(135deg, #e0e7ff 0%, #3b82f6 100%); }
+        .game-bg-emerald { background: linear-gradient(135deg, #dcfce7 0%, #10b981 100%); }
+        .game-bg-pokedex { background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); }
+        
+        /* Animación suave para los checkboxes */
+        .checkbox-anim {
+            transition: all 0.2s ease-in-out;
+        }
+        .checkbox-anim:checked {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+
+    <nav class="bg-slate-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold tracking-wider cursor-pointer text-emerald-400" onclick="navigate('pokedex')">Hoenn Tracker 3ª Gen</span>
+                </div>
+                <div class="flex items-center space-x-1 md:space-x-4 overflow-x-auto">
+                    <button onclick="navigate('pokedex')" id="nav-pokedex" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition whitespace-nowrap">Pokédex</button>
+                    <button onclick="navigate('Rubí')" id="nav-Rubí" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-red-400 hover:bg-red-900 hover:text-white transition whitespace-nowrap">Rubí</button>
+                    <button onclick="navigate('Zafiro')" id="nav-Zafiro" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-blue-400 hover:bg-blue-900 hover:text-white transition whitespace-nowrap">Zafiro</button>
+                    <button onclick="navigate('Esmeralda')" id="nav-Esmeralda" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-emerald-400 hover:bg-emerald-800 hover:text-white transition whitespace-nowrap">Esmeralda</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        <!-- El contenido se inyectará aquí mediante JavaScript -->
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-sm mt-auto">
+        <p id="storage-status">Hoenn Tracker - Conectando con los servidores de Devon S.A...</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const pokedex = [
+            { hoenn_id: 1, id: 252, name: "Treecko", evo: "Nv. 16 ➔ Grovyle" }, { hoenn_id: 2, id: 253, name: "Grovyle", evo: "Nv. 36 ➔ Sceptile" }, { hoenn_id: 3, id: 254, name: "Sceptile", evo: "Etapa final" },
+            { hoenn_id: 4, id: 255, name: "Torchic", evo: "Nv. 16 ➔ Combusken" }, { hoenn_id: 5, id: 256, name: "Combusken", evo: "Nv. 36 ➔ Blaziken" }, { hoenn_id: 6, id: 257, name: "Blaziken", evo: "Etapa final" },
+            { hoenn_id: 7, id: 258, name: "Mudkip", evo: "Nv. 16 ➔ Marshtomp" }, { hoenn_id: 8, id: 259, name: "Marshtomp", evo: "Nv. 36 ➔ Swampert" }, { hoenn_id: 9, id: 260, name: "Swampert", evo: "Etapa final" },
+            { hoenn_id: 10, id: 261, name: "Poochyena", evo: "Nv. 18 ➔ Mightyena" }, { hoenn_id: 11, id: 262, name: "Mightyena", evo: "Etapa final" },
+            { hoenn_id: 12, id: 263, name: "Zigzagoon", evo: "Nv. 20 ➔ Linoone" }, { hoenn_id: 13, id: 264, name: "Linoone", evo: "Etapa final" },
+            { hoenn_id: 14, id: 265, name: "Wurmple", evo: "Nv. 7 ➔ Silcoon/Cascoon" }, { hoenn_id: 15, id: 266, name: "Silcoon", evo: "Nv. 10 ➔ Beautifly" }, { hoenn_id: 16, id: 267, name: "Beautifly", evo: "Etapa final" }, { hoenn_id: 17, id: 268, name: "Cascoon", evo: "Nv. 10 ➔ Dustox" }, { hoenn_id: 18, id: 269, name: "Dustox", evo: "Etapa final" },
+            { hoenn_id: 19, id: 270, name: "Lotad", evo: "Nv. 14 ➔ Lombre" }, { hoenn_id: 20, id: 271, name: "Lombre", evo: "P. Agua ➔ Ludicolo" }, { hoenn_id: 21, id: 272, name: "Ludicolo", evo: "Etapa final" },
+            { hoenn_id: 22, id: 273, name: "Seedot", evo: "Nv. 14 ➔ Nuzleaf" }, { hoenn_id: 23, id: 274, name: "Nuzleaf", evo: "P. Hoja ➔ Shiftry" }, { hoenn_id: 24, id: 275, name: "Shiftry", evo: "Etapa final" },
+            { hoenn_id: 25, id: 276, name: "Taillow", evo: "Nv. 22 ➔ Swellow" }, { hoenn_id: 26, id: 277, name: "Swellow", evo: "Etapa final" },
+            { hoenn_id: 27, id: 278, name: "Wingull", evo: "Nv. 25 ➔ Pelipper" }, { hoenn_id: 28, id: 279, name: "Pelipper", evo: "Etapa final" },
+            { hoenn_id: 29, id: 280, name: "Ralts", evo: "Nv. 20 ➔ Kirlia" }, { hoenn_id: 30, id: 281, name: "Kirlia", evo: "Nv. 30 ➔ Gardevoir" }, { hoenn_id: 31, id: 282, name: "Gardevoir", evo: "Etapa final" },
+            { hoenn_id: 32, id: 283, name: "Surskit", evo: "Nv. 22 ➔ Masquerain" }, { hoenn_id: 33, id: 284, name: "Masquerain", evo: "Etapa final" },
+            { hoenn_id: 34, id: 285, name: "Shroomish", evo: "Nv. 23 ➔ Breloom" }, { hoenn_id: 35, id: 286, name: "Breloom", evo: "Etapa final" },
+            { hoenn_id: 36, id: 287, name: "Slakoth", evo: "Nv. 18 ➔ Vigoroth" }, { hoenn_id: 37, id: 288, name: "Vigoroth", evo: "Nv. 36 ➔ Slaking" }, { hoenn_id: 38, id: 289, name: "Slaking", evo: "Etapa final" },
+            { hoenn_id: 39, id: 63, name: "Abra", evo: "Nv. 16 ➔ Kadabra" }, { hoenn_id: 40, id: 64, name: "Kadabra", evo: "Intercambio ➔ Alakazam" }, { hoenn_id: 41, id: 65, name: "Alakazam", evo: "Etapa final" },
+            { hoenn_id: 42, id: 290, name: "Nincada", evo: "Nv. 20 ➔ Ninjask/Shedinja" }, { hoenn_id: 43, id: 291, name: "Ninjask", evo: "Etapa final" }, { hoenn_id: 44, id: 292, name: "Shedinja", evo: "Etapa final" },
+            { hoenn_id: 45, id: 293, name: "Whismur", evo: "Nv. 20 ➔ Loudred" }, { hoenn_id: 46, id: 294, name: "Loudred", evo: "Nv. 40 ➔ Exploud" }, { hoenn_id: 47, id: 295, name: "Exploud", evo: "Etapa final" },
+            { hoenn_id: 48, id: 296, name: "Makuhita", evo: "Nv. 24 ➔ Hariyama" }, { hoenn_id: 49, id: 297, name: "Hariyama", evo: "Etapa final" },
+            { hoenn_id: 50, id: 118, name: "Goldeen", evo: "Nv. 33 ➔ Seaking" }, { hoenn_id: 51, id: 119, name: "Seaking", evo: "Etapa final" },
+            { hoenn_id: 52, id: 129, name: "Magikarp", evo: "Nv. 20 ➔ Gyarados" }, { hoenn_id: 53, id: 130, name: "Gyarados", evo: "Etapa final" },
+            { hoenn_id: 54, id: 298, name: "Azurill", evo: "Amistad ➔ Marill" }, { hoenn_id: 55, id: 183, name: "Marill", evo: "Nv. 18 ➔ Azumarill" }, { hoenn_id: 56, id: 184, name: "Azumarill", evo: "Etapa final" },
+            { hoenn_id: 57, id: 74, name: "Geodude", evo: "Nv. 25 ➔ Graveler" }, { hoenn_id: 58, id: 75, name: "Graveler", evo: "Intercambio ➔ Golem" }, { hoenn_id: 59, id: 76, name: "Golem", evo: "Etapa final" },
+            { hoenn_id: 60, id: 299, name: "Nosepass", evo: "Sin evolución" },
+            { hoenn_id: 61, id: 300, name: "Skitty", evo: "P. Lunar ➔ Delcatty" }, { hoenn_id: 62, id: 301, name: "Delcatty", evo: "Etapa final" },
+            { hoenn_id: 63, id: 41, name: "Zubat", evo: "Nv. 22 ➔ Golbat" }, { hoenn_id: 64, id: 42, name: "Golbat", evo: "Amistad ➔ Crobat" }, { hoenn_id: 65, id: 169, name: "Crobat", evo: "Etapa final" },
+            { hoenn_id: 66, id: 72, name: "Tentacool", evo: "Nv. 30 ➔ Tentacruel" }, { hoenn_id: 67, id: 73, name: "Tentacruel", evo: "Etapa final" },
+            { hoenn_id: 68, id: 302, name: "Sableye", evo: "Sin evolución" },
+            { hoenn_id: 69, id: 303, name: "Mawile", evo: "Sin evolución" },
+            { hoenn_id: 70, id: 304, name: "Aron", evo: "Nv. 32 ➔ Lairon" }, { hoenn_id: 71, id: 305, name: "Lairon", evo: "Nv. 42 ➔ Aggron" }, { hoenn_id: 72, id: 306, name: "Aggron", evo: "Etapa final" },
+            { hoenn_id: 73, id: 66, name: "Machop", evo: "Nv. 28 ➔ Machoke" }, { hoenn_id: 74, id: 67, name: "Machoke", evo: "Intercambio ➔ Machamp" }, { hoenn_id: 75, id: 68, name: "Machamp", evo: "Etapa final" },
+            { hoenn_id: 76, id: 307, name: "Meditite", evo: "Nv. 37 ➔ Medicham" }, { hoenn_id: 77, id: 308, name: "Medicham", evo: "Etapa final" },
+            { hoenn_id: 78, id: 309, name: "Electrike", evo: "Nv. 26 ➔ Manectric" }, { hoenn_id: 79, id: 310, name: "Manectric", evo: "Etapa final" },
+            { hoenn_id: 80, id: 311, name: "Plusle", evo: "Sin evolución" }, { hoenn_id: 81, id: 312, name: "Minun", evo: "Sin evolución" },
+            { hoenn_id: 82, id: 81, name: "Magnemite", evo: "Nv. 30 ➔ Magneton" }, { hoenn_id: 83, id: 82, name: "Magneton", evo: "Etapa final" },
+            { hoenn_id: 84, id: 100, name: "Voltorb", evo: "Nv. 30 ➔ Electrode" }, { hoenn_id: 85, id: 101, name: "Electrode", evo: "Etapa final" },
+            { hoenn_id: 86, id: 313, name: "Volbeat", evo: "Sin evolución" }, { hoenn_id: 87, id: 314, name: "Illumise", evo: "Sin evolución" },
+            { hoenn_id: 88, id: 43, name: "Oddish", evo: "Nv. 21 ➔ Gloom" }, { hoenn_id: 89, id: 44, name: "Gloom", evo: "P. Hoja ➔ Vileplume / P. Solar ➔ Bellossom" }, { hoenn_id: 90, id: 45, name: "Vileplume", evo: "Etapa final" }, { hoenn_id: 91, id: 182, name: "Bellossom", evo: "Etapa final" },
+            { hoenn_id: 92, id: 84, name: "Doduo", evo: "Nv. 31 ➔ Dodrio" }, { hoenn_id: 93, id: 85, name: "Dodrio", evo: "Etapa final" },
+            { hoenn_id: 94, id: 315, name: "Roselia", evo: "Sin evolución" },
+            { hoenn_id: 95, id: 316, name: "Gulpin", evo: "Nv. 26 ➔ Swalot" }, { hoenn_id: 96, id: 317, name: "Swalot", evo: "Etapa final" },
+            { hoenn_id: 97, id: 318, name: "Carvanha", evo: "Nv. 30 ➔ Sharpedo" }, { hoenn_id: 98, id: 319, name: "Sharpedo", evo: "Etapa final" },
+            { hoenn_id: 99, id: 320, name: "Wailmer", evo: "Nv. 40 ➔ Wailord" }, { hoenn_id: 100, id: 321, name: "Wailord", evo: "Etapa final" },
+            { hoenn_id: 101, id: 322, name: "Numel", evo: "Nv. 33 ➔ Camerupt" }, { hoenn_id: 102, id: 323, name: "Camerupt", evo: "Etapa final" },
+            { hoenn_id: 103, id: 218, name: "Slugma", evo: "Nv. 38 ➔ Magcargo" }, { hoenn_id: 104, id: 219, name: "Magcargo", evo: "Etapa final" },
+            { hoenn_id: 105, id: 324, name: "Torkoal", evo: "Sin evolución" },
+            { hoenn_id: 106, id: 88, name: "Grimer", evo: "Nv. 38 ➔ Muk" }, { hoenn_id: 107, id: 89, name: "Muk", evo: "Etapa final" },
+            { hoenn_id: 108, id: 109, name: "Koffing", evo: "Nv. 35 ➔ Weezing" }, { hoenn_id: 109, id: 110, name: "Weezing", evo: "Etapa final" },
+            { hoenn_id: 110, id: 325, name: "Spoink", evo: "Nv. 32 ➔ Grumpig" }, { hoenn_id: 111, id: 326, name: "Grumpig", evo: "Etapa final" },
+            { hoenn_id: 112, id: 27, name: "Sandshrew", evo: "Nv. 22 ➔ Sandslash" }, { hoenn_id: 113, id: 28, name: "Sandslash", evo: "Etapa final" },
+            { hoenn_id: 114, id: 327, name: "Spinda", evo: "Sin evolución" },
+            { hoenn_id: 115, id: 227, name: "Skarmory", evo: "Sin evolución" },
+            { hoenn_id: 116, id: 328, name: "Trapinch", evo: "Nv. 35 ➔ Vibrava" }, { hoenn_id: 117, id: 329, name: "Vibrava", evo: "Nv. 45 ➔ Flygon" }, { hoenn_id: 118, id: 330, name: "Flygon", evo: "Etapa final" },
+            { hoenn_id: 119, id: 331, name: "Cacnea", evo: "Nv. 32 ➔ Cacturne" }, { hoenn_id: 120, id: 332, name: "Cacturne", evo: "Etapa final" },
+            { hoenn_id: 121, id: 333, name: "Swablu", evo: "Nv. 35 ➔ Altaria" }, { hoenn_id: 122, id: 334, name: "Altaria", evo: "Etapa final" },
+            { hoenn_id: 123, id: 335, name: "Zangoose", evo: "Sin evolución" }, { hoenn_id: 124, id: 336, name: "Seviper", evo: "Sin evolución" },
+            { hoenn_id: 125, id: 337, name: "Lunatone", evo: "Sin evolución" }, { hoenn_id: 126, id: 338, name: "Solrock", evo: "Sin evolución" },
+            { hoenn_id: 127, id: 339, name: "Barboach", evo: "Nv. 30 ➔ Whiscash" }, { hoenn_id: 128, id: 340, name: "Whiscash", evo: "Etapa final" },
+            { hoenn_id: 129, id: 341, name: "Corphish", evo: "Nv. 30 ➔ Crawdaunt" }, { hoenn_id: 130, id: 342, name: "Crawdaunt", evo: "Etapa final" },
+            { hoenn_id: 131, id: 343, name: "Baltoy", evo: "Nv. 36 ➔ Claydol" }, { hoenn_id: 132, id: 344, name: "Claydol", evo: "Etapa final" },
+            { hoenn_id: 133, id: 345, name: "Lileep", evo: "Nv. 40 ➔ Cradily" }, { hoenn_id: 134, id: 346, name: "Cradily", evo: "Etapa final" },
+            { hoenn_id: 135, id: 347, name: "Anorith", evo: "Nv. 40 ➔ Armaldo" }, { hoenn_id: 136, id: 348, name: "Armaldo", evo: "Etapa final" },
+            { hoenn_id: 137, id: 174, name: "Igglybuff", evo: "Amistad ➔ Jigglypuff" }, { hoenn_id: 138, id: 39, name: "Jigglypuff", evo: "P. Lunar ➔ Wigglytuff" }, { hoenn_id: 139, id: 40, name: "Wigglytuff", evo: "Etapa final" },
+            { hoenn_id: 140, id: 349, name: "Feebas", evo: "Belleza al máx. ➔ Milotic" }, { hoenn_id: 141, id: 350, name: "Milotic", evo: "Etapa final" },
+            { hoenn_id: 142, id: 351, name: "Castform", evo: "Sin evolución" },
+            { hoenn_id: 143, id: 120, name: "Staryu", evo: "P. Agua ➔ Starmie" }, { hoenn_id: 144, id: 121, name: "Starmie", evo: "Etapa final" },
+            { hoenn_id: 145, id: 352, name: "Kecleon", evo: "Sin evolución" },
+            { hoenn_id: 146, id: 353, name: "Shuppet", evo: "Nv. 37 ➔ Banette" }, { hoenn_id: 147, id: 354, name: "Banette", evo: "Etapa final" },
+            { hoenn_id: 148, id: 355, name: "Duskull", evo: "Nv. 37 ➔ Dusclops" }, { hoenn_id: 149, id: 356, name: "Dusclops", evo: "Etapa final" },
+            { hoenn_id: 150, id: 357, name: "Tropius", evo: "Sin evolución" }, { hoenn_id: 151, id: 358, name: "Chimecho", evo: "Sin evolución" },
+            { hoenn_id: 152, id: 359, name: "Absol", evo: "Sin evolución" },
+            { hoenn_id: 153, id: 37, name: "Vulpix", evo: "P. Fuego ➔ Ninetales" }, { hoenn_id: 154, id: 38, name: "Ninetales", evo: "Etapa final" },
+            { hoenn_id: 155, id: 172, name: "Pichu", evo: "Amistad ➔ Pikachu" }, { hoenn_id: 156, id: 25, name: "Pikachu", evo: "P. Trueno ➔ Raichu" }, { hoenn_id: 157, id: 26, name: "Raichu", evo: "Etapa final" },
+            { hoenn_id: 158, id: 54, name: "Psyduck", evo: "Nv. 33 ➔ Golduck" }, { hoenn_id: 159, id: 55, name: "Golduck", evo: "Etapa final" },
+            { hoenn_id: 160, id: 360, name: "Wynaut", evo: "Nv. 15 ➔ Wobbuffet" }, { hoenn_id: 161, id: 202, name: "Wobbuffet", evo: "Etapa final" },
+            { hoenn_id: 162, id: 177, name: "Natu", evo: "Nv. 25 ➔ Xatu" }, { hoenn_id: 163, id: 178, name: "Xatu", evo: "Etapa final" },
+            { hoenn_id: 164, id: 203, name: "Girafarig", evo: "Sin evolución" },
+            { hoenn_id: 165, id: 231, name: "Phanpy", evo: "Nv. 25 ➔ Donphan" }, { hoenn_id: 166, id: 232, name: "Donphan", evo: "Etapa final" },
+            { hoenn_id: 167, id: 127, name: "Pinsir", evo: "Sin evolución" }, { hoenn_id: 168, id: 214, name: "Heracross", evo: "Sin evolución" },
+            { hoenn_id: 169, id: 111, name: "Rhyhorn", evo: "Nv. 42 ➔ Rhydon" }, { hoenn_id: 170, id: 112, name: "Rhydon", evo: "Etapa final" },
+            { hoenn_id: 171, id: 361, name: "Snorunt", evo: "Nv. 42 ➔ Glalie" }, { hoenn_id: 172, id: 362, name: "Glalie", evo: "Etapa final" },
+            { hoenn_id: 173, id: 363, name: "Spheal", evo: "Nv. 32 ➔ Sealeo" }, { hoenn_id: 174, id: 364, name: "Sealeo", evo: "Nv. 44 ➔ Walrein" }, { hoenn_id: 175, id: 365, name: "Walrein", evo: "Etapa final" },
+            { hoenn_id: 176, id: 366, name: "Clamperl", evo: "Intercambio c/Diente o Escama" }, { hoenn_id: 177, id: 367, name: "Huntail", evo: "Etapa final" }, { hoenn_id: 178, id: 368, name: "Gorebyss", evo: "Etapa final" },
+            { hoenn_id: 179, id: 369, name: "Relicanth", evo: "Sin evolución" },
+            { hoenn_id: 180, id: 222, name: "Corsola", evo: "Sin evolución" },
+            { hoenn_id: 181, id: 170, name: "Chinchou", evo: "Nv. 27 ➔ Lanturn" }, { hoenn_id: 182, id: 171, name: "Lanturn", evo: "Etapa final" },
+            { hoenn_id: 183, id: 370, name: "Luvdisc", evo: "Sin evolución" },
+            { hoenn_id: 184, id: 116, name: "Horsea", evo: "Nv. 32 ➔ Seadra" }, { hoenn_id: 185, id: 117, name: "Seadra", evo: "Intercambio c/Escamadragón" }, { hoenn_id: 186, id: 230, name: "Kingdra", evo: "Etapa final" },
+            { hoenn_id: 187, id: 371, name: "Bagon", evo: "Nv. 30 ➔ Shelgon" }, { hoenn_id: 188, id: 372, name: "Shelgon", evo: "Nv. 50 ➔ Salamence" }, { hoenn_id: 189, id: 373, name: "Salamence", evo: "Etapa final" },
+            { hoenn_id: 190, id: 374, name: "Beldum", evo: "Nv. 20 ➔ Metang" }, { hoenn_id: 191, id: 375, name: "Metang", evo: "Nv. 45 ➔ Metagross" }, { hoenn_id: 192, id: 376, name: "Metagross", evo: "Etapa final" },
+            { hoenn_id: 193, id: 377, name: "Regirock", evo: "Sin evolución" }, { hoenn_id: 194, id: 378, name: "Regice", evo: "Sin evolución" }, { hoenn_id: 195, id: 379, name: "Registeel", evo: "Sin evolución" },
+            { hoenn_id: 196, id: 380, name: "Latias", evo: "Sin evolución" }, { hoenn_id: 197, id: 381, name: "Latios", evo: "Sin evolución" },
+            { hoenn_id: 198, id: 382, name: "Kyogre", evo: "Sin evolución" }, { hoenn_id: 199, id: 383, name: "Groudon", evo: "Sin evolución" }, { hoenn_id: 200, id: 384, name: "Rayquaza", evo: "Sin evolución" },
+            { hoenn_id: 201, id: 385, name: "Jirachi", evo: "Sin evolución" }, { hoenn_id: 202, id: 386, name: "Deoxys", evo: "Sin evolución" }
+        ];
+
+        // Datos ampliados de rutas (Agregando intercambios y regalos)
+        const routeData = {
+            "Rubí": [
+                { name: "Pueblo Littleroot", encounters: [{ id: 252, rate: "Elegir", method: "Inicial" }, { id: 255, rate: "Elegir", method: "Inicial" }, { id: 258, rate: "Elegir", method: "Inicial" }] },
+                { name: "Rutas 101 a 103", encounters: [{ id: 261, rate: "Común", method: "Hierba" }, { id: 263, rate: "Común", method: "Hierba" }, { id: 265, rate: "Raro", method: "Hierba" }, { id: 270, rate: "Exclusivo", method: "Hierba" }, { id: 278, rate: "Poco común", method: "Hierba/Surf" }, { id: 280, rate: "Muy raro", method: "Hierba (Ruta 102)" }] },
+                { name: "Bosque Petalia & Ruta 104", encounters: [{ id: 265, rate: "Común", method: "Hierba" }, { id: 266, rate: "Poco común", method: "Hierba" }, { id: 285, rate: "Raro", method: "Hierba" }, { id: 287, rate: "Raro", method: "Hierba" }, { id: 276, rate: "Común", method: "Hierba (104)" }, { id: 183, rate: "Raro", method: "Hierba (104)" }] },
+                { name: "Túnel Fervegal & Ruta 116", encounters: [{ id: 293, rate: "100%", method: "Cueva" }, { id: 290, rate: "Común", method: "Hierba (116)" }, { id: 300, rate: "Muy Raro", method: "Hierba (116)" }, { id: 63, rate: "Poco común", method: "Hierba (116)" }] },
+                { name: "Cueva Granito", encounters: [{ id: 296, rate: "Común", method: "Cueva" }, { id: 304, rate: "Común", method: "Cueva" }, { id: 41, rate: "Raro", method: "Cueva" }, { id: 302, rate: "Exclusivo", method: "Cueva (Rubí)" }] },
+                { name: "Rutas 110 & 117 (Guardería)", encounters: [{ id: 309, rate: "Común", method: "Hierba" }, { id: 316, rate: "Poco común", method: "Hierba" }, { id: 311, rate: "Poco común", method: "Hierba (110)" }, { id: 312, rate: "Raro", method: "Hierba (110)" }, { id: 315, rate: "Común", method: "Hierba (117)" }, { id: 313, rate: "Exclusivo", method: "Hierba (117)" }] },
+                { name: "Ruta 111 (Desierto) & 112", encounters: [{ id: 328, rate: "Común", method: "Arena" }, { id: 343, rate: "Poco común", method: "Arena" }, { id: 331, rate: "Poco común", method: "Arena" }, { id: 66, rate: "Común", method: "Hierba (112)" }, { id: 322, rate: "Común", method: "Hierba (112)" }] },
+                { name: "Senda Ígnea & Desfiladero", encounters: [{ id: 322, rate: "Común", method: "Cueva/Hierba" }, { id: 88, rate: "Común", method: "Cueva" }, { id: 109, rate: "Poco común", method: "Cueva" }, { id: 324, rate: "Raro", method: "Cueva" }, { id: 325, rate: "Común", method: "Hierba (Desfiladero)" }] },
+                { name: "Rutas 113 & 114", encounters: [{ id: 327, rate: "Común", method: "Ceniza" }, { id: 218, rate: "Poco común", method: "Ceniza" }, { id: 227, rate: "Raro", method: "Ceniza" }, { id: 333, rate: "Común", method: "Hierba (114)" }, { id: 335, rate: "Exclusivo", method: "Hierba (Rubí)" }, { id: 273, rate: "Exclusivo", method: "Hierba (Rubí)" }] },
+                { name: "Ruta 118 & 119 (Clima)", encounters: [{ id: 357, rate: "Raro", method: "Hierba alta (119)" }, { id: 349, rate: "Muy raro", method: "Pesca (119 - Solo 6 cuadros de agua)" }, { id: 118, rate: "Pesca", method: "Supercaña" }, { id: 339, rate: "Pesca", method: "Supercaña" }] },
+                { name: "Rutas 120, 121 & 123", encounters: [{ id: 359, rate: "Raro", method: "Hierba (120)" }, { id: 352, rate: "Poco común", method: "Invisible/Hierba" }, { id: 43, rate: "Común", method: "Hierba" }, { id: 44, rate: "Raro", method: "Hierba" }] },
+                { name: "Zona Safari", encounters: [{ id: 111, rate: "Común", method: "Hierba" }, { id: 203, rate: "Poco común", method: "Hierba" }, { id: 25, rate: "Raro", method: "Hierba" }, { id: 214, rate: "Raro", method: "Zonas Adicionales" }, { id: 127, rate: "Raro", method: "Zonas Adicionales" }, { id: 177, rate: "Común", method: "Zonas Adicionales" }, { id: 231, rate: "Poco común", method: "Zonas Adicionales" }] },
+                { name: "Cascada Meteoro & Monte Pírico", encounters: [{ id: 41, rate: "Común", method: "Cueva" }, { id: 338, rate: "Poco común", method: "Cueva (Rubí)" }, { id: 371, rate: "Raro", method: "Interior Profundo" }, { id: 353, rate: "Común", method: "Interior Pírico" }, { id: 37, rate: "Común", method: "Exterior Pírico" }] },
+                { name: "Zonas Marítimas (105-109, 124-134)", encounters: [{ id: 72, rate: "Común", method: "Surf/Pesca" }, { id: 320, rate: "Común", method: "Surf/Supercaña" }, { id: 318, rate: "Pesca", method: "Supercaña" }, { id: 341, rate: "Pesca", method: "Supercaña" }, { id: 369, rate: "Raro", method: "Buceo (124/126)" }, { id: 366, rate: "Común", method: "Buceo" }, { id: 170, rate: "Poco común", method: "Buceo" }, { id: 222, rate: "Raro", method: "Supercaña (128)" }, { id: 370, rate: "Común", method: "Supercaña (128)" }, { id: 116, rate: "Poco común", method: "Supercaña (132-134)" }] },
+                { name: "Lugares Especiales", encounters: [{ id: 81, rate: "Común", method: "Malvalanova" }, { id: 100, rate: "Poco común", method: "Malvalanova" }, { id: 74, rate: "Raro", method: "Golpe Roca" }, { id: 50, rate: "Pesca", method: "Cascada Meteoro" }] },
+                { name: "Cueva Cardumen", encounters: [{ id: 361, rate: "Común", method: "Cueva Helada (Marea Baja)" }, { id: 363, rate: "Común", method: "Cueva (Surf/Caminando)" }] },
+                { name: "Cueva de los Ancestros", encounters: [{ id: 383, rate: "Único", method: "Historia Principal (Groudon)" }] },
+                { name: "Calle Victoria", encounters: [{ id: 42, rate: "Común", method: "Cueva" }, { id: 297, rate: "Común", method: "Cueva" }, { id: 305, rate: "Poco común", method: "Cueva" }, { id: 294, rate: "Raro", method: "Cueva" }] },
+                { name: "Ruinas de los Regis", encounters: [{ id: 377, rate: "Único", method: "Ruinas Desierto (Ruta 111)" }, { id: 378, rate: "Único", method: "Cueva Insular (Ruta 105)" }, { id: 379, rate: "Único", method: "Tumba Antigua (Ruta 120)" }] },
+                { name: "Legendarios Errantes", encounters: [{ id: 381, rate: "Único", method: "Hierba/Agua al azar (Post-Game)" }] },
+                { name: "Intercambios con NPC", encounters: [{ id: 296, rate: "100%", method: "Por Slakoth (Ciudad Férrica)" }, { id: 300, rate: "100%", method: "Por Pikachu (Ciudad Arborada)" }, { id: 222, rate: "100%", method: "Por Bellossom (Pueblo Oromar)" }] },
+                { name: "Regalos y Fósiles", encounters: [{ id: 351, rate: "100%", method: "Regalo (Inst. Meteorológico)" }, { id: 360, rate: "100%", method: "Huevo (Pueblo Lavacalda)" }, { id: 374, rate: "100%", method: "Casa de Máximo (Post-Game)" }, { id: 345, rate: "Elegir", method: "Fósil Raíz (Revivir en Devon)" }, { id: 347, rate: "Elegir", method: "Fósil Garra (Revivir en Devon)" }] }
+            ],
+            "Zafiro": [
+                { name: "Pueblo Littleroot", encounters: [{ id: 252, rate: "Elegir", method: "Inicial" }, { id: 255, rate: "Elegir", method: "Inicial" }, { id: 258, rate: "Elegir", method: "Inicial" }] },
+                { name: "Rutas 101 a 103", encounters: [{ id: 261, rate: "Común", method: "Hierba" }, { id: 263, rate: "Común", method: "Hierba" }, { id: 265, rate: "Raro", method: "Hierba" }, { id: 273, rate: "Exclusivo", method: "Hierba" }, { id: 278, rate: "Poco común", method: "Hierba/Surf" }, { id: 280, rate: "Muy raro", method: "Hierba (Ruta 102)" }] },
+                { name: "Bosque Petalia & Ruta 104", encounters: [{ id: 265, rate: "Común", method: "Hierba" }, { id: 268, rate: "Poco común", method: "Exclusivo (Zafiro)" }, { id: 285, rate: "Raro", method: "Hierba" }, { id: 287, rate: "Raro", method: "Hierba" }, { id: 276, rate: "Común", method: "Hierba (104)" }, { id: 183, rate: "Raro", method: "Hierba (104)" }] },
+                { name: "Túnel Fervegal & Ruta 116", encounters: [{ id: 293, rate: "100%", method: "Cueva" }, { id: 290, rate: "Común", method: "Hierba (116)" }, { id: 300, rate: "Muy Raro", method: "Hierba (116)" }, { id: 63, rate: "Poco común", method: "Hierba (116)" }] },
+                { name: "Cueva Granito", encounters: [{ id: 296, rate: "Común", method: "Cueva" }, { id: 304, rate: "Común", method: "Cueva" }, { id: 41, rate: "Raro", method: "Cueva" }, { id: 303, rate: "Exclusivo", method: "Cueva (Zafiro)" }] },
+                { name: "Rutas 110 & 117 (Guardería)", encounters: [{ id: 309, rate: "Común", method: "Hierba" }, { id: 316, rate: "Poco común", method: "Hierba" }, { id: 312, rate: "Poco común", method: "Hierba (110)" }, { id: 311, rate: "Raro", method: "Hierba (110)" }, { id: 315, rate: "Común", method: "Hierba (117)" }, { id: 314, rate: "Exclusivo", method: "Hierba (117)" }] },
+                { name: "Ruta 111 (Desierto) & 112", encounters: [{ id: 328, rate: "Común", method: "Arena" }, { id: 343, rate: "Poco común", method: "Arena" }, { id: 331, rate: "Poco común", method: "Arena" }, { id: 66, rate: "Común", method: "Hierba (112)" }, { id: 322, rate: "Común", method: "Hierba (112)" }] },
+                { name: "Senda Ígnea & Desfiladero", encounters: [{ id: 322, rate: "Común", method: "Cueva/Hierba" }, { id: 88, rate: "Común", method: "Cueva" }, { id: 109, rate: "Poco común", method: "Cueva" }, { id: 324, rate: "Raro", method: "Cueva" }, { id: 325, rate: "Común", method: "Hierba (Desfiladero)" }] },
+                { name: "Rutas 113 & 114", encounters: [{ id: 327, rate: "Común", method: "Ceniza" }, { id: 218, rate: "Poco común", method: "Ceniza" }, { id: 227, rate: "Raro", method: "Ceniza" }, { id: 333, rate: "Común", method: "Hierba (114)" }, { id: 336, rate: "Exclusivo", method: "Hierba (Zafiro)" }, { id: 270, rate: "Exclusivo", method: "Hierba (Zafiro)" }] },
+                { name: "Ruta 118 & 119 (Clima)", encounters: [{ id: 357, rate: "Raro", method: "Hierba alta (119)" }, { id: 349, rate: "Muy raro", method: "Pesca (119 - Solo 6 cuadros de agua)" }, { id: 118, rate: "Pesca", method: "Supercaña" }, { id: 339, rate: "Pesca", method: "Supercaña" }] },
+                { name: "Rutas 120, 121 & 123", encounters: [{ id: 359, rate: "Raro", method: "Hierba (120)" }, { id: 352, rate: "Poco común", method: "Invisible/Hierba" }, { id: 43, rate: "Común", method: "Hierba" }, { id: 44, rate: "Raro", method: "Hierba" }] },
+                { name: "Zona Safari", encounters: [{ id: 111, rate: "Común", method: "Hierba" }, { id: 203, rate: "Poco común", method: "Hierba" }, { id: 25, rate: "Raro", method: "Hierba" }, { id: 214, rate: "Raro", method: "Zonas Adicionales" }, { id: 127, rate: "Raro", method: "Zonas Adicionales" }, { id: 177, rate: "Común", method: "Zonas Adicionales" }, { id: 231, rate: "Poco común", method: "Zonas Adicionales" }] },
+                { name: "Cascada Meteoro & Monte Pírico", encounters: [{ id: 41, rate: "Común", method: "Cueva" }, { id: 337, rate: "Poco común", method: "Cueva (Zafiro)" }, { id: 371, rate: "Raro", method: "Interior Profundo" }, { id: 355, rate: "Común", method: "Interior Pírico" }, { id: 37, rate: "Común", method: "Exterior Pírico" }] },
+                { name: "Zonas Marítimas (105-109, 124-134)", encounters: [{ id: 72, rate: "Común", method: "Surf/Pesca" }, { id: 320, rate: "Común", method: "Surf/Supercaña" }, { id: 318, rate: "Pesca", method: "Supercaña" }, { id: 341, rate: "Pesca", method: "Supercaña" }, { id: 369, rate: "Raro", method: "Buceo (124/126)" }, { id: 366, rate: "Común", method: "Buceo" }, { id: 170, rate: "Poco común", method: "Buceo" }, { id: 222, rate: "Raro", method: "Supercaña (128)" }, { id: 370, rate: "Común", method: "Supercaña (128)" }, { id: 116, rate: "Poco común", method: "Supercaña (132-134)" }] },
+                { name: "Lugares Especiales", encounters: [{ id: 81, rate: "Común", method: "Malvalanova" }, { id: 100, rate: "Poco común", method: "Malvalanova" }, { id: 74, rate: "Raro", method: "Golpe Roca" }, { id: 50, rate: "Pesca", method: "Cascada Meteoro" }] },
+                { name: "Cueva Cardumen", encounters: [{ id: 361, rate: "Común", method: "Cueva Helada (Marea Baja)" }, { id: 363, rate: "Común", method: "Cueva (Surf/Caminando)" }] },
+                { name: "Cueva de los Ancestros", encounters: [{ id: 382, rate: "Único", method: "Historia Principal (Kyogre)" }] },
+                { name: "Calle Victoria", encounters: [{ id: 42, rate: "Común", method: "Cueva" }, { id: 297, rate: "Común", method: "Cueva" }, { id: 305, rate: "Poco común", method: "Cueva" }, { id: 294, rate: "Raro", method: "Cueva" }] },
+                { name: "Ruinas de los Regis", encounters: [{ id: 377, rate: "Único", method: "Ruinas Desierto (Ruta 111)" }, { id: 378, rate: "Único", method: "Cueva Insular (Ruta 105)" }, { id: 379, rate: "Único", method: "Tumba Antigua (Ruta 120)" }] },
+                { name: "Legendarios Errantes", encounters: [{ id: 380, rate: "Único", method: "Hierba/Agua al azar (Post-Game)" }] },
+                { name: "Intercambios con NPC", encounters: [{ id: 296, rate: "100%", method: "Por Slakoth (Ciudad Férrica)" }, { id: 300, rate: "100%", method: "Por Pikachu (Ciudad Arborada)" }, { id: 222, rate: "100%", method: "Por Bellossom (Pueblo Oromar)" }] },
+                { name: "Regalos y Fósiles", encounters: [{ id: 351, rate: "100%", method: "Regalo (Inst. Meteorológico)" }, { id: 360, rate: "100%", method: "Huevo (Pueblo Lavacalda)" }, { id: 374, rate: "100%", method: "Casa de Máximo (Post-Game)" }, { id: 345, rate: "Elegir", method: "Fósil Raíz (Revivir en Devon)" }, { id: 347, rate: "Elegir", method: "Fósil Garra (Revivir en Devon)" }] }
+            ],
+            "Esmeralda": [
+                { name: "Pueblo Littleroot", encounters: [{ id: 252, rate: "Elegir", method: "Inicial" }, { id: 255, rate: "Elegir", method: "Inicial" }, { id: 258, rate: "Elegir", method: "Inicial" }] },
+                { name: "Rutas 101 a 103", encounters: [{ id: 261, rate: "Común", method: "Hierba" }, { id: 263, rate: "Común", method: "Hierba" }, { id: 265, rate: "Raro", method: "Hierba" }, { id: 270, rate: "Común", method: "Hierba (102)" }, { id: 273, rate: "Común", method: "Hierba (102)" }, { id: 280, rate: "Muy raro", method: "Hierba (Ruta 102)" }] },
+                { name: "Bosque Petalia & Ruta 104", encounters: [{ id: 265, rate: "Común", method: "Hierba" }, { id: 285, rate: "Poco común", method: "Hierba" }, { id: 287, rate: "Raro", method: "Hierba" }, { id: 280, rate: "Muy raro", method: "Hierba" }, { id: 276, rate: "Común", method: "Hierba (104)" }, { id: 183, rate: "Raro", method: "Hierba (104)" }] },
+                { name: "Túnel Fervegal & Ruta 116", encounters: [{ id: 293, rate: "100%", method: "Cueva" }, { id: 290, rate: "Común", method: "Hierba (116)" }, { id: 300, rate: "Muy Raro", method: "Hierba (116)" }, { id: 63, rate: "Poco común", method: "Hierba (116)" }] },
+                { name: "Cueva Granito", encounters: [{ id: 296, rate: "Común", method: "Cueva" }, { id: 304, rate: "Común", method: "Cueva" }, { id: 41, rate: "Raro", method: "Cueva" }, { id: 302, rate: "Raro", method: "Cueva" }, { id: 303, rate: "Raro", method: "Cueva" }] },
+                { name: "Rutas 110 & 117 (Guardería)", encounters: [{ id: 309, rate: "Común", method: "Hierba" }, { id: 316, rate: "Poco común", method: "Hierba" }, { id: 311, rate: "Poco común", method: "Hierba (110)" }, { id: 312, rate: "Poco común", method: "Hierba (110)" }, { id: 315, rate: "Común", method: "Hierba (117)" }, { id: 313, rate: "Raro", method: "Hierba (117)" }, { id: 314, rate: "Raro", method: "Hierba (117)" }] },
+                { name: "Ruta 111 (Desierto) & 112", encounters: [{ id: 328, rate: "Común", method: "Arena" }, { id: 343, rate: "Poco común", method: "Arena" }, { id: 331, rate: "Poco común", method: "Arena" }, { id: 66, rate: "Común", method: "Hierba (112)" }, { id: 322, rate: "Común", method: "Hierba (112)" }] },
+                { name: "Senda Ígnea & Desfiladero", encounters: [{ id: 322, rate: "Común", method: "Cueva/Hierba" }, { id: 88, rate: "Común", method: "Cueva" }, { id: 109, rate: "Poco común", method: "Cueva" }, { id: 324, rate: "Raro", method: "Cueva" }, { id: 325, rate: "Común", method: "Hierba (Desfiladero)" }] },
+                { name: "Rutas 113 & 114", encounters: [{ id: 327, rate: "Común", method: "Ceniza" }, { id: 218, rate: "Poco común", method: "Ceniza" }, { id: 227, rate: "Raro", method: "Ceniza" }, { id: 333, rate: "Común", method: "Hierba (114)" }, { id: 335, rate: "Raro", method: "Hierba (114)" }, { id: 336, rate: "Raro", method: "Hierba (114)" }, { id: 270, rate: "Poco común", method: "Hierba" }, { id: 273, rate: "Poco común", method: "Hierba" }] },
+                { name: "Ruta 118 & 119 (Clima)", encounters: [{ id: 357, rate: "Raro", method: "Hierba alta (119)" }, { id: 349, rate: "Muy raro", method: "Pesca (119 - Solo 6 cuadros de agua)" }, { id: 118, rate: "Pesca", method: "Supercaña" }, { id: 339, rate: "Pesca", method: "Supercaña" }] },
+                { name: "Rutas 120, 121 & 123", encounters: [{ id: 359, rate: "Raro", method: "Hierba (120)" }, { id: 352, rate: "Poco común", method: "Invisible/Hierba" }, { id: 43, rate: "Común", method: "Hierba" }, { id: 44, rate: "Raro", method: "Hierba" }] },
+                { name: "Zona Safari (Extensión Esmeralda)", encounters: [{ id: 111, rate: "Común", method: "Hierba" }, { id: 203, rate: "Poco común", method: "Hierba" }, { id: 25, rate: "Raro", method: "Hierba" }, { id: 214, rate: "Raro", method: "Zonas Adicionales" }, { id: 127, rate: "Raro", method: "Zonas Adicionales" }, { id: 177, rate: "Común", method: "Zonas Adicionales" }, { id: 231, rate: "Poco común", method: "Zonas Adicionales" }] },
+                { name: "Cascada Meteoro & Monte Pírico", encounters: [{ id: 41, rate: "Común", method: "Cueva" }, { id: 338, rate: "Raro", method: "Cueva" }, { id: 337, rate: "Raro", method: "Cueva" }, { id: 371, rate: "Raro", method: "Interior Profundo" }, { id: 353, rate: "Poco común", method: "Interior Pírico" }, { id: 355, rate: "Poco común", method: "Interior Pírico" }, { id: 37, rate: "Común", method: "Exterior Pírico" }] },
+                { name: "Zonas Marítimas (105-109, 124-134)", encounters: [{ id: 72, rate: "Común", method: "Surf/Pesca" }, { id: 320, rate: "Común", method: "Surf/Supercaña" }, { id: 318, rate: "Pesca", method: "Supercaña" }, { id: 341, rate: "Pesca", method: "Supercaña" }, { id: 369, rate: "Raro", method: "Buceo (124/126)" }, { id: 366, rate: "Común", method: "Buceo" }, { id: 170, rate: "Poco común", method: "Buceo" }, { id: 222, rate: "Raro", method: "Supercaña (128)" }, { id: 370, rate: "Común", method: "Supercaña (128)" }, { id: 116, rate: "Poco común", method: "Supercaña (132-134)" }] },
+                { name: "Lugares Especiales", encounters: [{ id: 81, rate: "Común", method: "Malvalanova" }, { id: 100, rate: "Poco común", method: "Malvalanova" }, { id: 74, rate: "Raro", method: "Golpe Roca" }, { id: 50, rate: "Pesca", method: "Cascada Meteoro" }] },
+                { name: "Cueva Cardumen", encounters: [{ id: 361, rate: "Común", method: "Cueva Helada (Marea Baja)" }, { id: 363, rate: "Común", method: "Cueva (Surf/Caminando)" }] },
+                { name: "Calle Victoria", encounters: [{ id: 42, rate: "Común", method: "Cueva" }, { id: 297, rate: "Común", method: "Cueva" }, { id: 305, rate: "Poco común", method: "Cueva" }, { id: 294, rate: "Raro", method: "Cueva" }, { id: 302, rate: "Muy raro", method: "Cueva" }, { id: 303, rate: "Muy raro", method: "Cueva" }] },
+                { name: "Pilar Celeste", encounters: [{ id: 343, rate: "Común", method: "Cueva" }, { id: 334, rate: "Poco común", method: "Cueva" }, { id: 356, rate: "Raro", method: "Cueva" }, { id: 384, rate: "Único", method: "Cima (Rayquaza)" }] },
+                { name: "Ruinas de los Regis", encounters: [{ id: 377, rate: "Único", method: "Ruinas Desierto (Ruta 111)" }, { id: 378, rate: "Único", method: "Cueva Insular (Ruta 105)" }, { id: 379, rate: "Único", method: "Tumba Antigua (Ruta 120)" }] },
+                { name: "Legendarios Errantes / Clima", encounters: [{ id: 380, rate: "Elegir (TV)", method: "Hierba/Agua al azar" }, { id: 381, rate: "Elegir (TV)", method: "Hierba/Agua al azar" }, { id: 382, rate: "Único", method: "Cueva Marina (Instituto Meteorológico)" }, { id: 383, rate: "Único", method: "Cueva Terrena (Instituto Meteorológico)" }] },
+                { name: "Intercambios con NPC", encounters: [{ id: 273, rate: "100%", method: "Por Seedot (Ciudad Férrica)" }, { id: 311, rate: "100%", method: "Por Illumise (Ciudad Arborada)" }, { id: 116, rate: "100%", method: "Por Bagon (Pueblo Oromar)" }] },
+                { name: "Regalos y Fósiles", encounters: [{ id: 351, rate: "100%", method: "Regalo (Inst. Meteorológico)" }, { id: 360, rate: "100%", method: "Huevo (Pueblo Lavacalda)" }, { id: 374, rate: "100%", method: "Casa de Máximo (Post-Game)" }, { id: 345, rate: "Elegir", method: "Torre Espejismo (Revivir en Devon)" }, { id: 347, rate: "Elegir", method: "Torre Espejismo (Revivir en Devon)" }] }
+            ]
+        };
+
+        // Estado en memoria y variables de los filtros
+        let caughtState = {}; 
+        let currentView = 'pokedex';
+        let searchQuery = '';
+        let filterState = 'all'; // 'all', 'caught', 'missing'
+        
+        let db, auth, userId;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'hoenn-tracker';
+
+        function getPokemonName(id) {
+            const p = pokedex.find(p => p.id === id);
+            return p ? p.name : `Desconocido (${id})`;
+        }
+
+        function isAvailableInGame(pokemonId, gameName) {
+            if (!routeData[gameName]) return false;
+            for (let route of routeData[gameName]) {
+                if (route.encounters.some(e => e.id === pokemonId)) return true;
+            }
+            return false;
+        }
+
+        window.toggleCaught = async function(pokemonId) {
+            caughtState[pokemonId] = !caughtState[pokemonId];
+            renderCurrentView(); 
+            
+            // Backup local en caso de que Firebase falle
+            localStorage.setItem('hoennTrackerData', JSON.stringify(caughtState));
+            
+            if (db && userId) {
+                try {
+                    const docRef = doc(db, 'artifacts', appId, 'users', userId, 'trackerData', 'caughtState');
+                    await setDoc(docRef, caughtState);
+                } catch (error) {
+                    console.error("Error al guardar tu progreso:", error);
+                }
+            }
+        }
+
+        window.navigate = function(viewName) {
+            currentView = viewName;
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-700');
+            });
+            document.getElementById(`nav-${viewName}`).classList.add('bg-slate-700');
+            
+            renderCurrentView();
+            window.scrollTo(0, 0);
+        }
+
+        window.updateSearch = function(value) {
+            searchQuery = value.toLowerCase();
+            renderCurrentView();
+        }
+
+        window.updateFilter = function(value) {
+            filterState = value;
+            renderCurrentView();
+        }
+
+        function renderCurrentView() {
+            const container = document.getElementById('app-content');
+            if (currentView === 'pokedex') {
+                container.innerHTML = generatePokedexHTML();
+                document.body.className = "bg-gray-100 text-gray-800 min-h-screen flex flex-col game-bg-pokedex";
+            } else {
+                container.innerHTML = generateGamePageHTML(currentView);
+                const bgColors = {
+                    'Rubí': 'game-bg-ruby',
+                    'Zafiro': 'game-bg-sapphire',
+                    'Esmeralda': 'game-bg-emerald'
+                };
+                document.body.className = `text-gray-800 min-h-screen flex flex-col ${bgColors[currentView]}`;
+            }
+        }
+
+        function generatePokedexHTML() {
+            const totalCaught = Object.values(caughtState).filter(v => v).length;
+            const progressPercent = Math.round((totalCaught / pokedex.length) * 100);
+
+            let html = `
+                <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-200">
+                    <div class="p-6 bg-slate-800 text-white border-b border-gray-700">
+                        <h1 class="text-3xl font-extrabold flex flex-wrap items-center gap-3">
+                            Pokédex de Hoenn
+                            <span class="text-sm font-normal bg-emerald-600 px-3 py-1 rounded-full text-emerald-100">
+                                ${totalCaught} / ${pokedex.length} Atrapados
+                            </span>
+                        </h1>
+                        
+                        <!-- Barra de Progreso -->
+                        <div class="w-full bg-slate-700 rounded-full h-2.5 mt-4">
+                            <div class="bg-emerald-500 h-2.5 rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
+                        </div>
+
+                        <!-- Controles de Búsqueda y Filtro -->
+                        <div class="mt-6 flex flex-col sm:flex-row gap-4">
+                            <input type="text" 
+                                   placeholder="Buscar por nombre o número..." 
+                                   class="px-4 py-2 rounded-lg text-gray-800 w-full sm:w-1/2 focus:ring-2 focus:ring-emerald-500 outline-none"
+                                   value="${searchQuery}"
+                                   onkeyup="updateSearch(this.value)">
+                            
+                            <select class="px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-emerald-500 outline-none cursor-pointer"
+                                    onchange="updateFilter(this.value)">
+                                <option value="all" ${filterState === 'all' ? 'selected' : ''}>Todos los Pokémon</option>
+                                <option value="caught" ${filterState === 'caught' ? 'selected' : ''}>Solo Atrapados</option>
+                                <option value="missing" ${filterState === 'missing' ? 'selected' : ''}>Faltantes</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="uppercase tracking-wider border-b-2 border-gray-200 bg-gray-50 text-gray-600 font-bold">
+                                <tr>
+                                    <th class="px-6 py-4 text-center">Atrapado</th>
+                                    <th class="px-6 py-4 text-center">Nº</th>
+                                    <th class="px-6 py-4">Sprite</th>
+                                    <th class="px-6 py-4">Pokémon</th>
+                                    <th class="px-6 py-4">Evolución</th>
+                                    <th class="px-6 py-4">Juegos (Ir a Ruta)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+            `;
+
+            const filteredPokedex = pokedex.filter(poke => {
+                const isCaught = caughtState[poke.id] || false;
+                const matchesSearch = poke.name.toLowerCase().includes(searchQuery) || 
+                                      String(poke.hoenn_id).includes(searchQuery);
+                
+                let matchesFilter = true;
+                if (filterState === 'caught') matchesFilter = isCaught;
+                if (filterState === 'missing') matchesFilter = !isCaught;
+
+                return matchesSearch && matchesFilter;
+            });
+
+            if (filteredPokedex.length === 0) {
+                html += `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No se encontraron Pokémon con esos criterios.</td></tr>`;
+            }
+
+            filteredPokedex.forEach(poke => {
+                const isCaught = caughtState[poke.id] || false;
+                
+                let badges = '';
+                const games = [
+                    { name: 'Rubí', color: 'bg-red-100 text-red-700 border-red-300 hover:bg-red-200' },
+                    { name: 'Zafiro', color: 'bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200' },
+                    { name: 'Esmeralda', color: 'bg-emerald-100 text-emerald-700 border-emerald-300 hover:bg-emerald-200' }
+                ];
+
+                games.forEach(g => {
+                    if (isAvailableInGame(poke.id, g.name)) {
+                        badges += `<button onclick="navigate('${g.name}')" class="px-2 py-1 text-xs border rounded-md font-semibold mr-2 transition ${g.color}">${g.name}</button>`;
+                    }
+                });
+
+                if (badges === '') badges = `<span class="text-xs text-gray-400 italic">Otras rutas/Pescando/Surf</span>`;
+
+                html += `
+                    <tr class="hover:bg-gray-50 transition duration-150 ${isCaught ? 'bg-emerald-50/50' : ''}">
+                        <td class="px-6 py-4 text-center">
+                            <input type="checkbox" 
+                                   class="w-6 h-6 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500 cursor-pointer checkbox-anim" 
+                                   ${isCaught ? 'checked' : ''} 
+                                   onchange="toggleCaught(${poke.id})">
+                        </td>
+                        <td class="px-6 py-4 text-center font-mono text-gray-500">#${String(poke.hoenn_id).padStart(3, '0')}</td>
+                        <td class="px-6 py-2">
+                            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.id}.png" 
+                                 alt="${poke.name}" 
+                                 class="w-12 h-12 inline-block object-contain pixelated"
+                                 onerror="this.style.display='none'">
+                        </td>
+                        <td class="px-6 py-4 font-bold text-gray-800 text-base">${poke.name}</td>
+                        <td class="px-6 py-4 text-sm font-medium text-emerald-700">${poke.evo}</td>
+                        <td class="px-6 py-4">${badges}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            return html;
+        }
+
+        function generateGamePageHTML(gameName) {
+            const routes = routeData[gameName];
+            
+            let headerStyles = '';
+            if (gameName === 'Rubí') headerStyles = 'bg-red-600 text-white';
+            if (gameName === 'Zafiro') headerStyles = 'bg-blue-600 text-white';
+            if (gameName === 'Esmeralda') headerStyles = 'bg-emerald-600 text-white';
+
+            let html = `
+                <div class="mb-8">
+                    <div class="rounded-xl shadow-lg overflow-hidden border border-white/20 mb-8">
+                        <div class="p-8 ${headerStyles}">
+                            <h1 class="text-4xl font-extrabold mb-2">Edición ${gameName}</h1>
+                            <p class="text-lg opacity-90">Lista extendida de rutas, intercambios con NPC y encuentros especiales.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-8">
+            `;
+
+            if (!routes || routes.length === 0) {
+                html += `<p class="text-center text-gray-600 py-10 bg-white/50 rounded-xl">Datos no disponibles.</p>`;
+            } else {
+                routes.forEach(route => {
+                    html += `
+                        <div class="bg-white/90 backdrop-blur-sm rounded-xl shadow-md overflow-hidden">
+                            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                                <h2 class="text-xl font-bold text-gray-800">${route.name}</h2>
+                            </div>
+                            <div class="p-0 overflow-x-auto">
+                                <table class="w-full text-left text-sm whitespace-nowrap">
+                                    <thead class="bg-gray-100/50 text-gray-600 text-xs uppercase font-semibold">
+                                        <tr>
+                                            <th class="px-6 py-3 w-16 text-center">Atrapado</th>
+                                            <th class="px-6 py-3">Pokémon</th>
+                                            <th class="px-6 py-3">Ratio / Condición</th>
+                                            <th class="px-6 py-3">Método / Ubicación exacta</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-100">
+                    `;
+
+                    route.encounters.forEach(encounter => {
+                        const pokeName = getPokemonName(encounter.id);
+                        const isCaught = caughtState[encounter.id] || false;
+                        
+                        html += `
+                            <tr class="hover:bg-gray-50/80 transition ${isCaught ? 'bg-emerald-50/40' : ''}">
+                                <td class="px-6 py-3 text-center">
+                                    <input type="checkbox" 
+                                           class="w-5 h-5 text-emerald-600 rounded border-gray-300 cursor-pointer checkbox-anim focus:ring-emerald-500" 
+                                           ${isCaught ? 'checked' : ''} 
+                                           onchange="toggleCaught(${encounter.id})">
+                                </td>
+                                <td class="px-6 py-3 font-semibold flex items-center gap-3">
+                                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${encounter.id}.png" 
+                                         alt="${pokeName}" 
+                                         class="w-10 h-10 object-contain"
+                                         onerror="this.style.display='none'">
+                                    <span>${pokeName} <span class="text-xs text-gray-400 font-mono ml-1">#${encounter.id}</span></span>
+                                </td>
+                                <td class="px-6 py-3">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
+                                        ${encounter.rate}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-3 text-gray-600">${encounter.method}</td>
+                            </tr>
+                        `;
+                    });
+
+                    html += `
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            return html;
+        }
+
+        async function setupCloudStorage() {
+            try {
+                // Intenta recuperar los datos locales primero
+                const localData = localStorage.getItem('hoennTrackerData');
+                if (localData) {
+                    caughtState = JSON.parse(localData);
+                    renderCurrentView();
+                }
+
+                if (typeof __firebase_config === 'undefined') return;
+                
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                
+                userId = auth.currentUser?.uid;
+                if (!userId) return;
+
+                document.getElementById('storage-status').textContent = "Hoenn Tracker - Conectado. Tu progreso se guarda automáticamente en la nube.";
+
+                const docRef = doc(db, 'artifacts', appId, 'users', userId, 'trackerData', 'caughtState');
+                
+                onSnapshot(docRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        caughtState = { ...caughtState, ...snapshot.data() };
+                        renderCurrentView();
+                    }
+                }, (error) => {
+                    console.error("Error al obtener los datos guardados:", error);
+                });
+
+            } catch (error) {
+                console.error("Error inicializando el almacenamiento:", error);
+                document.getElementById('storage-status').textContent = "Hoenn Tracker - Guardado de manera local en el navegador.";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            navigate('pokedex');
+            setupCloudStorage();
+        });
+
+    </script>
+</body>
+</html>
