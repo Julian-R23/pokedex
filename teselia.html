@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Negro y Blanco Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .game-bg-black { background: linear-gradient(135deg, #1f2937 0%, #000000 100%); color: white; }
+        .game-bg-white { background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%); color: #1e293b; }
+        .game-bg-pokedex { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
+        
+        .checkbox-anim { transition: all 0.2s ease-in-out; }
+        .checkbox-anim:checked { transform: scale(1.1); }
+
+        /* Ajustes específicos para el texto en fondos oscuros vs claros */
+        .game-bg-black .route-card { background: rgba(30, 41, 59, 0.9); border: 1px solid #334155; }
+        .game-bg-black .route-card h2, .game-bg-black .route-card td { color: #f1f5f9; }
+        .game-bg-black .route-card thead { background: rgba(15, 23, 42, 0.8); color: #94a3b8; }
+        .game-bg-black .route-card a { color: #38bdf8; }
+        .game-bg-black .route-card tr:hover { background: rgba(51, 65, 85, 0.5); }
+        .game-bg-black .route-card .bg-slate-100 { background: #334155; color: #cbd5e1; }
+        
+        .game-bg-white .route-card { background: rgba(255, 255, 255, 0.9); border: 1px solid #e2e8f0; }
+        .game-bg-white .route-card h2 { color: #1e293b; }
+        .game-bg-white .route-card thead { background: rgba(241, 245, 249, 0.8); color: #475569; }
+        .game-bg-white .route-card a { color: #2563eb; }
+        .game-bg-white .route-card tr:hover { background: rgba(241, 245, 249, 0.8); }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+
+    <nav class="bg-slate-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <a href="index.html" class="p-2 bg-slate-800 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition" title="Volver al Hub">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    </a>
+                    <span class="text-xl font-bold tracking-wider cursor-pointer text-emerald-400" onclick="navigate('pokedex')">Teselia Tracker (Gen 5)</span>
+                </div>
+                <div class="flex items-center space-x-1 md:space-x-4 overflow-x-auto">
+                    <button onclick="navigate('pokedex')" id="nav-pokedex" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition whitespace-nowrap">Pokédex Completa</button>
+                    <button onclick="navigate('Negro')" id="nav-Negro" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-gray-400 hover:bg-gray-800 hover:text-white transition whitespace-nowrap">Pokémon Negro</button>
+                    <button onclick="navigate('Blanco')" id="nav-Blanco" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition whitespace-nowrap">Pokémon Blanco</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full"></main>
+
+    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-sm mt-auto">
+        <p id="storage-status">Teselia Tracker - Conectando con los servidores del Sistema de Cajas...</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Pokédex: Regional de Teselia (494 - 649) y Nacional Post-Game
+        const rawPokedex = [
+            // --- POKÉDEX REGIONAL DE TESELIA (Nuevos de Gen 5) ---
+            "494|Victini|Legendario/Evento",
+            "495|Snivy|Nv. 17", "496|Servine|Nv. 36", "497|Serperior|Final",
+            "498|Tepig|Nv. 17", "499|Pignite|Nv. 36", "500|Emboar|Final",
+            "501|Oshawott|Nv. 17", "502|Dewott|Nv. 36", "503|Samurott|Final",
+            "504|Patrat|Nv. 20", "505|Watchog|Final",
+            "506|Lillipup|Nv. 16", "507|Herdier|Nv. 32", "508|Stoutland|Final",
+            "509|Purrloin|Nv. 20", "510|Liepard|Final",
+            "511|Pansage|P. Hoja", "512|Simisage|Final",
+            "513|Pansear|P. Fuego", "514|Simisear|Final",
+            "515|Panpour|P. Agua", "516|Simipour|Final",
+            "517|Munna|P. Lunar", "518|Musharna|Final",
+            "519|Pidove|Nv. 21", "520|Tranquill|Nv. 32", "521|Unfezant|Final",
+            "522|Blitzle|Nv. 27", "523|Zebstrika|Final",
+            "524|Roggenrola|Nv. 25", "525|Boldore|Intercambio", "526|Gigalith|Final",
+            "527|Woobat|Amistad", "528|Swoobat|Final",
+            "529|Drilbur|Nv. 31", "530|Excadrill|Final",
+            "531|Audino|Final",
+            "532|Timburr|Nv. 25", "533|Gurdurr|Intercambio", "534|Conkeldurr|Final",
+            "535|Tympole|Nv. 25", "536|Palpitoad|Nv. 36", "537|Seismitoad|Final",
+            "538|Throh|Final", "539|Sawk|Final",
+            "540|Sewaddle|Nv. 20", "541|Swadloon|Amistad", "542|Leavanny|Final",
+            "543|Venipede|Nv. 22", "544|Whirlipede|Nv. 30", "545|Scolipede|Final",
+            "546|Cottonee|P. Solar", "547|Whimsicott|Final",
+            "548|Petilil|P. Solar", "549|Lilligant|Final",
+            "550|Basculin|Final",
+            "551|Sandile|Nv. 29", "552|Krokorok|Nv. 40", "553|Krookodile|Final",
+            "554|Darumaka|Nv. 35", "555|Darmanitan|Final",
+            "556|Maractus|Final",
+            "557|Dwebble|Nv. 34", "558|Crustle|Final",
+            "559|Scraggy|Nv. 39", "560|Scrafty|Final",
+            "561|Sigilyph|Final",
+            "562|Yamask|Nv. 34", "563|Cofagrigus|Final",
+            "564|Tirtouga|Nv. 37", "565|Carracosta|Final",
+            "566|Archen|Nv. 37", "567|Archeops|Final",
+            "568|Trubbish|Nv. 36", "569|Garbodor|Final",
+            "570|Zorua|Nv. 30", "571|Zoroark|Final",
+            "572|Minccino|P. Día", "573|Cinccino|Final",
+            "574|Gothita|Nv. 32", "575|Gothorita|Nv. 41", "576|Gothitelle|Final",
+            "577|Solosis|Nv. 32", "578|Duosion|Nv. 41", "579|Reuniclus|Final",
+            "580|Ducklett|Nv. 35", "581|Swanna|Final",
+            "582|Vanillite|Nv. 35", "583|Vanillish|Nv. 47", "584|Vanilluxe|Final",
+            "585|Deerling|Nv. 34", "586|Sawsbuck|Final",
+            "587|Emolga|Final",
+            "588|Karrablast|Intercambio (Shelmet)", "589|Escavalier|Final",
+            "590|Foongus|Nv. 39", "591|Amoonguss|Final",
+            "592|Frillish|Nv. 40", "593|Jellicent|Final",
+            "594|Alomomola|Final",
+            "595|Joltik|Nv. 36", "596|Galvantula|Final",
+            "597|Ferroseed|Nv. 40", "598|Ferrothorn|Final",
+            "599|Klink|Nv. 38", "600|Klang|Nv. 49", "601|Klinklang|Final",
+            "602|Tynamo|Nv. 39", "603|Eelektrik|P. Trueno", "604|Eelektross|Final",
+            "605|Elgyem|Nv. 42", "606|Beheeyem|Final",
+            "607|Litwick|Nv. 41", "608|Lampent|P. Noche", "609|Chandelure|Final",
+            "610|Axew|Nv. 38", "611|Fraxure|Nv. 48", "612|Haxorus|Final",
+            "613|Cubchoo|Nv. 39", "614|Beartic|Final",
+            "615|Cryogonal|Final",
+            "616|Shelmet|Intercambio (Karrablast)", "617|Accelgor|Final",
+            "618|Stunfisk|Final",
+            "619|Mienfoo|Nv. 50", "620|Mienshao|Final",
+            "621|Druddigon|Final",
+            "622|Golett|Nv. 43", "623|Golurk|Final",
+            "624|Pawniard|Nv. 52", "625|Bisharp|Final",
+            "626|Bouffalant|Final",
+            "627|Rufflet|Nv. 54", "628|Braviary|Final",
+            "629|Vullaby|Nv. 54", "630|Mandibuzz|Final",
+            "631|Heatmor|Final",
+            "632|Durant|Final",
+            "633|Deino|Nv. 50", "634|Zweilous|Nv. 64", "635|Hydreigon|Final",
+            "636|Larvesta|Nv. 59", "637|Volcarona|Final",
+            "638|Cobalion|Legendario",
+            "639|Terrakion|Legendario",
+            "640|Virizion|Legendario",
+            "641|Tornadus|Legendario",
+            "642|Thundurus|Legendario",
+            "643|Reshiram|Legendario",
+            "644|Zekrom|Legendario",
+            "645|Landorus|Legendario",
+            "646|Kyurem|Legendario",
+            "647|Keldeo|Evento",
+            "648|Meloetta|Evento",
+            "649|Genesect|Evento",
+
+            // --- POKÉDEX NACIONAL (Selección Post-Game Salvaje) ---
+            "131|Lapras|Post (Puente Villa)",
+            "143|Snorlax|Post (Intercambio)",
+            "169|Crobat|Post (Ruta 13)",
+            "208|Steelix|Post (Cueva Electrorroca)",
+            "214|Heracross|Post (Ruta 12)",
+            "248|Tyranitar|Post (Ruta 15)",
+            "277|Swellow|Post (Ruta 13)",
+            "334|Altaria|Post (Ruta 14)",
+            "350|Milotic|Post (Ruta 1)",
+            "359|Absol|Post (Ruta 13)",
+            "373|Salamence|Post (Bosque Blanco)",
+            "376|Metagross|Post (Boquete Gigante)",
+            "429|Mismagius|Post (Santuario)",
+            "430|Honchkrow|Post (Santuario)",
+            "448|Lucario|Post (Santuario)",
+            "461|Weavile|Post (Boquete Gigante)",
+            "468|Togekiss|Post (Bosque Blanco)",
+            "472|Gliscor|Post (Ruta 11)",
+            "473|Mamoswine|Post (Boquete Gigante)"
+        ];
+
+        const pokedex = rawPokedex.map(data => {
+            const [id, name, evo] = data.split('|');
+            return { id: parseInt(id), name, evo };
+        });
+
+        // Configuración de Rutas Detalladas Teselia
+        const routeData = {
+            "Negro": [
+                { name: "Pueblo Arcilla y Ruta 1 - 2", encounters: [{ id: 495, rate: "Elegir", method: "Inicial" }, { id: 498, rate: "Elegir", method: "Inicial" }, { id: 501, rate: "Elegir", method: "Inicial" }, { id: 504, rate: "Común", method: "Ruta 1-2" }, { id: 506, rate: "Común", method: "Ruta 1-2" }, { id: 509, rate: "Poco común", method: "Ruta 2" }] },
+                { name: "Solar de los Sueños y Ruta 3", encounters: [{ id: 511, rate: "Regalo", method: "Si elegiste Tepig" }, { id: 513, rate: "Regalo", method: "Si elegiste Oshawott" }, { id: 515, rate: "Regalo", method: "Si elegiste Snivy" }, { id: 517, rate: "Común", method: "Solar (Hierba)" }, { id: 519, rate: "Común", method: "Ruta 3" }, { id: 522, rate: "Común", method: "Ruta 3" }] },
+                { name: "Cueva Manantial y Bosque Azulejo", encounters: [{ id: 524, rate: "Común", method: "Cueva Manantial" }, { id: 527, rate: "Común", method: "Cueva Manantial" }, { id: 529, rate: "Polvo", method: "Cueva Manantial" }, { id: 540, rate: "Común", method: "Bosque Azulejo" }, { id: 543, rate: "Común", method: "Bosque Azulejo" }, { id: 546, rate: "Exclusivo (Negro)", method: "Bosque Azulejo" }, { id: 538, rate: "Frecuente (Negro)", method: "Exterior Bosque" }] },
+                { name: "Zona Desierto y Castillo Ancestral", encounters: [{ id: 551, rate: "Común", method: "Zona Desierto" }, { id: 554, rate: "Común", method: "Zona Desierto" }, { id: 556, rate: "Poco común", method: "Zona Desierto" }, { id: 562, rate: "Común", method: "Castillo Ancestral" }, { id: 564, rate: "Fósil Tapa", method: "Castillo Ancestral" }, { id: 566, rate: "Fósil Pluma", method: "Castillo Ancestral" }] },
+                { name: "Rutas 5, 16 y Puente Fayenza", encounters: [{ id: 568, rate: "Común", method: "Ruta 5 / 16" }, { id: 572, rate: "Común", method: "Ruta 5 / 16" }, { id: 574, rate: "Exclusivo (Negro)", method: "Ruta 5 / 16" }, { id: 580, rate: "Sombra", method: "Puente Fayenza" }] },
+                { name: "Cueva Electrorroca y Monte Tuerca", encounters: [{ id: 595, rate: "Común", method: "Cueva Electrorroca" }, { id: 597, rate: "Común", method: "Cueva Electrorroca" }, { id: 599, rate: "Poco común", method: "Cueva Electrorroca" }, { id: 602, rate: "Raro", method: "Cueva Electrorroca" }, { id: 582, rate: "Común", method: "Monte Tuerca (Invierno)" }, { id: 613, rate: "Común", method: "Monte Tuerca (Invierno)" }, { id: 615, rate: "Raro", method: "Monte Tuerca" }] },
+                { name: "Torre
