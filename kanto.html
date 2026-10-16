@@ -442,6 +442,9 @@
                 auth = getAuth(app);
 
                 if (typeof __initial_auth_token !== 'undefined') {
+                   if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
                     // REEMPLÁZALO POR ESTO:
 await signInAnonymously(auth);
 
@@ -457,12 +460,7 @@ if (!mySyncCode) {
 // Usamos tu palabra secreta como ID principal, o el anónimo si cancelas
 userId = mySyncCode || auth.currentUser?.uid;
 if (!userId) return;
-                } else {
-                    await signInAnonymously(auth);
                 }
-                
-                userId = auth.currentUser?.uid;
-                if (!userId) return;
 
                 document.getElementById('storage-status').textContent = "Kanto Tracker - Conectado al PC de Bill (Nube activa).";
                 const docRef = doc(db, 'artifacts', appId, 'users', userId, 'trackerData', 'caughtState');
