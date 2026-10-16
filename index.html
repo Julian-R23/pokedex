@@ -212,6 +212,16 @@
 
     <!-- Footer -->
     <footer class="bg-white border-t border-slate-200 py-8 text-center mt-auto">
+        <!-- Botones de Guardado Manual -->
+<div class="flex justify-center gap-4 mt-6">
+    <button onclick="exportarPartida()" class="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition text-sm font-semibold">
+        ⬇️ Descargar Progreso
+    </button>
+    <label class="px-4 py-2 bg-emerald-700 text-white rounded-lg hover:bg-emerald-600 transition cursor-pointer text-sm font-semibold">
+        ⬆️ Cargar Progreso
+        <input type="file" id="import-file" class="hidden" accept=".json" onchange="importarPartida(event)">
+    </label>
+</div>
         <p class="text-slate-500 text-sm font-medium">Sistema de Rastreo Multigeneracional conectado al Almacenamiento Local.</p>
     </footer>
 
@@ -263,5 +273,50 @@
             });
         });
     </script>
+    <script>
+    // Recopila todas las claves de localStorage y descarga un archivo JSON
+    function exportarPartida() {
+        const saveData = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.includes('TrackerData')) {
+                saveData[key] = JSON.parse(localStorage.getItem(key));
+            }
+        }
+        
+        const blob = new Blob([JSON.stringify(saveData, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Pokemon_Tracker_Save_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    // Lee un archivo JSON y sobreescribe el localStorage
+    function importarPartida(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                for (const key in importedData) {
+                    if (key.includes('TrackerData')) {
+                        localStorage.setItem(key, JSON.stringify(importedData[key]));
+                    }
+                }
+                alert("¡Progreso cargado con éxito! La página se actualizará.");
+                location.reload();
+            } catch (error) {
+                alert("Error al leer el archivo. Asegúrate de que sea un archivo de guardado válido.");
+            }
+        };
+        reader.readAsText(file);
+    }
+</script>
 </body>
 </html>
