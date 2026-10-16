@@ -1,28 +1,22 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyBnM2viNQwdBMwn-esGR0XYmFfw0X7pi2Y",
-    authDomain: "pokedex-1-4.firebaseapp.com",
-    projectId: "pokedex-1-4",
-    storageBucket: "pokedex-1-4.firebasestorage.app",
-    messagingSenderId: "264689854822",
-    appId: "1:264689854822:web:98081e14809e368668c0a7"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hub de Rastreo Pokémon</title>
+
+    <!-- Configuración Global de Firebase -->
+    <script>
+        window.__firebase_config = JSON.stringify({
+            apiKey: "AIzaSyBnM2viNQwdBMwn-esGR0XYmFfw0X7pi2Y",
+            authDomain: "pokedex-1-4.firebaseapp.com",
+            projectId: "pokedex-1-4",
+            storageBucket: "pokedex-1-4.firebasestorage.app",
+            messagingSenderId: "264689854822",
+            appId: "1:264689854822:web:98081e14809e368668c0a7"
+        });
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -48,6 +42,9 @@
         <div class="max-w-7xl mx-auto text-center">
             <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">Centro de Rastreo Multigeneracional</h1>
             <p class="text-lg text-slate-300 max-w-2xl mx-auto">Monitorea tu progreso de captura en tiempo real a través de todas las regiones y remakes. Selecciona un juego para continuar tu aventura.</p>
+            <div class="mt-4 inline-block bg-slate-800/80 backdrop-blur border border-slate-700 px-4 py-1.5 rounded-full text-xs font-mono text-cyan-400" id="sync-code-display">
+                Clave de Nube: Cargando...
+            </div>
         </div>
     </header>
 
@@ -137,7 +134,7 @@
                     <h2 class="text-2xl font-bold text-white">4ta Generacion</h2>
                 </div>
                 <div class="p-6 flex-grow flex flex-col justify-between bg-white">
-                    <p class="text-slate-500 text-sm mb-4">Diamante, Perla y Platino[cite: 1]</p>
+                    <p class="text-slate-500 text-sm mb-4">Diamante, Perla y Platino</p>
                     <div>
                         <div class="flex justify-between text-sm font-semibold mb-1">
                             <span class="text-slate-700">Progreso</span>
@@ -212,111 +209,157 @@
 
     <!-- Footer -->
     <footer class="bg-white border-t border-slate-200 py-8 text-center mt-auto">
-        <!-- Botones de Guardado Manual -->
-<div class="flex justify-center gap-4 mt-6">
-    <button onclick="exportarPartida()" class="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition text-sm font-semibold">
-        ⬇️ Descargar Progreso
-    </button>
-    <label class="px-4 py-2 bg-emerald-700 text-white rounded-lg hover:bg-emerald-600 transition cursor-pointer text-sm font-semibold">
-        ⬆️ Cargar Progreso
-        <input type="file" id="import-file" class="hidden" accept=".json" onchange="importarPartida(event)">
-    </label>
-</div>
-        <p class="text-slate-500 text-sm font-medium">Sistema de Rastreo Multigeneracional conectado al Almacenamiento Local.</p>
+        <div class="flex justify-center gap-4 mb-4">
+            <button onclick="exportarPartida()" class="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition text-sm font-semibold">
+                ⬇️ Descargar Backup JSON
+            </button>
+            <label class="px-4 py-2 bg-emerald-700 text-white rounded-lg hover:bg-emerald-600 transition cursor-pointer text-sm font-semibold">
+                ⬆️ Cargar Backup JSON
+                <input type="file" id="import-file" class="hidden" accept=".json" onchange="importarPartida(event)">
+            </label>
+            <button onclick="cambiarClaveSincronizacion()" class="px-4 py-2 bg-cyan-700 text-white rounded-lg hover:bg-cyan-600 transition text-sm font-semibold">
+                🔑 Cambiar Clave de Nube
+            </button>
+        </div>
+        <p class="text-slate-500 text-sm font-medium">Sistema de Rastreo Sincronizado en Tiempo Real.</p>
     </footer>
 
-    <!-- Script de Sincronización de Barras de Progreso -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Configuración de los trackers basados en las claves de localStorage de cada archivo
-            const trackers = [
-                { id: 'kanto', key: 'kantoTrackerData', max: 151 },
-                { id: 'johto', key: 'johtoTrackerData', max: 251 },
-                { id: 'hoenn', key: 'hoennTrackerData', max: 202 },
-                { id: 'rfvh', key: 'kantoRemakesTrackerData', max: 248 },
-                { id: 'sinnoh', key: 'sinnohTrackerData', max: 493 },
-                { id: 'hgss', key: 'hgssTrackerData', max: 493 },
-                { id: 'teselia', key: 'unovaTrackerData', max: 175 },
-                { id: 'teselia2', key: 'b2w2TrackerData', max: 320 }
-            ];
+    <!-- Lógica de Barras de Progreso y Sincronización -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        const trackers = [
+            { id: 'kanto', key: 'kantoTrackerData', appId: 'kanto-tracker', max: 151 },
+            { id: 'johto', key: 'johtoTrackerData', appId: 'johto-tracker', max: 251 },
+            { id: 'hoenn', key: 'hoennTrackerData', appId: 'hoenn-tracker', max: 202 },
+            { id: 'rfvh', key: 'kantoRemakesTrackerData', appId: 'rfvh-tracker', max: 248 },
+            { id: 'sinnoh', key: 'sinnohTrackerData', appId: 'sinnoh-tracker', max: 493 },
+            { id: 'hgss', key: 'hgssTrackerData', appId: 'hgss-tracker', max: 493 },
+            { id: 'teselia', key: 'unovaTrackerData', appId: 'unova-tracker', max: 175 },
+            { id: 'teselia2', key: 'b2w2TrackerData', appId: 'b2w2-tracker', max: 320 }
+        ];
+
+        function renderBars() {
             trackers.forEach(tracker => {
-                // Leer datos del localStorage asignado a cada región
                 const savedData = localStorage.getItem(tracker.key);
                 let caughtCount = 0;
-
                 if (savedData) {
                     try {
                         const parsedData = JSON.parse(savedData);
-                        // Contar cuántos valores son verdaderos (Pokémon atrapados)
                         caughtCount = Object.values(parsedData).filter(isCaught => isCaught === true).length;
-                    } catch (e) {
-                        console.error(`Error procesando los datos de ${tracker.key}`);
-                    }
+                    } catch (e) {}
                 }
 
-                // Calcular porcentaje, asegurando que no exceda el 100%
                 let percentage = Math.round((caughtCount / tracker.max) * 100);
                 if (percentage > 100) percentage = 100;
 
-                // Actualizar los elementos del DOM de cada tarjeta
                 const countElement = document.getElementById(`${tracker.id}-count`);
                 const barElement = document.getElementById(`${tracker.id}-bar`);
 
                 if (countElement && barElement) {
                     countElement.textContent = `${caughtCount} / ${tracker.max}`;
-                    // Un pequeño delay para que la animación de la barra se vea al cargar la página
-                    setTimeout(() => {
-                        barElement.style.width = `${percentage}%`;
-                    }, 100);
+                    barElement.style.width = `${percentage}%`;
                 }
             });
-        });
-    </script>
-    <script>
-    // Recopila todas las claves de localStorage y descarga un archivo JSON
-    function exportarPartida() {
-        const saveData = {};
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key.includes('TrackerData')) {
-                saveData[key] = JSON.parse(localStorage.getItem(key));
-            }
         }
-        
-        const blob = new Blob([JSON.stringify(saveData, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `Pokemon_Tracker_Save_${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
 
-    // Lee un archivo JSON y sobreescribe el localStorage
-    function importarPartida(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const importedData = JSON.parse(e.target.result);
-                for (const key in importedData) {
-                    if (key.includes('TrackerData')) {
-                        localStorage.setItem(key, JSON.stringify(importedData[key]));
-                    }
+        async function initCloudSync() {
+            let syncCode = localStorage.getItem('pokemonSyncCode');
+            if (!syncCode) {
+                syncCode = prompt("Ingresa una palabra secreta única para sincronizar PC y Celular (Ej: JulianDex2026):");
+                if (syncCode) {
+                    localStorage.setItem('pokemonSyncCode', syncCode.trim());
                 }
-                alert("¡Progreso cargado con éxito! La página se actualizará.");
+            }
+
+            const codeDisplay = document.getElementById('sync-code-display');
+            if (codeDisplay) {
+                codeDisplay.textContent = `Clave de Nube Activa: ${syncCode || 'Ninguna (Modo Local)'}`;
+            }
+
+            if (!syncCode || typeof window.__firebase_config === 'undefined') {
+                renderBars();
+                return;
+            }
+
+            try {
+                const config = JSON.parse(window.__firebase_config);
+                const app = initializeApp(config);
+                const auth = getAuth(app);
+                const db = getFirestore(app);
+
+                await signInAnonymously(auth);
+
+                // Escuchar cambios de todas las regiones en la nube en tiempo real
+                trackers.forEach(tracker => {
+                    const docRef = doc(db, 'artifacts', tracker.appId, 'users', syncCode.trim(), 'trackerData', 'caughtState');
+                    onSnapshot(docRef, (snapshot) => {
+                        if (snapshot.exists()) {
+                            localStorage.setItem(tracker.key, JSON.stringify(snapshot.data()));
+                            renderBars();
+                        }
+                    });
+                });
+            } catch (e) {
+                console.error("Error al conectar Firebase en el Hub:", e);
+            }
+            renderBars();
+        }
+
+        window.cambiarClaveSincronizacion = function() {
+            const nuevaClave = prompt("Ingresa tu nueva clave secreta de sincronización:", localStorage.getItem('pokemonSyncCode') || '');
+            if (nuevaClave !== null) {
+                localStorage.setItem('pokemonSyncCode', nuevaClave.trim());
                 location.reload();
-            } catch (error) {
-                alert("Error al leer el archivo. Asegúrate de que sea un archivo de guardado válido.");
             }
         };
-        reader.readAsText(file);
-    }
-</script>
+
+        window.exportarPartida = function() {
+            const saveData = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.includes('TrackerData') || key === 'pokemonSyncCode') {
+                    saveData[key] = JSON.parse(localStorage.getItem(key)) || localStorage.getItem(key);
+                }
+            }
+            const blob = new Blob([JSON.stringify(saveData, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Pokemon_Tracker_Save_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
+
+        window.importarPartida = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    for (const key in importedData) {
+                        if (typeof importedData[key] === 'object') {
+                            localStorage.setItem(key, JSON.stringify(importedData[key]));
+                        } else {
+                            localStorage.setItem(key, importedData[key]);
+                        }
+                    }
+                    alert("¡Progreso cargado con éxito!");
+                    location.reload();
+                } catch (error) {
+                    alert("Error al leer el archivo. Asegúrate de que sea un JSON válido.");
+                }
+            };
+            reader.readAsText(file);
+        };
+
+        document.addEventListener('DOMContentLoaded', initCloudSync);
+    </script>
 </body>
 </html>
