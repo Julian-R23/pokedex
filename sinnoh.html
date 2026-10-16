@@ -29,7 +29,7 @@
                     <span class="text-xl font-bold tracking-wider cursor-pointer text-cyan-400" onclick="navigate('pokedex')">Sinnoh Tracker 4ª Gen</span>
                 </div>
                 <div class="flex items-center space-x-1 md:space-x-4 overflow-x-auto">
-                    <button onclick="navigate('pokedex')" id="nav-pokedex" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition whitespace-nowrap">Pokédex</button>
+                    <button onclick="navigate('pokedex')" id="nav-pokedex" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition whitespace-nowrap">Pokédex Completa</button>
                     <button onclick="navigate('Diamante')" id="nav-Diamante" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-cyan-400 hover:bg-cyan-900 hover:text-white transition whitespace-nowrap">Diamante</button>
                     <button onclick="navigate('Perla')" id="nav-Perla" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-pink-400 hover:bg-pink-900 hover:text-white transition whitespace-nowrap">Perla</button>
                     <button onclick="navigate('Platino')" id="nav-Platino" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition whitespace-nowrap">Platino</button>
@@ -49,80 +49,234 @@
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Pokédex: Nuevos Pokémon de 4ta Generación (387 al 493)
-        // Se agrupan las evoluciones y preevoluciones introducidas en esta gen.
+        // Generador de Pokédex Completa (493 Pokémon)
+        // Ordenada: Regional de Sinnoh (Platino 1-210) PRIMERO, Nacional restante (Post-Game) DESPUÉS.
         const rawPokedex = [
-            // REGIONAL SINNOH
-            "387|Turtwig|Nv. 18 ➔ Grotle", "388|Grotle|Nv. 32 ➔ Torterra", "389|Torterra|Etapa final",
-            "390|Chimchar|Nv. 14 ➔ Monferno", "391|Monferno|Nv. 36 ➔ Infernape", "392|Infernape|Etapa final",
-            "393|Piplup|Nv. 16 ➔ Prinplup", "394|Prinplup|Nv. 36 ➔ Empoleon", "395|Empoleon|Etapa final",
-            "396|Starly|Nv. 14 ➔ Staravia", "397|Staravia|Nv. 34 ➔ Staraptor", "398|Staraptor|Etapa final",
-            "399|Bidoof|Nv. 15 ➔ Bibarel", "400|Bibarel|Etapa final",
-            "401|Kricketot|Nv. 10 ➔ Kricketune", "402|Kricketune|Etapa final",
-            "403|Shinx|Nv. 15 ➔ Luxio", "404|Luxio|Nv. 30 ➔ Luxray", "405|Luxray|Etapa final",
-            "406|Budew|Amistad (Día) ➔ Roselia", "407|Roserade|Etapa final",
-            "408|Cranidos|Nv. 30 ➔ Rampardos", "409|Rampardos|Etapa final",
-            "410|Shieldon|Nv. 30 ➔ Bastiodon", "411|Bastiodon|Etapa final",
-            "412|Burmy|Nv. 20 ➔ Wormadam/Mothim", "413|Wormadam|Etapa final", "414|Mothim|Etapa final",
-            "415|Combee|Nv. 21 (Hembra) ➔ Vespiquen", "416|Vespiquen|Etapa final",
-            "417|Pachirisu|Sin evolución",
-            "418|Buizel|Nv. 26 ➔ Floatzel", "419|Floatzel|Etapa final",
-            "420|Cherubi|Nv. 25 ➔ Cherrim", "421|Cherrim|Etapa final",
-            "422|Shellos|Nv. 30 ➔ Gastrodon", "423|Gastrodon|Etapa final",
-            "424|Ambipom|Etapa final",
-            "425|Drifloon|Nv. 28 ➔ Drifblim", "426|Drifblim|Etapa final",
-            "427|Buneary|Amistad ➔ Lopunny", "428|Lopunny|Etapa final",
-            "429|Mismagius|Etapa final",
-            "430|Honchkrow|Etapa final",
-            "431|Glameow|Nv. 38 ➔ Purugly", "432|Purugly|Etapa final",
-            "433|Chingling|Amistad (Noche) ➔ Chimecho",
-            "434|Stunky|Nv. 34 ➔ Skuntank", "435|Skuntank|Etapa final",
-            "436|Bronzor|Nv. 33 ➔ Bronzong", "437|Bronzong|Etapa final",
-            "438|Bonsly|Subir Nivel (Mímico) ➔ Sudowoodo",
-            "439|Mime Jr.|Subir Nivel (Mímico) ➔ Mr. Mime",
-            "440|Happiny|P. Oval (Día) ➔ Chansey",
-            "441|Chatot|Sin evolución",
-            "442|Spiritomb|Sin evolución",
-            "443|Gible|Nv. 24 ➔ Gabite", "444|Gabite|Nv. 48 ➔ Garchomp", "445|Garchomp|Etapa final",
-            "446|Munchlax|Amistad ➔ Snorlax",
-            "447|Riolu|Amistad (Día) ➔ Lucario", "448|Lucario|Etapa final",
-            "449|Hippopotas|Nv. 34 ➔ Hippowdon", "450|Hippowdon|Etapa final",
-            "451|Skorupi|Nv. 40 ➔ Drapion", "452|Drapion|Etapa final",
-            "453|Croagunk|Nv. 37 ➔ Toxicroak", "454|Toxicroak|Etapa final",
-            "455|Carnivine|Sin evolución",
-            "456|Finneon|Nv. 31 ➔ Lumineon", "457|Lumineon|Etapa final",
-            "458|Mantyke|Subir Nivel (Remoraid) ➔ Mantine",
-            "459|Snover|Nv. 40 ➔ Abomasnow", "460|Abomasnow|Etapa final",
-            "461|Weavile|Etapa final",
-            "462|Magnezone|Etapa final",
-            "463|Lickilicky|Etapa final",
-            "464|Rhyperior|Etapa final",
-            "465|Tangrowth|Etapa final",
-            "466|Electivire|Etapa final",
-            "467|Magmortar|Etapa final",
-            "468|Togekiss|Etapa final",
-            "469|Yanmega|Etapa final",
-            "470|Leafeon|Etapa final", "471|Glaceon|Etapa final",
-            "472|Gliscor|Etapa final",
-            "473|Mamoswine|Etapa final",
-            "474|Porygon-Z|Etapa final",
-            "475|Gallade|Etapa final",
-            "476|Probopass|Etapa final",
-            "477|Dusknoir|Etapa final",
-            "478|Froslass|Etapa final",
-            "479|Rotom|Sin evolución",
-            "480|Uxie|Sin evolución", "481|Mesprit|Sin evolución", "482|Azelf|Sin evolución",
-            "483|Dialga|Sin evolución", "484|Palkia|Sin evolución",
+            // --- POKÉDEX REGIONAL DE SINNOH (001 - 210) ---
+            "387|Turtwig|Nv. 18", "388|Grotle|Nv. 32", "389|Torterra|Final",
+            "390|Chimchar|Nv. 14", "391|Monferno|Nv. 36", "392|Infernape|Final",
+            "393|Piplup|Nv. 16", "394|Prinplup|Nv. 36", "395|Empoleon|Final",
+            "396|Starly|Nv. 14", "397|Staravia|Nv. 34", "398|Staraptor|Final",
+            "399|Bidoof|Nv. 15", "400|Bibarel|Final",
+            "401|Kricketot|Nv. 10", "402|Kricketune|Final",
+            "403|Shinx|Nv. 15", "404|Luxio|Nv. 30", "405|Luxray|Final",
+            "63|Abra|Nv. 16", "64|Kadabra|Intercambio", "65|Alakazam|Final",
+            "129|Magikarp|Nv. 20", "130|Gyarados|Final",
+            "406|Budew|Amistad (Día)", "315|Roselia|P. Día", "407|Roserade|Final",
+            "41|Zubat|Nv. 22", "42|Golbat|Amistad", "169|Crobat|Final",
+            "74|Geodude|Nv. 25", "75|Graveler|Intercambio", "76|Golem|Final",
+            "95|Onix|Rev. Metálico", "208|Steelix|Final",
+            "408|Cranidos|Nv. 30", "409|Rampardos|Final",
+            "410|Shieldon|Nv. 30", "411|Bastiodon|Final",
+            "66|Machop|Nv. 28", "67|Machoke|Intercambio", "68|Machamp|Final",
+            "412|Burmy|Nv. 20", "413|Wormadam|Final", "414|Mothim|Final",
+            "265|Wurmple|Nv. 7", "266|Silcoon|Nv. 10", "267|Beautifly|Final", "268|Cascoon|Nv. 10", "269|Dustox|Final",
+            "415|Combee|Nv. 21 (H)", "416|Vespiquen|Final",
+            "417|Pachirisu|Final",
+            "418|Buizel|Nv. 26", "419|Floatzel|Final",
+            "420|Cherubi|Nv. 25", "421|Cherrim|Final",
+            "422|Shellos|Nv. 30", "423|Gastrodon|Final",
+            "214|Heracross|Final",
+            "190|Aipom|Subir Nivel (Doble Golpe)", "424|Ambipom|Final",
+            "425|Drifloon|Nv. 28", "426|Drifblim|Final",
+            "427|Buneary|Amistad", "428|Lopunny|Final",
+            "92|Gastly|Nv. 25", "93|Haunter|Intercambio", "94|Gengar|Final",
+            "200|Misdreavus|P. Noche", "429|Mismagius|Final",
+            "198|Murkrow|P. Noche", "430|Honchkrow|Final",
+            "431|Glameow|Nv. 38", "432|Purugly|Final",
+            "118|Goldeen|Nv. 33", "119|Seaking|Final",
+            "339|Barboach|Nv. 30", "340|Whiscash|Final",
+            "433|Chingling|Amistad (Noche)", "358|Chimecho|Final",
+            "434|Stunky|Nv. 34", "435|Skuntank|Final",
+            "307|Meditite|Nv. 37", "308|Medicham|Final",
+            "436|Bronzor|Nv. 33", "437|Bronzong|Final",
+            "77|Ponyta|Nv. 40", "78|Rapidash|Final",
+            "438|Bonsly|Subir Nivel (Mímico)", "185|Sudowoodo|Final",
+            "439|Mime Jr.|Subir Nivel (Mímico)", "122|Mr. Mime|Final",
+            "440|Happiny|P. Oval (Día)", "113|Chansey|Amistad", "242|Blissey|Final",
+            "173|Cleffa|Amistad", "35|Clefairy|P. Lunar", "36|Clefable|Final",
+            "441|Chatot|Final",
+            "172|Pichu|Amistad", "25|Pikachu|P. Trueno", "26|Raichu|Final",
+            "163|Hoothoot|Nv. 20", "164|Noctowl|Final",
+            "442|Spiritomb|Final",
+            "443|Gible|Nv. 24", "444|Gabite|Nv. 48", "445|Garchomp|Final",
+            "446|Munchlax|Amistad", "143|Snorlax|Final",
+            "201|Unown|Final",
+            "447|Riolu|Amistad (Día)", "448|Lucario|Final",
+            "194|Wooper|Nv. 20", "195|Quagsire|Final",
+            "278|Wingull|Nv. 25", "279|Pelipper|Final",
+            "203|Girafarig|Final",
+            "449|Hippopotas|Nv. 34", "450|Hippowdon|Final",
+            "298|Azurill|Amistad", "183|Marill|Nv. 18", "184|Azumarill|Final",
+            "451|Skorupi|Nv. 40", "452|Drapion|Final",
+            "453|Croagunk|Nv. 37", "454|Toxicroak|Final",
+            "455|Carnivine|Final",
+            "223|Remoraid|Nv. 25", "224|Octillery|Final",
+            "456|Finneon|Nv. 31", "457|Lumineon|Final",
+            "72|Tentacool|Nv. 30", "73|Tentacruel|Final",
+            "349|Feebas|Belleza", "350|Milotic|Final",
+            "458|Mantyke|Nv. con Remoraid", "226|Mantine|Final",
+            "459|Snover|Nv. 40", "460|Abomasnow|Final",
+            "215|Sneasel|Garra Afilada (Noche)", "461|Weavile|Final",
+            "175|Togepi|Amistad", "176|Togetic|P. Día", "468|Togekiss|Final",
+            "228|Houndour|Nv. 24", "229|Houndoom|Final",
+            "81|Magnemite|Nv. 30", "82|Magneton|M. Corona", "462|Magnezone|Final",
+            "114|Tangela|Poder Pasado", "465|Tangrowth|Final",
+            "193|Yanma|Poder Pasado", "469|Yanmega|Final",
+            "102|Exeggcute|P. Hoja", "103|Exeggutor|Final",
+            "179|Mareep|Nv. 15", "180|Flaaffy|Nv. 30", "181|Ampharos|Final",
+            "191|Sunkern|P. Solar", "192|Sunflora|Final",
+            "320|Wailmer|Nv. 40", "321|Wailord|Final",
+            "331|Cacnea|Nv. 32", "332|Cacturne|Final",
+            "333|Swablu|Nv. 35", "334|Altaria|Final",
+            "111|Rhyhorn|Nv. 42", "112|Rhydon|Protector", "464|Rhyperior|Final",
+            "133|Eevee|Piedras/Amistad", "134|Vaporeon|Final", "135|Jolteon|Final", "136|Flareon|Final", "196|Espeon|Final", "197|Umbreon|Final", "470|Leafeon|Final", "471|Glaceon|Final",
+            "207|Gligar|Colmillo Agudo (Noche)", "472|Gliscor|Final",
+            "220|Swinub|Nv. 33", "221|Piloswine|Poder Pasado", "473|Mamoswine|Final",
+            "137|Porygon|Mejora", "233|Porygon2|Disco Extra", "474|Porygon-Z|Final",
+            "280|Ralts|Nv. 20", "281|Kirlia|Nv. 30", "282|Gardevoir|Final", "475|Gallade|Final",
+            "108|Lickitung|Desenrollar", "463|Lickilicky|Final",
+            "174|Igglybuff|Amistad", "39|Jigglypuff|P. Lunar", "40|Wigglytuff|Final",
+            "177|Natu|Nv. 25", "178|Xatu|Final",
+            "299|Nosepass|M. Corona", "476|Probopass|Final",
+            "355|Duskull|Nv. 37", "356|Dusclops|Tela Terrible", "477|Dusknoir|Final",
+            "361|Snorunt|Nv. 42", "362|Glalie|Final", "478|Froslass|Final",
+            "479|Rotom|Final",
+            "480|Uxie|Legendario", "481|Mesprit|Legendario", "482|Azelf|Legendario",
+            "483|Dialga|Legendario", "484|Palkia|Legendario", "487|Giratina|Legendario",
             
-            // POST-GAME / NACIONAL
-            "485|Heatran|Sin evolución",
-            "486|Regigigas|Sin evolución",
-            "487|Giratina|Sin evolución",
-            "488|Cresselia|Sin evolución",
-            "489|Phione|Sin evolución", "490|Manaphy|Sin evolución",
-            "491|Darkrai|Sin evolución (Evento)",
-            "492|Shaymin|Sin evolución (Evento)",
-            "493|Arceus|Sin evolución (Evento)"
+            // --- POKÉDEX NACIONAL POST-GAME (Restantes de Kanto, Johto y Hoenn + Legendarios) ---
+            "1|Bulbasaur|Post", "2|Ivysaur|Post", "3|Venusaur|Post",
+            "4|Charmander|Post", "5|Charmeleon|Post", "6|Charizard|Post",
+            "7|Squirtle|Post", "8|Wartortle|Post", "9|Blastoise|Post",
+            "10|Caterpie|Post", "11|Metapod|Post", "12|Butterfree|Post",
+            "13|Weedle|Post", "14|Kakuna|Post", "15|Beedrill|Post",
+            "16|Pidgey|Post", "17|Pidgeotto|Post", "18|Pidgeot|Post",
+            "19|Rattata|Post", "20|Raticate|Post",
+            "21|Spearow|Post", "22|Fearow|Post",
+            "23|Ekans|Post", "24|Arbok|Post",
+            "27|Sandshrew|Post", "28|Sandslash|Post",
+            "29|Nidoran♀|Post", "30|Nidorina|Post", "31|Nidoqueen|Post",
+            "32|Nidoran♂|Post", "33|Nidorino|Post", "34|Nidoking|Post",
+            "37|Vulpix|Post", "38|Ninetales|Post",
+            "43|Oddish|Post", "44|Gloom|Post", "45|Vileplume|Post",
+            "46|Paras|Post", "47|Parasect|Post",
+            "48|Venonat|Post", "49|Venomoth|Post",
+            "50|Diglett|Post", "51|Dugtrio|Post",
+            "52|Meowth|Post", "53|Persian|Post",
+            "54|Psyduck|Post", "55|Golduck|Post",
+            "56|Mankey|Post", "57|Primeape|Post",
+            "58|Growlithe|Post", "59|Arcanine|Post",
+            "60|Poliwag|Post", "61|Poliwhirl|Post", "62|Poliwrath|Post",
+            "69|Bellsprout|Post", "70|Weepinbell|Post", "71|Victreebel|Post",
+            "79|Slowpoke|Post", "80|Slowbro|Post",
+            "83|Farfetch'd|Post",
+            "84|Doduo|Post", "85|Dodrio|Post",
+            "86|Seel|Post", "87|Dewgong|Post",
+            "88|Grimer|Post", "89|Muk|Post",
+            "90|Shellder|Post", "91|Cloyster|Post",
+            "96|Drowzee|Post", "97|Hypno|Post",
+            "98|Krabby|Post", "99|Kingler|Post",
+            "100|Voltorb|Post", "101|Electrode|Post",
+            "104|Cubone|Post", "105|Marowak|Post",
+            "106|Hitmonlee|Post", "107|Hitmonchan|Post",
+            "109|Koffing|Post", "110|Weezing|Post",
+            "115|Kangaskhan|Post",
+            "116|Horsea|Post", "117|Seadra|Post",
+            "120|Staryu|Post", "121|Starmie|Post",
+            "123|Scyther|Post", "124|Jynx|Post", "125|Electabuzz|Post", "126|Magmar|Post",
+            "127|Pinsir|Post", "128|Tauros|Post",
+            "131|Lapras|Post", "132|Ditto|Post",
+            "138|Omanyte|Post", "139|Omastar|Post",
+            "140|Kabuto|Post", "141|Kabutops|Post",
+            "142|Aerodactyl|Post",
+            "144|Articuno|Post", "145|Zapdos|Post", "146|Moltres|Post",
+            "147|Dratini|Post", "148|Dragonair|Post", "149|Dragonite|Post",
+            "150|Mewtwo|Post", "151|Mew|Post",
+            
+            "152|Chikorita|Post", "153|Bayleef|Post", "154|Meganium|Post",
+            "155|Cyndaquil|Post", "156|Quilava|Post", "157|Typhlosion|Post",
+            "158|Totodile|Post", "159|Croconaw|Post", "160|Feraligatr|Post",
+            "161|Sentret|Post", "162|Furret|Post",
+            "165|Ledyba|Post", "166|Ledian|Post",
+            "167|Spinarak|Post", "168|Ariados|Post",
+            "170|Chinchou|Post", "171|Lanturn|Post",
+            "182|Bellossom|Post",
+            "186|Politoed|Post",
+            "187|Hoppip|Post", "188|Skiploom|Post", "189|Jumpluff|Post",
+            "202|Wobbuffet|Post",
+            "204|Pineco|Post", "205|Forretress|Post",
+            "206|Dunsparce|Post",
+            "209|Snubbull|Post", "210|Granbull|Post",
+            "211|Qwilfish|Post",
+            "212|Scizor|Post", "213|Shuckle|Post",
+            "216|Teddiursa|Post", "217|Ursaring|Post",
+            "218|Slugma|Post", "219|Magcargo|Post",
+            "222|Corsola|Post",
+            "225|Delibird|Post",
+            "227|Skarmory|Post",
+            "230|Kingdra|Post",
+            "231|Phanpy|Post", "232|Donphan|Post",
+            "234|Stantler|Post", "235|Smeargle|Post",
+            "236|Tyrogue|Post", "237|Hitmontop|Post",
+            "238|Smoochum|Post", "239|Elekid|Post", "240|Magby|Post",
+            "241|Miltank|Post",
+            "243|Raikou|Post", "244|Entei|Post", "245|Suicune|Post",
+            "246|Larvitar|Post", "247|Pupitar|Post", "248|Tyranitar|Post",
+            "249|Lugia|Post", "250|Ho-Oh|Post", "251|Celebi|Post",
+            
+            "252|Treecko|Post", "253|Grovyle|Post", "254|Sceptile|Post",
+            "255|Torchic|Post", "256|Combusken|Post", "257|Blaziken|Post",
+            "258|Mudkip|Post", "259|Marshtomp|Post", "260|Swampert|Post",
+            "261|Poochyena|Post", "262|Mightyena|Post",
+            "263|Zigzagoon|Post", "264|Linoone|Post",
+            "270|Lotad|Post", "271|Lombre|Post", "272|Ludicolo|Post",
+            "273|Seedot|Post", "274|Nuzleaf|Post", "275|Shiftry|Post",
+            "276|Taillow|Post", "277|Swellow|Post",
+            "283|Surskit|Post", "284|Masquerain|Post",
+            "285|Shroomish|Post", "286|Breloom|Post",
+            "287|Slakoth|Post", "288|Vigoroth|Post", "289|Slaking|Post",
+            "290|Nincada|Post", "291|Ninjask|Post", "292|Shedinja|Post",
+            "293|Whismur|Post", "294|Loudred|Post", "295|Exploud|Post",
+            "296|Makuhita|Post", "297|Hariyama|Post",
+            "300|Skitty|Post", "301|Delcatty|Post",
+            "302|Sableye|Post", "303|Mawile|Post",
+            "304|Aron|Post", "305|Lairon|Post", "306|Aggron|Post",
+            "309|Electrike|Post", "310|Manectric|Post",
+            "311|Plusle|Post", "312|Minun|Post",
+            "313|Volbeat|Post", "314|Illumise|Post",
+            "316|Gulpin|Post", "317|Swalot|Post",
+            "318|Carvanha|Post", "319|Sharpedo|Post",
+            "322|Numel|Post", "323|Camerupt|Post",
+            "324|Torkoal|Post",
+            "325|Spoink|Post", "326|Grumpig|Post",
+            "327|Spinda|Post",
+            "328|Trapinch|Post", "329|Vibrava|Post", "330|Flygon|Post",
+            "335|Zangoose|Post", "336|Seviper|Post",
+            "337|Lunatone|Post", "338|Solrock|Post",
+            "341|Corphish|Post", "342|Crawdaunt|Post",
+            "343|Baltoy|Post", "344|Claydol|Post",
+            "345|Lileep|Post", "346|Cradily|Post",
+            "347|Anorith|Post", "348|Armaldo|Post",
+            "351|Castform|Post", "352|Kecleon|Post", "353|Shuppet|Post", "354|Banette|Post",
+            "357|Tropius|Post",
+            "359|Absol|Post",
+            "360|Wynaut|Post",
+            "363|Spheal|Post", "364|Sealeo|Post", "365|Walrein|Post",
+            "366|Clamperl|Post", "367|Huntail|Post", "368|Gorebyss|Post",
+            "369|Relicanth|Post", "370|Luvdisc|Post",
+            "371|Bagon|Post", "372|Shelgon|Post", "373|Salamence|Post",
+            "374|Beldum|Post", "375|Metang|Post", "376|Metagross|Post",
+            "377|Regirock|Post", "378|Regice|Post", "379|Registeel|Post",
+            "380|Latias|Post", "381|Latios|Post",
+            "382|Kyogre|Post", "383|Groudon|Post", "384|Rayquaza|Post",
+            "385|Jirachi|Post", "386|Deoxys|Post",
+            
+            // LEGENDARIOS GEN 4 POST-GAME
+            "485|Heatran|Post", "486|Regigigas|Post",
+            "488|Cresselia|Post",
+            "489|Phione|Post", "490|Manaphy|Post",
+            "491|Darkrai|Post (Evento)", "492|Shaymin|Post (Evento)", "493|Arceus|Post (Evento)"
         ];
 
         const pokedex = rawPokedex.map(data => {
@@ -130,30 +284,39 @@
             return { id: parseInt(id), name, evo };
         });
 
-        // Configuración de rutas y exclusivos
+        // Configuración de Rutas Detalladas
         const routeData = {
             "Diamante": [
-                { name: "Pueblo Hojaverde & Rutas Iniciales", encounters: [{ id: 387, rate: "Elegir", method: "Inicial" }, { id: 390, rate: "Elegir", method: "Inicial" }, { id: 393, rate: "Elegir", method: "Inicial" }, { id: 396, rate: "Común", method: "Ruta 201-204" }, { id: 399, rate: "Común", method: "Ruta 201-204" }, { id: 401, rate: "Común (Noche)", method: "Ruta 202-204" }, { id: 403, rate: "Común", method: "Ruta 202-204" }] },
-                { name: "Exclusivos de Diamante", encounters: [{ id: 408, rate: "Fósil", method: "Fósil Cráneo (Subsuelo)" }, { id: 430, rate: "Exclusivo", method: "Evolución de Murkrow" }, { id: 434, rate: "Común", method: "Ruta 206, 214" }, { id: 483, rate: "Único", method: "Columna Lanza" }] },
-                { name: "Montaña, Bosque y Cuevas", encounters: [{ id: 406, rate: "Común", method: "Ruta 204, Bosque Vetusto" }, { id: 412, rate: "Común", method: "Árboles de Miel" }, { id: 415, rate: "Común", method: "Árboles de Miel" }, { id: 420, rate: "Común", method: "Árboles de Miel" }, { id: 425, rate: "Viernes", method: "Valle Eólico" }, { id: 436, rate: "Común", method: "Monte Corona" }, { id: 443, rate: "Raro", method: "Cueva Extravío" }] },
-                { name: "Rutas Marítimas y Pesca", encounters: [{ id: 418, rate: "Común", method: "Ruta 205, 213" }, { id: 422, rate: "Común", method: "Ruta 205, 213 (Oeste/Este)" }, { id: 456, rate: "Común", method: "Pesca (Caña Buena)" }] },
-                { name: "Post-Game (Radar y Enjambres)", encounters: [{ id: 462, rate: "Evolución", method: "Monte Corona" }, { id: 470, rate: "Evolución", method: "Bosque Vetusto" }, { id: 471, rate: "Evolución", method: "Ruta 217" }] },
-                { name: "Legendarios Post-Game", encounters: [{ id: 480, rate: "Único", method: "Lago Agudeza" }, { id: 481, rate: "Errante", method: "Sinnoh (Tras Lago Veraz)" }, { id: 482, rate: "Único", method: "Lago Valor" }, { id: 485, rate: "Único", method: "Montaña Dura" }, { id: 486, rate: "Único", method: "Templo Puntaneva" }, { id: 487, rate: "Único", method: "Cueva Retorno" }, { id: 488, rate: "Errante", method: "Isla Plenilunio" }] }
+                { name: "Pueblo Hojaverde y Rutas 201-204", encounters: [{ id: 387, rate: "Elegir", method: "Inicial" }, { id: 390, rate: "Elegir", method: "Inicial" }, { id: 393, rate: "Elegir", method: "Inicial" }, { id: 396, rate: "Común", method: "Hierba" }, { id: 399, rate: "Común", method: "Hierba" }, { id: 401, rate: "Común (Noche)", method: "Hierba" }, { id: 403, rate: "Común", method: "Ruta 202" }, { id: 63, rate: "Poco común", method: "Ruta 203" }] },
+                { name: "Bosque Vetusto y Alrededores", encounters: [{ id: 406, rate: "Común", method: "Hierba" }, { id: 427, rate: "Raro", method: "Bosque Vetusto" }, { id: 198, rate: "Exclusivo (Diamante Noche)", method: "Bosque Vetusto" }, { id: 412, rate: "Común", method: "Árboles de Miel" }, { id: 415, rate: "Común", method: "Árboles de Miel" }, { id: 420, rate: "Común", method: "Árboles de Miel" }, { id: 214, rate: "Raro", method: "Árboles de Miel" }] },
+                { name: "Cueva Pirita y Monte Corona", encounters: [{ id: 41, rate: "Común", method: "Cueva" }, { id: 74, rate: "Común", method: "Cueva" }, { id: 95, rate: "Común", method: "Cueva Pirita" }, { id: 66, rate: "Poco común", method: "M. Corona" }, { id: 433, rate: "Común", method: "M. Corona" }, { id: 436, rate: "Común", method: "M. Corona" }, { id: 299, rate: "Raro (Enjambre)", method: "M. Corona" }] },
+                { name: "Rutas Marítimas y Pesca (205, 213, 218)", encounters: [{ id: 129, rate: "Común", method: "Cualquier caña" }, { id: 418, rate: "Común", method: "Hierba/Surf" }, { id: 422, rate: "Común", method: "Hierba/Surf" }, { id: 278, rate: "Común", method: "Surf" }, { id: 456, rate: "Poco común", method: "Caña Buena" }, { id: 72, rate: "Común", method: "Surf" }] },
+                { name: "Gran Pantano (Safari) y Rutas 212-214", encounters: [{ id: 194, rate: "Común", method: "Safari" }, { id: 451, rate: "Raro", method: "Safari" }, { id: 453, rate: "Raro", method: "Safari" }, { id: 455, rate: "Raro", method: "Safari" }, { id: 434, rate: "Exclusivo (Diamante)", method: "Ruta 206/214" }, { id: 449, rate: "Común", method: "Cueva Ruinas" }, { id: 201, rate: "Común", method: "Ruinas Sosiego" }] },
+                { name: "Rutas Heladas (216, 217, Agudeza)", encounters: [{ id: 215, rate: "Común", method: "Hierba" }, { id: 459, rate: "Común", method: "Hierba" }, { id: 220, rate: "Común", method: "Ruta 217 (Enjambre)" }, { id: 361, rate: "Raro (Radar)", method: "Ruta 216" }] },
+                { name: "Exclusivos de Diamante", encounters: [{ id: 408, rate: "Fósil", method: "Fósil Cráneo (Subsuelo)" }, { id: 430, rate: "Exclusivo", method: "Evolución de Murkrow" }, { id: 304, rate: "Exclusivo", method: "Forja Fuego (Radar)" }, { id: 352, rate: "Exclusivo", method: "Ruta 210 (Radar)" }, { id: 483, rate: "Único", method: "Columna Lanza" }] },
+                { name: "Post-Game: Bahía Gresca y Montaña Dura", encounters: [{ id: 447, rate: "Regalo", method: "Huevo (Isla Hierro)" }, { id: 133, rate: "Regalo", method: "Ciudad Corazón" }, { id: 137, rate: "Regalo", method: "Ciudad Rocavelo" }, { id: 374, rate: "Enjambre", method: "Ruta 228" }, { id: 485, rate: "Único", method: "Montaña Dura" }] },
+                { name: "Legendarios Post-Game", encounters: [{ id: 480, rate: "Único", method: "Lago Agudeza" }, { id: 481, rate: "Errante", method: "Sinnoh" }, { id: 482, rate: "Único", method: "Lago Valor" }, { id: 486, rate: "Único", method: "Templo Puntaneva" }, { id: 487, rate: "Único", method: "Cueva Retorno" }, { id: 488, rate: "Errante", method: "Isla Plenilunio" }] }
             ],
             "Perla": [
-                { name: "Pueblo Hojaverde & Rutas Iniciales", encounters: [{ id: 387, rate: "Elegir", method: "Inicial" }, { id: 390, rate: "Elegir", method: "Inicial" }, { id: 393, rate: "Elegir", method: "Inicial" }, { id: 396, rate: "Común", method: "Ruta 201-204" }, { id: 399, rate: "Común", method: "Ruta 201-204" }, { id: 401, rate: "Común (Noche)", method: "Ruta 202-204" }, { id: 403, rate: "Común", method: "Ruta 202-204" }] },
-                { name: "Exclusivos de Perla", encounters: [{ id: 410, rate: "Fósil", method: "Fósil Coraza (Subsuelo)" }, { id: 429, rate: "Exclusivo", method: "Evolución de Misdreavus" }, { id: 431, rate: "Común", method: "Ruta 218, 222" }, { id: 484, rate: "Único", method: "Columna Lanza" }] },
-                { name: "Montaña, Bosque y Cuevas", encounters: [{ id: 406, rate: "Común", method: "Ruta 204, Bosque Vetusto" }, { id: 412, rate: "Común", method: "Árboles de Miel" }, { id: 415, rate: "Común", method: "Árboles de Miel" }, { id: 420, rate: "Común", method: "Árboles de Miel" }, { id: 425, rate: "Viernes", method: "Valle Eólico" }, { id: 436, rate: "Común", method: "Monte Corona" }, { id: 443, rate: "Raro", method: "Cueva Extravío" }] },
-                { name: "Rutas Marítimas y Pesca", encounters: [{ id: 418, rate: "Común", method: "Ruta 205, 213" }, { id: 422, rate: "Común", method: "Ruta 205, 213 (Oeste/Este)" }, { id: 456, rate: "Común", method: "Pesca (Caña Buena)" }] },
-                { name: "Post-Game (Radar y Enjambres)", encounters: [{ id: 462, rate: "Evolución", method: "Monte Corona" }, { id: 470, rate: "Evolución", method: "Bosque Vetusto" }, { id: 471, rate: "Evolución", method: "Ruta 217" }] },
-                { name: "Legendarios Post-Game", encounters: [{ id: 480, rate: "Único", method: "Lago Agudeza" }, { id: 481, rate: "Errante", method: "Sinnoh (Tras Lago Veraz)" }, { id: 482, rate: "Único", method: "Lago Valor" }, { id: 485, rate: "Único", method: "Montaña Dura" }, { id: 486, rate: "Único", method: "Templo Puntaneva" }, { id: 487, rate: "Único", method: "Cueva Retorno" }, { id: 488, rate: "Errante", method: "Isla Plenilunio" }] }
+                { name: "Pueblo Hojaverde y Rutas 201-204", encounters: [{ id: 387, rate: "Elegir", method: "Inicial" }, { id: 390, rate: "Elegir", method: "Inicial" }, { id: 393, rate: "Elegir", method: "Inicial" }, { id: 396, rate: "Común", method: "Hierba" }, { id: 399, rate: "Común", method: "Hierba" }, { id: 401, rate: "Común (Noche)", method: "Hierba" }, { id: 403, rate: "Común", method: "Ruta 202" }, { id: 63, rate: "Poco común", method: "Ruta 203" }] },
+                { name: "Bosque Vetusto y Alrededores", encounters: [{ id: 406, rate: "Común", method: "Hierba" }, { id: 427, rate: "Raro", method: "Bosque Vetusto" }, { id: 200, rate: "Exclusivo (Perla Noche)", method: "Bosque Vetusto" }, { id: 412, rate: "Común", method: "Árboles de Miel" }, { id: 415, rate: "Común", method: "Árboles de Miel" }, { id: 420, rate: "Común", method: "Árboles de Miel" }, { id: 214, rate: "Raro", method: "Árboles de Miel" }] },
+                { name: "Cueva Pirita y Monte Corona", encounters: [{ id: 41, rate: "Común", method: "Cueva" }, { id: 74, rate: "Común", method: "Cueva" }, { id: 95, rate: "Común", method: "Cueva Pirita" }, { id: 66, rate: "Poco común", method: "M. Corona" }, { id: 433, rate: "Común", method: "M. Corona" }, { id: 436, rate: "Común", method: "M. Corona" }, { id: 299, rate: "Raro (Enjambre)", method: "M. Corona" }] },
+                { name: "Rutas Marítimas y Pesca (205, 213, 218)", encounters: [{ id: 129, rate: "Común", method: "Cualquier caña" }, { id: 418, rate: "Común", method: "Hierba/Surf" }, { id: 422, rate: "Común", method: "Hierba/Surf" }, { id: 278, rate: "Común", method: "Surf" }, { id: 456, rate: "Poco común", method: "Caña Buena" }, { id: 72, rate: "Común", method: "Surf" }] },
+                { name: "Gran Pantano (Safari) y Rutas 212-214", encounters: [{ id: 194, rate: "Común", method: "Safari" }, { id: 451, rate: "Raro", method: "Safari" }, { id: 453, rate: "Raro", method: "Safari" }, { id: 455, rate: "Raro", method: "Safari" }, { id: 431, rate: "Exclusivo (Perla)", method: "Ruta 218/222" }, { id: 449, rate: "Común", method: "Cueva Ruinas" }, { id: 201, rate: "Común", method: "Ruinas Sosiego" }] },
+                { name: "Rutas Heladas (216, 217, Agudeza)", encounters: [{ id: 215, rate: "Común", method: "Hierba" }, { id: 459, rate: "Común", method: "Hierba" }, { id: 220, rate: "Común", method: "Ruta 217 (Enjambre)" }, { id: 361, rate: "Raro (Radar)", method: "Ruta 216" }] },
+                { name: "Exclusivos de Perla", encounters: [{ id: 410, rate: "Fósil", method: "Fósil Coraza (Subsuelo)" }, { id: 429, rate: "Exclusivo", method: "Evolución de Misdreavus" }, { id: 371, rate: "Exclusivo", method: "Ruta 210 (Radar)" }, { id: 325, rate: "Exclusivo", method: "Ruta 214 (Enjambre)" }, { id: 484, rate: "Único", method: "Columna Lanza" }] },
+                { name: "Post-Game: Bahía Gresca y Montaña Dura", encounters: [{ id: 447, rate: "Regalo", method: "Huevo (Isla Hierro)" }, { id: 133, rate: "Regalo", method: "Ciudad Corazón" }, { id: 137, rate: "Regalo", method: "Ciudad Rocavelo" }, { id: 374, rate: "Enjambre", method: "Ruta 228" }, { id: 485, rate: "Único", method: "Montaña Dura" }] },
+                { name: "Legendarios Post-Game", encounters: [{ id: 480, rate: "Único", method: "Lago Agudeza" }, { id: 481, rate: "Errante", method: "Sinnoh" }, { id: 482, rate: "Único", method: "Lago Valor" }, { id: 486, rate: "Único", method: "Templo Puntaneva" }, { id: 487, rate: "Único", method: "Cueva Retorno" }, { id: 488, rate: "Errante", method: "Isla Plenilunio" }] }
             ],
             "Platino": [
-                { name: "Pueblo Hojaverde & Rutas Iniciales", encounters: [{ id: 387, rate: "Elegir", method: "Inicial" }, { id: 390, rate: "Elegir", method: "Inicial" }, { id: 393, rate: "Elegir", method: "Inicial" }, { id: 396, rate: "Común", method: "Ruta 201-204" }, { id: 399, rate: "Común", method: "Ruta 201-204" }, { id: 401, rate: "Común (Noche)", method: "Ruta 202-204" }, { id: 403, rate: "Común", method: "Ruta 202-204" }] },
-                { name: "Cambios y Expansión Platino", encounters: [{ id: 479, rate: "Único (Noche)", method: "Vieja Mansión (TV)" }, { id: 447, rate: "Regalo", method: "Huevo (Isla Hierro)" }, { id: 474, rate: "Evolución", method: "Disco Extra (Ruta 225)" }, { id: 468, rate: "Regalo", method: "Huevo Togepi (Ciudad Vetusta)" }, { id: 434, rate: "Ausente", method: "No disponible en Platino (Intercambio)" }, { id: 431, rate: "Ausente", method: "No disponible en Platino (Intercambio)" }] },
-                { name: "Montaña, Bosque y Cuevas", encounters: [{ id: 406, rate: "Común", method: "Ruta 204, Bosque Vetusto" }, { id: 412, rate: "Común", method: "Árboles de Miel" }, { id: 415, rate: "Común", method: "Árboles de Miel" }, { id: 420, rate: "Común", method: "Árboles de Miel" }, { id: 425, rate: "Viernes", method: "Valle Eólico" }, { id: 436, rate: "Común", method: "Monte Corona" }, { id: 443, rate: "Raro", method: "Cueva Extravío" }] },
-                { name: "Rutas Marítimas y Pesca", encounters: [{ id: 418, rate: "Común", method: "Ruta 205, 213" }, { id: 422, rate: "Común", method: "Ruta 205, 213 (Oeste/Este)" }, { id: 456, rate: "Común", method: "Pesca (Caña Buena)" }] },
-                { name: "Legendarios de Platino", encounters: [{ id: 487, rate: "Único", method: "Mundo Distorsión (Historia)" }, { id: 483, rate: "Único", method: "Columna Lanza (Post-Game)" }, { id: 484, rate: "Único", method: "Columna Lanza (Post-Game)" }, { id: 480, rate: "Único", method: "Lago Agudeza" }, { id: 481, rate: "Errante", method: "Sinnoh (Tras Lago Veraz)" }, { id: 482, rate: "Único", method: "Lago Valor" }, { id: 485, rate: "Único", method: "Montaña Dura" }, { id: 486, rate: "Único", method: "Templo Puntaneva" }, { id: 488, rate: "Errante", method: "Isla Plenilunio" }, { id: 491, rate: "Evento", method: "Isla Lunanueva" }, { id: 492, rate: "Evento", method: "Paraíso Floral" }, { id: 493, rate: "Evento", method: "Sala del Origen" }] }
+                { name: "Pueblo Hojaverde y Rutas 201-204", encounters: [{ id: 387, rate: "Elegir", method: "Inicial" }, { id: 390, rate: "Elegir", method: "Inicial" }, { id: 393, rate: "Elegir", method: "Inicial" }, { id: 396, rate: "Común", method: "Hierba" }, { id: 399, rate: "Común", method: "Hierba" }, { id: 401, rate: "Común (Noche)", method: "Hierba" }, { id: 403, rate: "Común", method: "Ruta 202" }, { id: 63, rate: "Poco común", method: "Ruta 203" }] },
+                { name: "Cambios y Expansión de Platino", encounters: [{ id: 479, rate: "Único", method: "Vieja Mansión (TV de Noche)" }, { id: 468, rate: "Regalo", method: "Huevo Togepi (Cynthia en Vetusta)" }, { id: 447, rate: "Regalo", method: "Huevo Riolu (Isla Hierro)" }, { id: 133, rate: "Regalo", method: "Ciudad Corazón (Antes de lo normal)" }, { id: 137, rate: "Regalo", method: "Ciudad Rocavelo" }, { id: 434, rate: "Ausente", method: "No disponible (Intercambio)" }, { id: 431, rate: "Ausente", method: "No disponible (Intercambio)" }] },
+                { name: "Bosque Vetusto y Alrededores", encounters: [{ id: 406, rate: "Común", method: "Hierba" }, { id: 427, rate: "Raro", method: "Bosque Vetusto" }, { id: 412, rate: "Común", method: "Árboles de Miel" }, { id: 415, rate: "Común", method: "Árboles de Miel" }, { id: 420, rate: "Común", method: "Árboles de Miel" }, { id: 214, rate: "Raro", method: "Árboles de Miel" }] },
+                { name: "Cueva Pirita y Monte Corona", encounters: [{ id: 41, rate: "Común", method: "Cueva" }, { id: 74, rate: "Común", method: "Cueva" }, { id: 95, rate: "Común", method: "Cueva Pirita" }, { id: 66, rate: "Poco común", method: "M. Corona" }, { id: 433, rate: "Común", method: "M. Corona" }, { id: 436, rate: "Común", method: "M. Corona" }, { id: 299, rate: "Nuevo en Platino", method: "M. Corona (Añadido a Dex Regional)" }] },
+                { name: "Rutas Marítimas y Pesca (205, 213, 218)", encounters: [{ id: 129, rate: "Común", method: "Cualquier caña" }, { id: 418, rate: "Común", method: "Hierba/Surf" }, { id: 422, rate: "Común", method: "Hierba/Surf" }, { id: 278, rate: "Común", method: "Surf" }, { id: 456, rate: "Poco común", method: "Caña Buena" }, { id: 72, rate: "Común", method: "Surf" }] },
+                { name: "Gran Pantano (Safari) y Rutas 212-214", encounters: [{ id: 194, rate: "Común", method: "Safari" }, { id: 451, rate: "Raro", method: "Safari" }, { id: 453, rate: "Raro", method: "Safari" }, { id: 455, rate: "Raro", method: "Safari" }, { id: 114, rate: "Nuevo en Platino", method: "Gran Pantano (Añadido a Dex Regional)" }, { id: 449, rate: "Común", method: "Cueva Ruinas" }, { id: 201, rate: "Común", method: "Ruinas Sosiego" }] },
+                { name: "Rutas Heladas (216, 217, Agudeza)", encounters: [{ id: 215, rate: "Común", method: "Hierba" }, { id: 459, rate: "Común", method: "Hierba" }, { id: 220, rate: "Añadido a Dex", method: "Ruta 217" }, { id: 361, rate: "Añadido a Dex", method: "Ruta 216" }] },
+                { name: "Legendarios (Historia y Post-Game Platino)", encounters: [{ id: 487, rate: "Único", method: "Mundo Distorsión (Historia Principal)" }, { id: 480, rate: "Único", method: "Lago Agudeza" }, { id: 481, rate: "Errante", method: "Sinnoh" }, { id: 482, rate: "Único", method: "Lago Valor" }, { id: 483, rate: "Único", method: "Columna Lanza (Post-Game, Orbe Diamansfera)" }, { id: 484, rate: "Único", method: "Columna Lanza (Post-Game, Orbe Lustresfera)" }, { id: 485, rate: "Único", method: "Montaña Dura" }, { id: 486, rate: "Único", method: "Templo Puntaneva" }, { id: 488, rate: "Errante", method: "Isla Plenilunio" }, { id: 144, rate: "Errantes Post-Game", method: "Hablar con Prof. Oak en V. Hoja" }, { id: 145, rate: "Errantes Post-Game", method: "Hablar con Prof. Oak en V. Hoja" }, { id: 146, rate: "Errantes Post-Game", method: "Hablar con Prof. Oak en V. Hoja" }, { id: 377, rate: "Extra", method: "Ruinas (Requiere Regigigas de Evento)" }, { id: 378, rate: "Extra", method: "Ruinas (Requiere Regigigas de Evento)" }, { id: 379, rate: "Extra", method: "Ruinas (Requiere Regigigas de Evento)" }] }
             ]
         };
 
@@ -240,7 +403,7 @@
                                 ${totalCaught} / ${pokedex.length} Atrapados
                             </span>
                         </h1>
-                        <p class="text-slate-400 mt-2 text-sm">Nuevos Pokémon introducidos en la región de Sinnoh y evoluciones cruzadas.</p>
+                        <p class="text-slate-400 mt-2 text-sm">Orden: Pokédex Regional de Platino (1-210) seguido de los restantes de la Pokédex Nacional (Post-Game).</p>
                         <div class="w-full bg-slate-700 rounded-full h-2.5 mt-4">
                             <div class="bg-cyan-500 h-2.5 rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
                         </div>
@@ -281,8 +444,23 @@
                 html += `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No se encontraron Pokémon.</td></tr>`;
             }
 
-            filteredPokedex.forEach(poke => {
+            // Separador visual para Nacional vs Regional
+            let regionalPrinted = false;
+            let nationalPrinted = false;
+
+            filteredPokedex.forEach((poke, index) => {
                 const isCaught = caughtState[poke.id] || false;
+                
+                // Mostrar título de sección si es necesario basado en el index de la matriz original (los primeros 210 son Regional)
+                const originalIndex = pokedex.findIndex(p => p.id === poke.id);
+                if (originalIndex < 210 && !regionalPrinted) {
+                    html += `<tr><td colspan="6" class="px-6 py-3 bg-slate-200 text-slate-800 font-bold text-center uppercase tracking-widest text-xs border-y border-slate-300">⬇ Pokédex Regional de Sinnoh (1-210) ⬇</td></tr>`;
+                    regionalPrinted = true;
+                } else if (originalIndex >= 210 && !nationalPrinted) {
+                    html += `<tr><td colspan="6" class="px-6 py-3 bg-slate-800 text-white font-bold text-center uppercase tracking-widest text-xs border-y border-slate-900 mt-4">⬇ Pokédex Nacional (Post-Game) ⬇</td></tr>`;
+                    nationalPrinted = true;
+                }
+
                 let badges = '';
                 const games = [
                     { name: 'Diamante', color: 'bg-cyan-100 text-cyan-700 border-cyan-300' },
