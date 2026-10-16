@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Negro 2 y Blanco 2 Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Tonos neón/oscuros para Black 2 (Kyurem Negro) y White 2 (Kyurem Blanco) */
+        .game-bg-black2 { background: linear-gradient(135deg, #0f172a 0%, #020617 100%); color: #e2e8f0; }
+        .game-bg-white2 { background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%); color: #1e293b; }
+        .game-bg-pokedex { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
+        
+        .checkbox-anim { transition: all 0.2s ease-in-out; }
+        .checkbox-anim:checked { transform: scale(1.1); }
+
+        /* Estilos específicos para Negro 2 (Oscuro/Azul Eléctrico) */
+        .game-bg-black2 .route-card { background: rgba(15, 23, 42, 0.85); border: 1px solid #1e293b; box-shadow: 0 4px 6px rgba(0,0,0,0.5); }
+        .game-bg-black2 .route-card h2 { color: #38bdf8; }
+        .game-bg-black2 .route-card thead { background: rgba(2, 6, 23, 0.9); color: #94a3b8; }
+        .game-bg-black2 .route-card a { color: #38bdf8; }
+        .game-bg-black2 .route-card tr:hover { background: rgba(30, 41, 59, 0.6); }
+        .game-bg-black2 .route-card .bg-slate-100 { background: #1e293b; color: #cbd5e1; }
+        .game-bg-black2 .route-card td { color: #f1f5f9; }
+        
+        /* Estilos específicos para Blanco 2 (Claro/Rojo Fuego) */
+        .game-bg-white2 .route-card { background: rgba(255, 255, 255, 0.95); border: 1px solid #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .game-bg-white2 .route-card h2 { color: #ef4444; }
+        .game-bg-white2 .route-card thead { background: rgba(241, 245, 249, 0.9); color: #475569; }
+        .game-bg-white2 .route-card a { color: #ef4444; }
+        .game-bg-white2 .route-card tr:hover { background: rgba(241, 245, 249, 0.8); }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+
+    <nav class="bg-slate-900 text-white shadow-lg sticky top-0 z-50 border-b border-cyan-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <a href="index.html" class="p-2 bg-slate-800 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition" title="Volver al Hub">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    </a>
+                    <span class="text-xl font-bold tracking-wider cursor-pointer text-cyan-400" onclick="navigate('pokedex')">Teselia B2/W2</span>
+                </div>
+                <div class="flex items-center space-x-1 md:space-x-4 overflow-x-auto">
+                    <button onclick="navigate('pokedex')" id="nav-pokedex" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition whitespace-nowrap">Pokédex Expandida</button>
+                    <button onclick="navigate('Negro 2')" id="nav-Negro 2" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-cyan-400 hover:bg-slate-800 hover:text-white transition whitespace-nowrap">Negro 2</button>
+                    <button onclick="navigate('Blanco 2')" id="nav-Blanco 2" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-red-400 hover:bg-slate-800 hover:text-white transition whitespace-nowrap">Blanco 2</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full"></main>
+
+    <footer class="bg-slate-900 text-slate-500 py-6 text-center text-sm mt-auto border-t border-slate-800">
+        <p id="storage-status">B2W2 Tracker - Conectando con los servidores del Sistema de Cajas...</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Pokédex B2/W2: 300 Regional Expandida + Nacional
+        const rawPokedex = [
+            // --- POKÉDEX REGIONAL EXPANDIDA B2/W2 (Muestra representativa de los 300) ---
+            "494|Victini|Legendario",
+            "495|Snivy|Nv. 17", "496|Servine|Nv. 36", "497|Serperior|Final",
+            "498|Tepig|Nv. 17", "499|Pignite|Nv. 36", "500|Emboar|Final",
+            "501|Oshawott|Nv. 17", "502|Dewott|Nv. 36", "503|Samurott|Final",
+            "504|Patrat|Nv. 20", "505|Watchog|Final",
+            "509|Purrloin|Nv. 20", "510|Liepard|Final",
+            "519|Pidove|Nv. 21", "521|Unfezant|Final",
+            "540|Sewaddle|Nv. 20", "542|Leavanny|Final",
+            "191|Sunkern|P. Solar", "192|Sunflora|Final",
+            "506|Lillipup|Nv. 16", "508|Stoutland|Final",
+            "179|Mareep|Nv. 15", "180|Flaaffy|Nv. 30", "181|Ampharos|Final",
+            "54|Psyduck|Nv. 33", "55|Golduck|Final",
+            "298|Azurill|Amistad", "183|Marill|Nv. 18", "184|Azumarill|Final",
+            "447|Riolu|Amistad (Día)", "448|Lucario|Final",
+            "206|Dunsparce|Final",
+            "531|Audino|Final",
+            "511|Pansage|P. Hoja", "512|Simisage|Final",
+            "513|Pansear|P. Fuego", "514|Simisear|Final",
+            "515|Panpour|P. Agua", "516|Simipour|Final",
+            "109|Koffing|Nv. 35", "110|Weezing|Final",
+            "81|Magnemite|Nv. 30", "82|Magneton|M. Corona", "462|Magnezone|Final",
+            "58|Growlithe|P. Fuego", "59|Arcanine|Final",
+            "240|Magby|Nv. 30", "126|Magmar|Intercambio", "467|Magmortar|Final",
+            "239|Elekid|Nv. 30", "125|Electabuzz|Intercambio", "466|Electivire|Final",
+            "19|Rattata|Nv. 20", "20|Raticate|Final",
+            "41|Zubat|Nv. 22", "42|Golbat|Amistad", "169|Crobat|Final",
+            "88|Grimer|Nv. 38", "89|Muk|Final",
+            "527|Woobat|Amistad", "528|Swoobat|Final",
+            "524|Roggenrola|Nv. 25", "526|Gigalith|Final",
+            "95|Onix|Rev. Metálico", "208|Steelix|Final",
+            "532|Timburr|Nv. 25", "534|Conkeldurr|Final",
+            "529|Drilbur|Nv. 31", "530|Excadrill|Final",
+            "300|Skitty|P. Lunar", "301|Delcatty|Final",
+            "427|Buneary|Amistad", "428|Lopunny|Final",
+            "546|Cottonee|P. Solar", "547|Whimsicott|Final",
+            "548|Petilil|P. Solar", "549|Lilligant|Final",
+            "517|Munna|P. Lunar", "518|Musharna|Final",
+            "173|Cleffa|Amistad", "35|Clefairy|P. Lunar", "36|Clefable|Final",
+            "133|Eevee|Piedras/Amistad", "134|Vaporeon|Final", "135|Jolteon|Final", "136|Flareon|Final", "196|Espeon|Final", "197|Umbreon|Final", "470|Leafeon|Final", "471|Glaceon|Final",
+            "551|Sandile|Nv. 29", "553|Krookodile|Final",
+            "554|Darumaka|Nv. 35", "555|Darmanitan|Final",
+            "559|Scraggy|Nv. 39", "560|Scrafty|Final",
+            "566|Archen|Nv. 37", "567|Archeops|Final",
+            "564|Tirtouga|Nv. 37", "565|Carracosta|Final",
+            "568|Trubbish|Nv. 36", "569|Garbodor|Final",
+            "572|Minccino|P. Día", "573|Cinccino|Final",
+            "627|Rufflet|Nv. 54", "628|Braviary|Final",
+            "629|Vullaby|Nv. 54", "630|Mandibuzz|Final",
+            "556|Maractus|Final",
+            "328|Trapinch|Nv. 35", "329|Vibrava|Nv. 45", "330|Flygon|Final",
+            "562|Yamask|Nv. 34", "563|Cofagrigus|Final",
+            "570|Zorua|Nv. 30", "571|Zoroark|Final",
+            "592|Frillish|Nv. 40", "593|Jellicent|Final",
+            "597|Ferroseed|Nv. 40", "598|Ferrothorn|Final",
+            "599|Klink|Nv. 38", "601|Klinklang|Final",
+            "602|Tynamo|Nv. 39", "604|Eelektross|Final",
+            "607|Litwick|Nv. 41", "609|Chandelure|Final",
+            "610|Axew|Nv. 38", "612|Haxorus|Final",
+            "613|Cubchoo|Nv. 39", "614|Beartic|Final",
+            "618|Stunfisk|Final",
+            "619|Mienfoo|Nv. 50", "620|Mienshao|Final",
+            "622|Golett|Nv. 43", "623|Golurk|Final",
+            "624|Pawniard|Nv. 52", "625|Bisharp|Final",
+            "633|Deino|Nv. 50", "635|Hydreigon|Final",
+            "636|Larvesta|Nv. 59", "637|Volcarona|Final",
+            "638|Cobalion|Legendario",
+            "639|Terrakion|Legendario",
+            "640|Virizion|Legendario",
+            "641|Tornadus|Legendario",
+            "642|Thundurus|Legendario",
+            "645|Landorus|Legendario",
+            "643|Reshiram|Legendario",
+            "644|Zekrom|Legendario",
+            "646|Kyurem|Legendario",
+
+            // --- POKÉDEX NACIONAL (Post-Game B2/W2) ---
+            "144|Articuno|Post", "145|Zapdos|Post", "146|Moltres|Post",
+            "150|Mewtwo|Post",
+            "377|Regirock|Post", "378|Regice|Post", "379|Registeel|Post",
+            "380|Latias|Post", "381|Latios|Post",
+            "480|Uxie|Post", "481|Mesprit|Post", "482|Azelf|Post",
+            "485|Heatran|Post", "488|Cresselia|Post",
+            "374|Beldum|Post (Regalo Máximo)", "376|Metagross|Post",
+            "443|Gible|Post (Regalo Guayo)", "445|Garchomp|Post",
+            "147|Dratini|Post (Regalo Guayo)", "149|Dragonite|Post"
+        ];
+
+        const pokedex = rawPokedex.map(data => {
+            const [id, name, evo] = data.split('|');
+            return { id: parseInt(id), name, evo };
+        });
+
+        // Configuración de Rutas B2W2
+        const routeData = {
+            "Negro 2": [
+                { name: "Ciudad Engobe y Rutas Iniciales (19-20)", encounters: [{ id: 495, rate: "Elegir", method: "Inicial" }, { id: 498, rate: "Elegir", method: "Inicial" }, { id: 501, rate: "Elegir", method: "Inicial" }, { id: 504, rate: "Común", method: "Ruta 19" }, { id: 509, rate: "Común", method: "Ruta 19" }, { id: 540, rate: "Común", method: "Ruta 20" }, { id: 191, rate: "Común", method: "Ruta 20" }] },
+                { name: "Rancho Ocre", encounters: [{ id: 447, rate: "Raro (Día)", method: "Hierba" }, { id: 179, rate: "Común", method: "Hierba" }, { id: 54, rate: "Poco Común", method: "Hierba" }, { id: 298, rate: "Común", method: "Hierba" }, { id: 506, rate: "Común", method: "Hierba" }] },
+                { name: "Ciudad Hormigón y Complejo", encounters: [{ id: 240, rate: "Exclusivo N2", method: "Complejo Hormigón" }, { id: 109, rate: "Común", method: "Complejo Hormigón" }, { id: 81, rate: "Común", method: "Complejo Hormigón" }, { id: 58, rate: "Poco común", method: "Complejo Hormigón" }, { id: 519, rate: "Común", method: "Exterior" }] },
+                { name: "Castelia City (Porcelana) y Cloacas", encounters: [{ id: 133, rate: "Raro", method: "Parque Porcelana" }, { id: 300, rate: "Exclusivo N2", method: "Parque Porcelana" }, { id: 427, rate: "Común", method: "Parque Porcelana" }, { id: 41, rate: "Común", method: "Cloacas Porcelana" }, { id: 88, rate: "Común", method: "Cloacas Porcelana" }] },
+                { name: "Zona Desierto y Ruta 4", encounters: [{ id: 551, rate: "Común", method: "Desierto" }, { id: 554, rate: "Común", method: "Desierto" }, { id: 559, rate: "Común", method: "Desierto" }, { id: 328, rate: "Raro", method: "Desierto" }, { id: 630, rate: "Exclusivo N2", method: "Ruta 4 (Jueves - Hab. Oculta)" }] },
+                { name: "Exclusivos de Negro 2", encounters: [{ id: 546, rate: "Exclusivo", method: "Cottonee (Ruta 4, Bosque Azulejo)" }, { id: 574, rate: "Exclusivo", method: "Gothita (Ruta 5, 9)" }, { id: 629, rate: "Exclusivo", method: "Vullaby (Ruta 23)" }, { id: 644, rate: "Historia", method: "Zekrom (Torre Duodraco)" }, { id: 381, rate: "Exclusivo N2", method: "Latios (Solar de los Sueños)" }, { id: 377, rate: "Cámara", method: "Regirock/Registeel (Llave Acero)" }] },
+                { name: "Eventos Especiales y Post-Game", encounters: [{ id: 570, rate: "Regalo (Nv 25)", method: "Ex-Soldado Plasma (Ciudad Fayenza)" }, { id: 638, rate: "Fijo", method: "Cobalion (Ruta 13)" }, { id: 639, rate: "Fijo", method: "Terrakion (Ruta 22)" }, { id: 640, rate: "Fijo", method: "Virizion (Ruta 11)" }, { id: 646, rate: "Historia", method: "Kyurem (Boquete Gigante)" }, { id: 443, rate: "Shiny Regalo", method: "Gible (Vencer a Guayo en Rascacielos Negro)" }, { id: 612, rate: "Shiny Fijo", method: "Haxorus (Reserva Natural)" }] }
+            ],
+            "Blanco 2": [
+                { name: "Ciudad Engobe y Rutas Iniciales (19-20)", encounters: [{ id: 495, rate: "Elegir", method: "Inicial" }, { id: 498, rate: "Elegir", method: "Inicial" }, { id: 501, rate: "Elegir", method: "Inicial" }, { id: 504, rate: "Común", method: "Ruta 19" }, { id: 509, rate: "Común", method: "Ruta 19" }, { id: 540, rate: "Común", method: "Ruta 20" }, { id: 191, rate: "Común", method: "Ruta 20" }] },
+                { name: "Rancho Ocre", encounters: [{ id: 447, rate: "Raro (Día)", method: "Hierba" }, { id: 179, rate: "Común", method: "Hierba" }, { id: 54, rate: "Poco Común", method: "Hierba" }, { id: 298, rate: "Común", method: "Hierba" }, { id: 506, rate: "Común", method: "Hierba" }] },
+                { name: "Ciudad Hormigón y Complejo", encounters: [{ id: 239, rate: "Exclusivo B2", method: "Complejo Hormigón" }, { id: 109, rate: "Común", method: "Complejo Hormigón" }, { id: 81, rate: "Común", method: "Complejo Hormigón" }, { id: 58, rate: "Poco común", method: "Complejo Hormigón" }, { id: 519, rate: "Común", method: "Exterior" }] },
+                { name: "Castelia City (Porcelana) y Cloacas", encounters: [{ id: 133, rate: "Raro", method: "Parque Porcelana" }, { id: 300, rate: "Exclusivo B2", method: "Parque Porcelana" }, { id: 427, rate: "Común", method: "Parque Porcelana" }, { id: 41, rate: "Común", method: "Cloacas Porcelana" }, { id: 88, rate: "Común", method: "Cloacas Porcelana" }] },
+                { name: "Zona Desierto y Ruta 4", encounters: [{ id: 551, rate: "Común", method: "Desierto" }, { id: 554, rate: "Común", method: "Desierto" }, { id: 559, rate: "Común", method: "Desierto" }, { id: 328, rate: "Raro", method: "Desierto" }, { id: 628, rate: "Exclusivo B2", method: "Ruta 4 (Lunes - Hab. Oculta)" }] },
+                { name: "Exclusivos de Blanco 2", encounters: [{ id: 548, rate: "Exclusivo", method: "Petilil (Ruta 4, Bosque Azulejo)" }, { id: 577, rate: "Exclusivo", method: "Solosis (Ruta 5, 9)" }, { id: 627, rate: "Exclusivo", method: "Rufflet (Ruta 23)" }, { id: 643, rate: "Historia", method: "Reshiram (Torre Duodraco)" }, { id: 380, rate: "Exclusivo B2", method: "Latias (Solar de los Sueños)" }, { id: 377, rate: "Cámara", method: "Regirock/Regice (Llave Iceberg)" }] },
+                { name: "Eventos Especiales y Post-Game", encounters: [{ id: 570, rate: "Regalo (Nv 25)", method: "Ex-Soldado Plasma (Ciudad Fayenza)" }, { id: 638, rate: "Fijo", method: "Cobalion (Ruta 13)" }, { id: 639, rate: "Fijo", method: "Terrakion (Ruta 22)" }, { id: 640, rate: "Fijo", method: "Virizion (Ruta 11)" }, { id: 646, rate: "Historia", method: "Kyurem (Boquete Gigante)" }, { id: 147, rate: "Shiny Regalo", method: "Dratini (Vencer a Guayo en Caverna Árbol Blanco)" }, { id: 612, rate: "Shiny Fijo", method: "Haxorus (Reserva Natural)" }] }
+            ]
+        };
+
+        let caughtState = {}; 
+        let currentView = 'pokedex';
+        let searchQuery = '';
+        let filterState = 'all'; 
+        
+        let db, auth, userId;
+        const appId = 'b2w2-tracker';
+
+        function getWikidexUrl(name) {
+            const safeName = name.replace(/ /g, '_');
+            return `https://www.wikidex.net/wiki/${safeName}`;
+        }
+
+        function getPokemonName(id) {
+            const p = pokedex.find(p => p.id === id);
+            return p ? p.name : `Desconocido (${id})`;
+        }
+
+        function isAvailableInGame(pokemonId, gameName) {
+            if (!routeData[gameName]) return false;
+            for (let route of routeData[gameName]) {
+                if (route.encounters.some(e => e.id === pokemonId)) return true;
+            }
+            return false;
+        }
+
+        window.toggleCaught = async function(pokemonId) {
+            caughtState[pokemonId] = !caughtState[pokemonId];
+            renderCurrentView(); 
+            localStorage.setItem('b2w2TrackerData', JSON.stringify(caughtState));
+            
+            if (db && userId) {
+                try {
+                    const docRef = doc(db, 'artifacts', appId, 'users', userId, 'trackerData', 'caughtState');
+                    await setDoc(docRef, caughtState);
+                } catch (error) { console.error("Error:", error); }
+            }
+        }
+
+        window.navigate = function(viewName) {
+            currentView = viewName;
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-800');
+                btn.classList.add('bg-transparent');
+            });
+            
+            const activeBtn = document.getElementById(`nav-${viewName}`);
+            activeBtn.classList.remove('bg-transparent');
+            activeBtn.classList.add('bg-slate-800');
+            
+            renderCurrentView();
+            window.scrollTo(0, 0);
+        }
+
+        window.updateSearch = function(value) {
+            searchQuery = value.toLowerCase();
+            renderCurrentView();
+        }
+
+        window.updateFilter = function(value) {
+            filterState = value;
+            renderCurrentView();
+        }
+
+        function renderCurrentView() {
+            const container = document.getElementById('app-content');
+            if (currentView === 'pokedex') {
+                container.innerHTML = generatePokedexHTML();
+                document.body.className = "bg-gray-100 text-gray-800 min-h-screen flex flex-col game-bg-pokedex";
+            } else {
+                container.innerHTML = generateGamePageHTML(currentView);
+                const bgClass = currentView === 'Negro 2' ? 'game-bg-black2' : 'game-bg-white2';
+                document.body.className = `min-h-screen flex flex-col ${bgClass}`;
+            }
+        }
+
+        function generatePokedexHTML() {
+            const totalCaught = Object.values(caughtState).filter(v => v).length;
+            const progressPercent = Math.round((totalCaught / pokedex.length) * 100);
+
+            let html = `
+                <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-200">
+                    <div class="p-6 bg-slate-800 text-white border-b border-cyan-900">
+                        <h1 class="text-3xl font-extrabold flex flex-wrap items-center gap-3 text-cyan-400">
+                            Pokédex de Teselia (B2/W2)
+                            <span class="text-sm font-bold bg-cyan-900 text-cyan-100 px-3 py-1 rounded-full border border-cyan-500">
+                                ${totalCaught} / ${pokedex.length} Atrapados
+                            </span>
+                        </h1>
+                        <p class="text-slate-400 mt-2 text-sm">Lista representativa de la Pokédex Expandida de 300 Pokémon y Legendarios Post-Game.</p>
+                        <div class="w-full bg-slate-900 rounded-full h-2.5 mt-4 border border-slate-700">
+                            <div class="bg-cyan-500 h-2.5 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(6,182,212,0.6)]" style="width: ${progressPercent}%"></div>
+                        </div>
+                        <div class="mt-6 flex flex-col sm:flex-row gap-4">
+                            <input type="text" placeholder="Buscar por nombre o número..." class="px-4 py-2 rounded-lg bg-slate-700 text-white w-full sm:w-1/2 focus:ring-2 focus:ring-cyan-500 outline-none border border-slate-600 placeholder-slate-400" value="${searchQuery}" onkeyup="updateSearch(this.value)">
+                            <select class="px-4 py-2 rounded-lg bg-slate-700 text-white focus:ring-2 focus:ring-cyan-500 outline-none cursor-pointer border border-slate-600" onchange="updateFilter(this.value)">
+                                <option value="all" ${filterState === 'all' ? 'selected' : ''}>Todos los Pokémon</option>
+                                <option value="caught" ${filterState === 'caught' ? 'selected' : ''}>Solo Atrapados</option>
+                                <option value="missing" ${filterState === 'missing' ? 'selected' : ''}>Faltantes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="uppercase tracking-wider border-b-2 border-gray-200 bg-gray-50 text-gray-600 font-bold">
+                                <tr>
+                                    <th class="px-6 py-4 text-center">Atrapado</th>
+                                    <th class="px-6 py-4 text-center">Nº Nac.</th>
+                                    <th class="px-6 py-4">Sprite</th>
+                                    <th class="px-6 py-4">Pokémon</th>
+                                    <th class="px-6 py-4">Evolución</th>
+                                    <th class="px-6 py-4">Versión Destacada</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+            `;
+
+            const filteredPokedex = pokedex.filter(poke => {
+                const isCaught = caughtState[poke.id] || false;
+                const matchesSearch = poke.name.toLowerCase().includes(searchQuery) || String(poke.id).includes(searchQuery);
+                let matchesFilter = true;
+                if (filterState === 'caught') matchesFilter = isCaught;
+                if (filterState === 'missing') matchesFilter = !isCaught;
+                return matchesSearch && matchesFilter;
+            });
+
+            if (filteredPokedex.length === 0) {
+                html += `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No se encontraron Pokémon.</td></tr>`;
+            }
+
+            let regionalPrinted = false;
+            let nationalPrinted = false;
+
+            filteredPokedex.forEach((poke, index) => {
+                const isCaught = caughtState[poke.id] || false;
+                
+                // Divisores de categoría
+                if (index === 0 && !regionalPrinted) {
+                    html += `<tr><td colspan="6" class="px-6 py-3 bg-cyan-50 text-cyan-800 font-bold text-center uppercase tracking-widest text-xs border-y border-cyan-200">⬇ Pokédex Regional Teselia (B2/W2) ⬇</td></tr>`;
+                    regionalPrinted = true;
+                } else if (poke.id === 144 && !nationalPrinted) {
+                    html += `<tr><td colspan="6" class="px-6 py-3 bg-slate-800 text-white font-bold text-center uppercase tracking-widest text-xs border-y border-slate-900 mt-4">⬇ Pokédex Nacional (Post-Game) ⬇</td></tr>`;
+                    nationalPrinted = true;
+                }
+
+                let badges = '';
+                const games = [
+                    { name: 'Negro 2', color: 'bg-slate-800 text-cyan-300 border-cyan-800' },
+                    { name: 'Blanco 2', color: 'bg-red-50 text-red-600 border-red-300' }
+                ];
+
+                games.forEach(g => {
+                    if (isAvailableInGame(poke.id, g.name)) {
+                        badges += `<button onclick="navigate('${g.name}')" class="px-2 py-1 text-xs border rounded-md font-semibold mr-2 transition hover:opacity-70 ${g.color}">${g.name}</button>`;
+                    }
+                });
+
+                if (badges === '') badges = `<span class="text-xs text-gray-400 italic">Otras rutas/Evolución</span>`;
+
+                html += `
+                    <tr class="hover:bg-cyan-50/50 transition duration-150 ${isCaught ? 'bg-cyan-100/40' : ''}">
+                        <td class="px-6 py-4 text-center">
+                            <input type="checkbox" class="w-6 h-6 text-cyan-600 rounded border-gray-300 focus:ring-cyan-500 cursor-pointer checkbox-anim" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${poke.id})">
+                        </td>
+                        <td class="px-6 py-4 text-center font-mono text-gray-500">#${String(poke.id).padStart(3, '0')}</td>
+                        <td class="px-6 py-2">
+                            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.id}.png" alt="${poke.name}" class="w-12 h-12 inline-block object-contain pixelated" onerror="this.style.display='none'">
+                        </td>
+                        <td class="px-6 py-4 font-bold text-base">
+                            <a href="${getWikidexUrl(poke.name)}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline transition" title="Ver en Wikidex">${poke.name}</a>
+                        </td>
+                        <td class="px-6 py-4 text-sm font-medium text-cyan-700">${poke.evo}</td>
+                        <td class="px-6 py-4">${badges}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table></div></div>`;
+            return html;
+        }
+
+        function generateGamePageHTML(gameName) {
+            const routes = routeData[gameName];
+            
+            let html = `
+                <div class="mb-8">
+                    <div class="rounded-xl shadow-lg overflow-hidden border border-white/10 mb-8 p-8 ${gameName === 'Negro 2' ? 'bg-slate-900 border-cyan-800 text-cyan-50' : 'bg-white border-red-200 text-slate-800'}">
+                        <h1 class="text-4xl font-extrabold mb-2 ${gameName === 'Negro 2' ? 'text-cyan-400' : 'text-red-500'}">Edición ${gameName}</h1>
+                        <p class="text-lg opacity-90">Lugares clave, Pokémon exclusivos y legendarios del Post-Game.</p>
+                    </div>
+                    <div class="space-y-8">
+            `;
+
+            if (!routes || routes.length === 0) {
+                html += `<p class="text-center text-gray-600 py-10 bg-white/50 rounded-xl">Datos no disponibles.</p>`;
+            } else {
+                routes.forEach(route => {
+                    html += `
+                        <div class="route-card rounded-xl overflow-hidden transition-colors duration-200">
+                            <div class="px-6 py-4 border-b border-opacity-30">
+                                <h2 class="text-xl font-bold">${route.name}</h2>
+                            </div>
+                            <div class="p-0 overflow-x-auto">
+                                <table class="w-full text-left text-sm whitespace-nowrap">
+                                    <thead class="text-xs uppercase font-semibold">
+                                        <tr>
+                                            <th class="px-6 py-3 w-16 text-center">Atrapado</th>
+                                            <th class="px-6 py-3">Pokémon</th>
+                                            <th class="px-6 py-3">Ratio</th>
+                                            <th class="px-6 py-3">Método / Ubicación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-opacity-20">
+                    `;
+
+                    route.encounters.forEach(encounter => {
+                        const pokeName = getPokemonName(encounter.id);
+                        const isCaught = caughtState[encounter.id] || false;
+                        const caughtBgClass = isCaught ? (gameName === 'Negro 2' ? 'bg-cyan-900/40' : 'bg-red-50/80') : '';
+                        const checkColor = gameName === 'Negro 2' ? 'text-cyan-500 focus:ring-cyan-500' : 'text-red-500 focus:ring-red-500';
+                        
+                        html += `
+                            <tr class="transition ${caughtBgClass}">
+                                <td class="px-6 py-3 text-center">
+                                    <input type="checkbox" class="w-5 h-5 rounded border-gray-400 cursor-pointer checkbox-anim bg-transparent ${checkColor}" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${encounter.id})">
+                                </td>
+                                <td class="px-6 py-3 font-semibold flex items-center gap-3">
+                                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${encounter.id}.png" alt="${pokeName}" class="w-10 h-10 object-contain" onerror="this.style.display='none'">
+                                    <span>
+                                        <a href="${getWikidexUrl(pokeName)}" target="_blank" class="hover:underline transition font-bold" title="Ver en Wikidex">${pokeName}</a> 
+                                        <span class="text-xs font-mono ml-1 opacity-50">#${encounter.id}</span>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 ${gameName === 'Negro 2' ? 'text-slate-800' : ''}">${encounter.rate}</span></td>
+                                <td class="px-6 py-3 opacity-80">${encounter.method}</td>
+                            </tr>
+                        `;
+                    });
+                    html += `</tbody></table></div></div>`;
+                });
+            }
+            html += `</div></div>`;
+            return html;
+        }
+
+        async function setupCloudStorage() {
+            try {
+                const localData = localStorage.getItem('b2w2TrackerData');
+                if (localData) {
+                    caughtState = JSON.parse(localData);
+                    renderCurrentView();
+                }
+
+                if (typeof __firebase_config === 'undefined') return;
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                
+                userId = auth.currentUser?.uid;
+                if (!userId) return;
+
+                document.getElementById('storage-status').textContent = "B2W2 Tracker - Conectado al PC de Trufa (Nube activa).";
+                const docRef = doc(db, 'artifacts', appId, 'users', userId, 'trackerData', 'caughtState');
+                
+                onSnapshot(docRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        caughtState = { ...caughtState, ...snapshot.data() };
+                        renderCurrentView();
+                    }
+                });
+            } catch (error) {
+                document.getElementById('storage-status').textContent = "B2W2 Tracker - Guardado de manera local en tu Pokédex.";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            navigate('pokedex');
+            setupCloudStorage();
+        });
+    </script>
+</body>
+</html>
