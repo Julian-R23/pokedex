@@ -1,1 +1,134 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Tracker Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="py-10 text-center border-b border-slate-800 bg-slate-950">
+        <h1 class="text-4xl font-extrabold tracking-tight text-emerald-400 sm:text-5xl">
+            Pokémon Tracker Hub
+        </h1>
+        <p class="mt-3 text-slate-400 text-lg">
+            Selecciona una generación para ver o actualizar tu progreso de captura.
+        </p>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full flex-grow">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <!-- Card Kanto (1ra Gen) -->
+            <a href="kanto.html" class="group bg-slate-800 rounded-2xl p-6 border border-slate-700 hover:border-red-500 transition duration-300 shadow-xl flex flex-col justify-between hover:scale-[1.02]">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-bold uppercase tracking-wider bg-red-500/20 text-red-400 px-3 py-1 rounded-full border border-red-500/30">1ª Generación</span>
+                        <span class="text-slate-400 text-sm">Red / Blue / Yellow</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white group-hover:text-red-400 transition">Kanto Tracker</h2>
+                    <p class="text-slate-400 text-sm mt-2">151 Pokémon originales, rutas regionales y encuentros de Kanto.</p>
+                </div>
+
+                <div class="mt-8 pt-4 border-t border-slate-700">
+                    <div class="flex justify-between items-center mb-2 text-sm font-semibold">
+                        <span class="text-slate-300">Progreso</span>
+                        <span id="kanto-percentage" class="text-red-400">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-700 rounded-full h-3 overflow-hidden">
+                        <div id="kanto-bar" class="bg-red-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <p id="kanto-count" class="text-xs text-slate-400 text-right mt-2">0 / 151 Atrapados</p>
+                </div>
+            </a>
+
+            <!-- Card Johto (2da Gen) -->
+            <a href="johto.html" class="group bg-slate-800 rounded-2xl p-6 border border-slate-700 hover:border-yellow-500 transition duration-300 shadow-xl flex flex-col justify-between hover:scale-[1.02]">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-bold uppercase tracking-wider bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full border border-yellow-500/30">2ª Generación</span>
+                        <span class="text-slate-400 text-sm">Gold / Silver / Crystal</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white group-hover:text-yellow-400 transition">Johto Tracker</h2>
+                    <p class="text-slate-400 text-sm mt-2">251 Pokémon de la Pokédex Nacional de la era de Johto.</p>
+                </div>
+
+                <div class="mt-8 pt-4 border-t border-slate-700">
+                    <div class="flex justify-between items-center mb-2 text-sm font-semibold">
+                        <span class="text-slate-300">Progreso</span>
+                        <span id="johto-percentage" class="text-yellow-400">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-700 rounded-full h-3 overflow-hidden">
+                        <div id="johto-bar" class="bg-yellow-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <p id="johto-count" class="text-xs text-slate-400 text-right mt-2">0 / 251 Atrapados</p>
+                </div>
+            </a>
+
+            <!-- Card Hoenn (3ra Gen) -->
+            <a href="hoenn.html" class="group bg-slate-800 rounded-2xl p-6 border border-slate-700 hover:border-emerald-500 transition duration-300 shadow-xl flex flex-col justify-between hover:scale-[1.02]">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/30">3ª Generación</span>
+                        <span class="text-slate-400 text-sm">Ruby / Sapphire / Emerald</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white group-hover:text-emerald-400 transition">Hoenn Tracker</h2>
+                    <p class="text-slate-400 text-sm mt-2">202 Pokémon de la Pokédex Regional de Hoenn y sus rutas.</p>
+                </div>
+
+                <div class="mt-8 pt-4 border-t border-slate-700">
+                    <div class="flex justify-between items-center mb-2 text-sm font-semibold">
+                        <span class="text-slate-300">Progreso</span>
+                        <span id="hoenn-percentage" class="text-emerald-400">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-700 rounded-full h-3 overflow-hidden">
+                        <div id="hoenn-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <p id="hoenn-count" class="text-xs text-slate-400 text-right mt-2">0 / 202 Atrapados</p>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 py-6 text-center text-slate-500 text-sm border-t border-slate-800">
+        <p>Pokémon Tracker Project - Alojado en GitHub / Google Sites</p>
+    </footer>
+
+    <!-- Script de cálculo de progreso -->
+    <script>
+        function calculateProgress(storageKey, totalPokemon, percentElId, barElId, countElId) {
+            try {
+                const savedData = localStorage.getItem(storageKey);
+                if (savedData) {
+                    const caughtState = JSON.parse(savedData);
+                    const totalCaught = Object.values(caughtState).filter(v => v === true).length;
+                    const percentage = Math.round((totalCaught / totalPokemon) * 100);
+
+                    document.getElementById(percentElId).textContent = `${percentage}%`;
+                    document.getElementById(barElId).style.width = `${percentage}%`;
+                    document.getElementById(countElId).textContent = `${totalCaught} / ${totalPokemon} Atrapados`;
+                }
+            } catch (e) {
+                console.error(`Error al leer los datos de ${storageKey}:`, e);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Totales de cada Pokédex
+            calculateProgress('kantoTrackerData', 151, 'kanto-percentage', 'kanto-bar', 'kanto-count');
+            calculateProgress('johtoTrackerData', 251, 'johto-percentage', 'johto-bar', 'johto-count');
+            calculateProgress('hoennTrackerData', 202, 'hoenn-percentage', 'hoenn-bar', 'hoenn-count');
+        });
+    </script>
+</body>
+</html>
