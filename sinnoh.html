@@ -602,11 +602,21 @@
                 if (typeof __initial_auth_token !== 'undefined') {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
-                    await signInAnonymously(auth);
-                }
-                
-                userId = auth.currentUser?.uid;
-                if (!userId) return;
+                    // REEMPLÁZALO POR ESTO:
+await signInAnonymously(auth);
+
+// Sistema de sincronización por código
+let mySyncCode = localStorage.getItem('pokemonSyncCode');
+if (!mySyncCode) {
+    mySyncCode = prompt("Ingresa una palabra secreta para sincronizar tu progreso entre dispositivos (ej. JulianDex2026):");
+    if (mySyncCode) {
+        localStorage.setItem('pokemonSyncCode', mySyncCode);
+    }
+}
+
+// Usamos tu palabra secreta como ID principal, o el anónimo si cancelas
+userId = mySyncCode || auth.currentUser?.uid;
+if (!userId) return;
 
                 document.getElementById('storage-status').textContent = "Sinnoh Tracker - Conectado al PC de Alisa (Nube activa).";
                 const docRef = doc(db, 'artifacts', appId, 'users', userId, 'trackerData', 'caughtState');
