@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rojo Fuego & Verde Hoja Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .game-bg-firered { background: linear-gradient(135deg, #fca5a5 0%, #ef4444 100%); }
+        .game-bg-leafgreen { background: linear-gradient(135deg, #bbf7d0 0%, #22c55e 100%); }
+        .game-bg-pokedex { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
+        
+        .checkbox-anim { transition: all 0.2s ease-in-out; }
+        .checkbox-anim:checked { transform: scale(1.1); }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+
+    <nav class="bg-slate-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <a href="index.html" class="p-2 bg-slate-800 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition" title="Volver al Hub">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    </a>
+                    <span class="text-xl font-bold tracking-wider cursor-pointer text-orange-500" onclick="navigate('pokedex')">Kanto Remakes (RF/VH)</span>
+                </div>
+                <div class="flex items-center space-x-1 md:space-x-4 overflow-x-auto">
+                    <button onclick="navigate('pokedex')" id="nav-pokedex" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition whitespace-nowrap">Pokédex</button>
+                    <button onclick="navigate('Rojo Fuego')" id="nav-Rojo Fuego" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-orange-400 hover:bg-orange-900 hover:text-white transition whitespace-nowrap">Rojo Fuego</button>
+                    <button onclick="navigate('Verde Hoja')" id="nav-Verde Hoja" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-green-400 hover:bg-green-900 hover:text-white transition whitespace-nowrap">Verde Hoja</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full"></main>
+
+    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-sm mt-auto">
+        <p id="storage-status">RF/VH Tracker - Conectando con los servidores del Sistema de Cajas...</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Pokédex: Kanto (1-151) + Pokémon Post-Game de las Islas Sete / Sevii
+        const rawPokedex = [
+            // KANTO (PRE-NACIONAL)
+            "1|Bulbasaur|Nv. 16 ➔ Ivysaur", "2|Ivysaur|Nv. 32 ➔ Venusaur", "3|Venusaur|Etapa final",
+            "4|Charmander|Nv. 16 ➔ Charmeleon", "5|Charmeleon|Nv. 36 ➔ Charizard", "6|Charizard|Etapa final",
+            "7|Squirtle|Nv. 16 ➔ Wartortle", "8|Wartortle|Nv. 36 ➔ Blastoise", "9|Blastoise|Etapa final",
+            "10|Caterpie|Nv. 7 ➔ Metapod", "11|Metapod|Nv. 10 ➔ Butterfree", "12|Butterfree|Etapa final",
+            "13|Weedle|Nv. 7 ➔ Kakuna", "14|Kakuna|Nv. 10 ➔ Beedrill", "15|Beedrill|Etapa final",
+            "16|Pidgey|Nv. 18 ➔ Pidgeotto", "17|Pidgeotto|Nv. 36 ➔ Pidgeot", "18|Pidgeot|Etapa final",
+            "19|Rattata|Nv. 20 ➔ Raticate", "20|Raticate|Etapa final",
+            "21|Spearow|Nv. 20 ➔ Fearow", "22|Fearow|Etapa final",
+            "23|Ekans|Nv. 22 ➔ Arbok", "24|Arbok|Etapa final",
+            "25|Pikachu|P. Trueno ➔ Raichu", "26|Raichu|Etapa final",
+            "27|Sandshrew|Nv. 22 ➔ Sandslash", "28|Sandslash|Etapa final",
+            "29|Nidoran♀|Nv. 16 ➔ Nidorina", "30|Nidorina|P. Lunar ➔ Nidoqueen", "31|Nidoqueen|Etapa final",
+            "32|Nidoran♂|Nv. 16 ➔ Nidorino", "33|Nidorino|P. Lunar ➔ Nidoking", "34|Nidoking|Etapa final",
+            "35|Clefairy|P. Lunar ➔ Clefable", "36|Clefable|Etapa final",
+            "37|Vulpix|P. Fuego ➔ Ninetales", "38|Ninetales|Etapa final",
+            "39|Jigglypuff|P. Lunar ➔ Wigglytuff", "40|Wigglytuff|Etapa final",
+            "41|Zubat|Nv. 22 ➔ Golbat", "42|Golbat|Amistad (Post-Game) ➔ Crobat",
+            "43|Oddish|Nv. 21 ➔ Gloom", "44|Gloom|P. Hoja/Solar", "45|Vileplume|Etapa final",
+            "46|Paras|Nv. 24 ➔ Parasect", "47|Parasect|Etapa final",
+            "48|Venonat|Nv. 31 ➔ Venomoth", "49|Venomoth|Etapa final",
+            "50|Diglett|Nv. 26 ➔ Dugtrio", "51|Dugtrio|Etapa final",
+            "52|Meowth|Nv. 28 ➔ Persian", "53|Persian|Etapa final",
+            "54|Psyduck|Nv. 33 ➔ Golduck", "55|Golduck|Etapa final",
+            "56|Mankey|Nv. 28 ➔ Primeape", "57|Primeape|Etapa final",
+            "58|Growlithe|P. Fuego ➔ Arcanine", "59|Arcanine|Etapa final",
+            "60|Poliwag|Nv. 25 ➔ Poliwhirl", "61|Poliwhirl|P. Agua ➔ Poliwrath", "62|Poliwrath|Etapa final",
+            "63|Abra|Nv. 16 ➔ Kadabra", "64|Kadabra|Intercambio ➔ Alakazam", "65|Alakazam|Etapa final",
+            "66|Machop|Nv. 28 ➔ Machoke", "67|Machoke|Intercambio ➔ Machamp", "68|Machamp|Etapa final",
+            "69|Bellsprout|Nv. 21 ➔ Weepinbell", "70|Weepinbell|P. Hoja ➔ Victreebel", "71|Victreebel|Etapa final",
+            "72|Tentacool|Nv. 30 ➔ Tentacruel", "73|Tentacruel|Etapa final",
+            "74|Geodude|Nv. 25 ➔ Graveler", "75|Graveler|Intercambio ➔ Golem", "76|Golem|Etapa final",
+            "77|Ponyta|Nv. 40 ➔ Rapidash", "78|Rapidash|Etapa final",
+            "79|Slowpoke|Nv. 37 ➔ Slowbro", "80|Slowbro|Etapa final",
+            "81|Magnemite|Nv. 30 ➔ Magneton", "82|Magneton|Etapa final",
+            "83|Farfetch'd|Sin evolución",
+            "84|Doduo|Nv. 31 ➔ Dodrio", "85|Dodrio|Etapa final",
+            "86|Seel|Nv. 34 ➔ Dewgong", "87|Dewgong|Etapa final",
+            "88|Grimer|Nv. 38 ➔ Muk", "89|Muk|Etapa final",
+            "90|Shellder|P. Agua ➔ Cloyster", "91|Cloyster|Etapa final",
+            "92|Gastly|Nv. 25 ➔ Haunter", "93|Haunter|Intercambio ➔ Gengar", "94|Gengar|Etapa final",
+            "95|Onix|Revest. Metálico (Post) ➔ Steelix",
+            "96|Drowzee|Nv. 26 ➔ Hypno", "97|Hypno|Etapa final",
+            "98|Krabby|Nv. 28 ➔ Kingler", "99|Kingler|Etapa final",
+            "100|Voltorb|Nv. 30 ➔ Electrode", "101|Electrode|Etapa final",
+            "102|Exeggcute|P. Hoja ➔ Exeggutor", "103|Exeggutor|Etapa final",
+            "104|Cubone|Nv. 28 ➔ Marowak", "105|Marowak|Etapa final",
+            "106|Hitmonlee|Sin evolución", "107|Hitmonchan|Sin evolución",
+            "108|Lickitung|Sin evolución",
+            "109|Koffing|Nv. 35 ➔ Weezing", "110|Weezing|Etapa final",
+            "111|Rhyhorn|Nv. 42 ➔ Rhydon", "112|Rhydon|Etapa final",
+            "113|Chansey|Amistad (Post) ➔ Blissey",
+            "114|Tangela|Sin evolución",
+            "115|Kangaskhan|Sin evolución",
+            "116|Horsea|Nv. 32 ➔ Seadra", "117|Seadra|Escamadragón (Post) ➔ Kingdra",
+            "118|Goldeen|Nv. 33 ➔ Seaking", "119|Seaking|Etapa final",
+            "120|Staryu|P. Agua ➔ Starmie", "121|Starmie|Etapa final",
+            "122|Mr. Mime|Sin evolución",
+            "123|Scyther|Revest. Metálico (Post) ➔ Scizor",
+            "124|Jynx|Sin evolución",
+            "125|Electabuzz|Sin evolución",
+            "126|Magmar|Sin evolución",
+            "127|Pinsir|Sin evolución",
+            "128|Tauros|Sin evolución",
+            "129|Magikarp|Nv. 20 ➔ Gyarados", "130|Gyarados|Etapa final",
+            "131|Lapras|Sin evolución",
+            "132|Ditto|Sin evolución",
+            "133|Eevee|Piedras Elementales", "134|Vaporeon|Etapa final", "135|Jolteon|Etapa final", "136|Flareon|Etapa final",
+            "137|Porygon|Mejora (Post) ➔ Porygon2",
+            "138|Omanyte|Nv. 40 ➔ Omastar", "139|Omastar|Etapa final",
+            "140|Kabuto|Nv. 40 ➔ Kabutops", "141|Kabutops|Etapa final",
+            "142|Aerodactyl|Sin evolución",
+            "143|Snorlax|Sin evolución",
+            "144|Articuno|Sin evolución", "145|Zapdos|Sin evolución", "146|Moltres|Sin evolución",
+            "147|Dratini|Nv. 30 ➔ Dragonair", "148|Dragonair|Nv. 55 ➔ Dragonite", "149|Dragonite|Etapa final",
+            "150|Mewtwo|Sin evolución", "151|Mew|Sin evolución (Evento)",
+            
+            // POST-GAME (ISLAS SETE / SEVII ISLANDS / ERRANTES)
+            "161|Sentret|Nv. 15 ➔ Furret", "162|Furret|Etapa final",
+            "163|Hoothoot|Nv. 20 ➔ Noctowl", "164|Noctowl|Etapa final",
+            "165|Ledyba|Nv. 18 ➔ Ledian", "166|Ledian|Etapa final",
+            "167|Spinarak|Nv. 22 ➔ Ariados", "168|Ariados|Etapa final",
+            "175|Togepi|Amistad ➔ Togetic", "176|Togetic|Etapa final",
+            "177|Natu|Nv. 25 ➔ Xatu", "178|Xatu|Etapa final",
+            "183|Marill|Nv. 18 ➔ Azumarill", "184|Azumarill|Etapa final",
+            "187|Hoppip|Nv. 18 ➔ Skiploom", "188|Skiploom|Nv. 27 ➔ Jumpluff", "189|Jumpluff|Etapa final",
+            "190|Aipom|Sin evolución",
+            "191|Sunkern|P. Solar ➔ Sunflora", "192|Sunflora|Etapa final",
+            "193|Yanma|Sin evolución",
+            "194|Wooper|Nv. 20 ➔ Quagsire", "195|Quagsire|Etapa final",
+            "198|Murkrow|Sin evolución",
+            "200|Misdreavus|Sin evolución",
+            "201|Unown|Sin evolución",
+            "202|Wobbuffet|Sin evolución",
+            "206|Dunsparce|Sin evolución",
+            "214|Heracross|Sin evolución",
+            "215|Sneasel|Sin evolución",
+            "218|Slugma|Nv. 38 ➔ Magcargo", "219|Magcargo|Etapa final",
+            "220|Swinub|Nv. 33 ➔ Piloswine", "221|Piloswine|Etapa final",
+            "222|Corsola|Sin evolución",
+            "223|Remoraid|Nv. 25 ➔ Octillery", "224|Octillery|Etapa final",
+            "225|Delibird|Sin evolución",
+            "226|Mantine|Sin evolución",
+            "227|Skarmory|Sin evolución",
+            "243|Raikou|Errante (Si elegiste Squirtle)", "244|Entei|Errante (Si elegiste Bulbasaur)", "245|Suicune|Errante (Si elegiste Charmander)",
+            "246|Larvitar|Nv. 30 ➔ Pupitar", "247|Pupitar|Nv. 55 ➔ Tyranitar", "248|Tyranitar|Etapa final"
+        ];
+
+        const pokedex = rawPokedex.map(data => {
+            const [id, name, evo] = data.split('|');
+            return { id: parseInt(id), name, evo };
+        });
+
+        // Configuración de rutas y exclusivos
+        const routeData = {
+            "Rojo Fuego": [
+                { name: "Pueblo Paleta", encounters: [{ id: 1, rate: "Elegir", method: "Inicial" }, { id: 4, rate: "Elegir", method: "Inicial" }, { id: 7, rate: "Elegir", method: "Inicial" }] },
+                { name: "Exclusivos Kanto (Rojo Fuego)", encounters: [{ id: 23, rate: "Común", method: "Ruta 4, 11, 23" }, { id: 43, rate: "Común", method: "Ruta 5, 12, 13, 24" }, { id: 54, rate: "Común", method: "Surf/Pesca" }, { id: 58, rate: "Común", method: "Ruta 7, 8, Mansión" }, { id: 90, rate: "Común", method: "Pesca (Supercaña)" }, { id: 125, rate: "Raro", method: "Central Energía" }, { id: 123, rate: "Raro", method: "Zona Safari / Casino" }] },
+                { name: "Regalos y Fósiles", encounters: [{ id: 131, rate: "100%", method: "Silph S.A." }, { id: 133, rate: "100%", method: "Mansión Azulona" }, { id: 106, rate: "Elegir", method: "Dojo Kárate" }, { id: 107, rate: "Elegir", method: "Dojo Kárate" }, { id: 138, rate: "Elegir", method: "Monte Moon" }, { id: 140, rate: "Elegir", method: "Monte Moon" }, { id: 142, rate: "100%", method: "Museo Plateado" }] },
+                { name: "Legendarios (Pre-Nacional)", encounters: [{ id: 144, rate: "Único", method: "Islas Espuma" }, { id: 145, rate: "Único", method: "Central Energía" }, { id: 146, rate: "Único", method: "Monte Ascuas (Isla Prima)" }, { id: 150, rate: "Único", method: "Cueva Celeste" }] },
+                { name: "POST-GAME: Islas Sete (Exclusivos)", encounters: [{ id: 167, rate: "Común", method: "Bosque Baya (Isla Tera)" }, { id: 198, rate: "Común", method: "Cueva Perdida (Isla Inta)" }, { id: 214, rate: "Raro", method: "Bosque Baya (Isla Tera)" }, { id: 225, rate: "Raro", method: "Cueva Glaciada (Isla Quarta)" }, { id: 227, rate: "Raro", method: "Cañón Sétano (Isla Sétima)" }] },
+                { name: "POST-GAME: Islas Sete (Generales)", encounters: [{ id: 161, rate: "Común", method: "Valle Ruinas" }, { id: 163, rate: "Común", method: "Bosque Baya" }, { id: 175, rate: "Huevo", method: "Laberinto Acuático" }, { id: 177, rate: "Común", method: "Valle Ruinas" }, { id: 187, rate: "Común", method: "Vía Acuática" }, { id: 191, rate: "Común", method: "Prado Isla Quarta" }, { id: 193, rate: "Raro", method: "Bosque Baya" }, { id: 201, rate: "Común", method: "Cámara de los Unown" }, { id: 202, rate: "Común", method: "Cueva Cambiante" }, { id: 206, rate: "Común", method: "Puerto Tres" }, { id: 218, rate: "Común", method: "Monte Ascuas" }, { id: 220, rate: "Común", method: "Cueva Glaciada" }, { id: 246, rate: "Raro", method: "Cañón Sétano" }] },
+                { name: "POST-GAME: Errantes", encounters: [{ id: 243, rate: "Errante Kanto", method: "Si inicial fue Squirtle" }, { id: 244, rate: "Errante Kanto", method: "Si inicial fue Bulbasaur" }, { id: 245, rate: "Errante Kanto", method: "Si inicial fue Charmander" }] }
+            ],
+            "Verde Hoja": [
+                { name: "Pueblo Paleta", encounters: [{ id: 1, rate: "Elegir", method: "Inicial" }, { id: 4, rate: "Elegir", method: "Inicial" }, { id: 7, rate: "Elegir", method: "Inicial" }] },
+                { name: "Exclusivos Kanto (Verde Hoja)", encounters:
