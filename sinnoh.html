@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinnoh Pokémon Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .game-bg-diamond { background: linear-gradient(135deg, #cffafe 0%, #0ea5e9 100%); }
+        .game-bg-pearl { background: linear-gradient(135deg, #fce7f3 0%, #ec4899 100%); }
+        .game-bg-platinum { background: linear-gradient(135deg, #e2e8f0 0%, #64748b 100%); }
+        .game-bg-pokedex { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
+        
+        .checkbox-anim { transition: all 0.2s ease-in-out; }
+        .checkbox-anim:checked { transform: scale(1.1); }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+
+    <nav class="bg-slate-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <a href="index.html" class="p-2 bg-slate-800 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition" title="Volver al Hub">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    </a>
+                    <span class="text-xl font-bold tracking-wider cursor-pointer text-cyan-400" onclick="navigate('pokedex')">Sinnoh Tracker 4ª Gen</span>
+                </div>
+                <div class="flex items-center space-x-1 md:space-x-4 overflow-x-auto">
+                    <button onclick="navigate('pokedex')" id="nav-pokedex" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition whitespace-nowrap">Pokédex</button>
+                    <button onclick="navigate('Diamante')" id="nav-Diamante" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-cyan-400 hover:bg-cyan-900 hover:text-white transition whitespace-nowrap">Diamante</button>
+                    <button onclick="navigate('Perla')" id="nav-Perla" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-pink-400 hover:bg-pink-900 hover:text-white transition whitespace-nowrap">Perla</button>
+                    <button onclick="navigate('Platino')" id="nav-Platino" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition whitespace-nowrap">Platino</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full"></main>
+
+    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-sm mt-auto">
+        <p id="storage-status">Sinnoh Tracker - Conectando con los servidores del Sistema de Cajas...</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Pokédex: Nuevos Pokémon de 4ta Generación (387 al 493)
+        // Se agrupan las evoluciones y preevoluciones introducidas en esta gen.
+        const rawPokedex = [
+            // REGIONAL SINNOH
+            "387|Turtwig|Nv. 18 ➔ Grotle", "388|Grotle|Nv. 32 ➔ Torterra", "389|Torterra|Etapa final",
+            "390|Chimchar|Nv. 14 ➔ Monferno", "391|Monferno|Nv. 36 ➔ Infernape", "392|Infernape|Etapa final",
+            "393|Piplup|Nv. 16 ➔ Prinplup", "394|Prinplup|Nv. 36 ➔ Empoleon", "395|Empoleon|Etapa final",
+            "396|Starly|Nv. 14 ➔ Staravia", "397|Staravia|Nv. 34 ➔ Staraptor", "398|Staraptor|Etapa final",
+            "399|Bidoof|Nv. 15 ➔ Bibarel", "400|Bibarel|Etapa final",
+            "401|Kricketot|Nv. 10 ➔ Kricketune", "402|Kricketune|Etapa final",
+            "403|Shinx|Nv. 15 ➔ Luxio", "404|Luxio|Nv. 30 ➔ Luxray", "405|Luxray|Etapa final",
+            "406|Budew|Amistad (Día) ➔ Roselia", "407|Roserade|Etapa final",
+            "408|Cranidos|Nv. 30 ➔ Rampardos", "409|Rampardos|Etapa final",
+            "410|Shieldon|Nv. 30 ➔ Bastiodon", "411|Bastiodon|Etapa final",
+            "412|Burmy|Nv. 20 ➔ Wormadam/Mothim", "413|Wormadam|Etapa final", "414|Mothim|Etapa final",
+            "415|Combee|Nv. 21 (Hembra) ➔ Vespiquen", "416|Vespiquen|Etapa final",
+            "417|Pachirisu|Sin evolución",
+            "418|Buizel|Nv. 26 ➔ Floatzel", "419|Floatzel|Etapa final",
+            "420|Cherubi|Nv. 25 ➔ Cherrim", "421|Cherrim|Etapa final",
+            "422|Shellos|Nv. 30 ➔ Gastrodon", "423|Gastrodon|Etapa final",
+            "424|Ambipom|Etapa final",
+            "425|Drifloon|Nv. 28 ➔ Drifblim", "426|Drifblim|Etapa final",
+            "427|Buneary|Amistad ➔ Lopunny", "428|Lopunny|Etapa final",
+            "429|Mismagius|Etapa final",
+            "430|Honchkrow|Etapa final",
+            "431|Glameow|Nv. 38 ➔ Purugly", "432|Purugly|Etapa final",
+            "433|Chingling|Amistad (Noche) ➔ Chimecho",
+            "434|Stunky|Nv. 34 ➔ Skuntank", "435|Skuntank|Etapa final",
+            "436|Bronzor|Nv. 33 ➔ Bronzong", "437|Bronzong|Etapa final",
+            "438|Bonsly|Subir Nivel (Mímico) ➔ Sudowoodo",
+            "439|Mime Jr.|Subir Nivel (Mímico) ➔ Mr. Mime",
+            "440|Happiny|P. Oval (Día) ➔ Chansey",
+            "441|Chatot|Sin evolución",
+            "442|Spiritomb|Sin evolución",
+            "443|Gible|Nv. 24 ➔ Gabite", "444|Gabite|Nv. 48 ➔ Garchomp", "445|Garchomp|Etapa final",
+            "446|Munchlax|Amistad ➔ Snorlax",
+            "447|Riolu|Amistad (Día) ➔ Lucario", "448|Lucario|Etapa final",
+            "449|Hippopotas|Nv. 34 ➔ Hippowdon", "450|Hippowdon|Etapa final",
+            "451|Skorupi|Nv. 40 ➔ Drapion", "452|Drapion|Etapa final",
+            "453|Croagunk|Nv. 37 ➔ Toxicroak", "454|Toxicroak|Etapa final",
+            "455|Carnivine|Sin evolución",
+            "456|Finneon|Nv. 31 ➔ Lumineon", "457|Lumineon|Etapa final",
+            "458|Mantyke|Subir Nivel (Remoraid) ➔ Mantine",
+            "459|Snover|Nv. 40 ➔ Abomasnow", "460|Abomasnow|Etapa final",
+            "461|Weavile|Etapa final",
+            "462|Magnezone|Etapa final",
+            "463|Lickilicky|Etapa final",
+            "464|Rhyperior|Etapa final",
+            "465|Tangrowth|Etapa final",
+            "466|Electivire|Etapa final",
+            "467|Magmortar|Etapa final",
+            "468|Togekiss|Etapa final",
+            "469|Yanmega|Etapa final",
+            "470|Leafeon|Etapa final", "471|Glaceon|Etapa final",
+            "472|Gliscor|Etapa final",
+            "473|Mamoswine|Etapa final",
+            "474|Porygon-Z|Etapa final",
+            "475|Gallade|Etapa final",
+            "476|Probopass|Etapa final",
+            "477|Dusknoir|Etapa final",
+            "478|Froslass|Etapa final",
+            "479|Rotom|Sin evolución",
+            "480|Uxie|Sin evolución", "481|Mesprit|Sin evolución", "482|Azelf|Sin evolución",
+            "483|Dialga|Sin evolución", "484|Palkia|Sin evolución",
+            
+            // POST-GAME / NACIONAL
+            "485|Heatran|Sin evolución",
+            "486|Regigigas|Sin evolución",
+            "487|Giratina|Sin evolución",
+            "488|Cresselia|Sin evolución",
+            "489|Phione|Sin evolución", "490|Manaphy|Sin evolución",
+            "491|Darkrai|Sin evolución (Evento)",
+            "492|Shaymin|Sin evolución (Evento)",
+            "493|Arceus|Sin evolución (Evento)"
+        ];
+
+        const pokedex = rawPokedex.map(data => {
+            const [id, name, evo] = data.split('|');
+            return { id: parseInt(id), name, evo };
+        });
+
+        // Configuración de rutas y exclusivos
+        const routeData = {
+            "Diamante": [
+                { name: "Pueblo Hojaverde & Rutas Iniciales", encounters: [{ id: 387, rate: "Elegir", method: "Inicial" }, { id: 390, rate: "Elegir", method: "Inicial" }, { id: 393, rate: "Elegir", method: "Inicial" }, { id: 396, rate: "Común", method: "Ruta 201-204" }, { id: 399, rate: "Común", method: "Ruta 201-204" }, { id: 401, rate: "Común (Noche)", method: "Ruta 202-204" }, { id: 403, rate: "Común", method: "Ruta 202-204" }] },
+                { name: "Exclusivos de Diamante", encounters: [{ id: 408, rate: "Fósil", method: "Fósil Cráneo (Subsuelo)" }, { id: 430, rate: "Exclusivo", method: "Evolución de Murkrow" }, { id: 434, rate: "Común", method: "Ruta 206, 214" }, { id: 483, rate: "Único", method: "Columna Lanza" }] },
+                { name: "Montaña, Bosque y Cuevas", encounters: [{ id: 406, rate: "Común", method: "Ruta 204, Bosque Vetusto" }, { id: 412, rate: "Común", method: "Árboles de Miel" }, { id: 415, rate: "Común", method: "Árboles de Miel" }, { id: 420, rate: "Común", method: "Árboles de Miel" }, { id: 425, rate: "Viernes", method: "Valle Eólico" }, { id: 436, rate: "Común", method: "Monte Corona" }, { id: 443, rate: "Raro", method: "Cueva Extravío" }] },
+                { name: "Rutas Marítimas y Pesca", encounters: [{ id: 418, rate: "Común", method: "Ruta 205, 213" }, { id: 422, rate: "Común", method: "Ruta 205, 213 (Oeste/Este)" }, { id: 456, rate: "Común", method: "Pesca (Caña Buena)" }] },
+                { name: "Post-Game (Radar y Enjambres)", encounters: [{ id: 462, rate: "Evolución", method: "Monte Corona" }, { id: 470, rate: "Evolución", method: "Bosque Vetusto" }, { id: 471, rate: "Evolución", method: "Ruta 217" }] },
+                { name: "Legendarios Post-Game", encounters: [{ id: 480, rate: "Único", method: "Lago Agudeza" }, { id: 481, rate: "Errante", method: "Sinnoh (Tras Lago Veraz)" }, { id: 482, rate: "Único", method: "Lago Valor" }, { id: 485, rate: "Único", method: "Montaña Dura" }, { id: 486, rate: "Único", method: "Templo Puntaneva" }, { id: 487, rate: "Único", method: "Cueva Retorno" }, { id: 488, rate: "Errante", method: "Isla Plenilunio" }] }
+            ],
+            "Perla": [
+                { name: "Pueblo Hojaverde & Rutas Iniciales", encounters: [{ id: 387, rate: "Elegir", method: "Inicial" }, { id: 390, rate: "Elegir", method: "Inicial" }, { id: 393, rate: "Elegir", method: "Inicial" }, { id: 396, rate: "Común", method: "Ruta 201-204" }, { id: 399, rate: "Común", method: "Ruta 201-204" }, { id: 401, rate: "Común (Noche)", method: "Ruta 202-204" }, { id: 403, rate: "Común", method: "Ruta 202-204" }] },
+                { name: "Exclusivos de Perla", encounters: [{ id: 410, rate: "Fósil", method: "Fósil Coraza (Subsuelo)" }, { id: 429, rate: "Exclusivo", method: "Evolución de Misdreavus" }, { id: 431, rate: "Común", method: "Ruta 218, 222" }, { id: 484, rate: "Único", method: "Columna Lanza" }] },
+                { name: "Montaña, Bosque y Cuevas", encounters: [{ id: 406, rate: "Común", method: "Ruta 204, Bosque Vetusto" }, { id: 412, rate: "Común", method: "Árboles de Miel" }, { id: 415, rate: "Común", method: "Árboles de Miel" }, { id: 420, rate: "Común", method: "Árboles de Miel" }, { id: 425, rate: "Viernes", method: "Valle Eólico" }, { id: 436, rate: "Común", method: "Monte Corona" }, { id: 443, rate: "Raro", method: "Cueva Extravío" }] },
+                { name: "Rutas Marítimas y Pesca", encounters: [{ id: 418, rate: "Común", method: "Ruta 205, 213" }, { id: 422, rate: "Común", method: "Ruta 205, 213 (Oeste/Este)" }, { id: 456, rate: "Común", method: "Pesca (Caña Buena)" }] },
+                { name: "Post-Game (Radar y Enjambres)", encounters: [{ id: 462, rate: "Evolución", method: "Monte Corona" }, { id: 470, rate: "Evolución", method: "Bosque Vetusto" }, { id: 471, rate: "Evolución", method: "Ruta 217" }] },
+                { name: "Legendarios Post-Game", encounters: [{ id: 480, rate: "Único", method: "Lago Agudeza" }, { id: 481, rate: "Errante", method: "Sinnoh (Tras Lago Veraz)" }, { id: 482, rate: "Único", method: "Lago Valor" }, { id: 485, rate: "Único", method: "Montaña Dura" }, { id: 486, rate: "Único", method: "Templo Puntaneva" }, { id: 487, rate: "Único", method: "Cueva Retorno" }, { id: 488, rate: "Errante", method: "Isla Plenilunio" }] }
+            ],
+            "Platino": [
+                { name: "Pueblo Hojaverde & Rutas Iniciales", encounters: [{ id: 387, rate: "Elegir", method: "Inicial" }, { id: 390, rate: "Elegir", method: "Inicial" }, { id: 393, rate: "Elegir", method: "Inicial" }, { id: 396, rate: "Común", method: "Ruta 201-204" }, { id: 399, rate: "Común", method: "Ruta 201-204" }, { id: 401, rate: "Común (Noche)", method: "Ruta 202-204" }, { id: 403, rate: "Común", method: "Ruta 202-204" }] },
+                { name: "Cambios y Expansión Platino", encounters: [{ id: 479, rate: "Único (Noche)", method: "Vieja Mansión (TV)" }, { id: 447, rate: "Regalo", method: "Huevo (Isla Hierro)" }, { id: 474, rate: "Evolución", method: "Disco Extra (Ruta 225)" }, { id: 468, rate: "Regalo", method: "Huevo Togepi (Ciudad Vetusta)" }, { id: 434, rate: "Ausente", method: "No disponible en Platino (Intercambio)" }, { id: 431, rate: "Ausente", method: "No disponible en Platino (Intercambio)" }] },
+                { name: "Montaña, Bosque y Cuevas", encounters: [{ id: 406, rate: "Común", method: "Ruta 204, Bosque Vetusto" }, { id: 412, rate: "Común", method: "Árboles de Miel" }, { id: 415, rate: "Común", method: "Árboles de Miel" }, { id: 420, rate: "Común", method: "Árboles de Miel" }, { id: 425, rate: "Viernes", method: "Valle Eólico" }, { id: 436, rate: "Común", method: "Monte Corona" }, { id: 443, rate: "Raro", method: "Cueva Extravío" }] },
+                { name: "Rutas Marítimas y Pesca", encounters: [{ id: 418, rate: "Común", method: "Ruta 205, 213" }, { id: 422, rate: "Común", method: "Ruta 205, 213 (Oeste/Este)" }, { id: 456, rate: "Común", method: "Pesca (Caña Buena)" }] },
+                { name: "Legendarios de Platino", encounters: [{ id: 487, rate: "Único", method: "Mundo Distorsión (Historia)" }, { id: 483, rate: "Único", method: "Columna Lanza (Post-Game)" }, { id: 484, rate: "Único", method: "Columna Lanza (Post-Game)" }, { id: 480, rate: "Único", method: "Lago Agudeza" }, { id: 481, rate: "Errante", method: "Sinnoh (Tras Lago Veraz)" }, { id: 482, rate: "Único", method: "Lago Valor" }, { id: 485, rate: "Único", method: "Montaña Dura" }, { id: 486, rate: "Único", method: "Templo Puntaneva" }, { id: 488, rate: "Errante", method: "Isla Plenilunio" }, { id: 491, rate: "Evento", method: "Isla Lunanueva" }, { id: 492, rate: "Evento", method: "Paraíso Floral" }, { id: 493, rate: "Evento", method: "Sala del Origen" }] }
+            ]
+        };
+
+        let caughtState = {}; 
+        let currentView = 'pokedex';
+        let searchQuery = '';
+        let filterState = 'all'; 
+        
+        let db, auth, userId;
+        const appId = 'sinnoh-tracker';
+
+        // Generador de enlace de Wikidex
+        function getWikidexUrl(name) {
+            const safeName = name.replace(/ /g, '_');
+            return `https://www.wikidex.net/wiki/${safeName}`;
+        }
+
+        function getPokemonName(id) {
+            const p = pokedex.find(p => p.id === id);
+            return p ? p.name : `Desconocido (${id})`;
+        }
+
+        function isAvailableInGame(pokemonId, gameName) {
+            if (!routeData[gameName]) return false;
+            for (let route of routeData[gameName]) {
+                if (route.encounters.some(e => e.id === pokemonId)) return true;
+            }
+            return false;
+        }
+
+        window.toggleCaught = async function(pokemonId) {
+            caughtState[pokemonId] = !caughtState[pokemonId];
+            renderCurrentView(); 
+            localStorage.setItem('sinnohTrackerData', JSON.stringify(caughtState));
+            
+            if (db && userId) {
+                try {
+                    const docRef = doc(db, 'artifacts', appId, 'users', userId, 'trackerData', 'caughtState');
+                    await setDoc(docRef, caughtState);
+                } catch (error) { console.error("Error:", error); }
+            }
+        }
+
+        window.navigate = function(viewName) {
+            currentView = viewName;
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('bg-slate-700'));
+            document.getElementById(`nav-${viewName}`).classList.add('bg-slate-700');
+            renderCurrentView();
+            window.scrollTo(0, 0);
+        }
+
+        window.updateSearch = function(value) {
+            searchQuery = value.toLowerCase();
+            renderCurrentView();
+        }
+
+        window.updateFilter = function(value) {
+            filterState = value;
+            renderCurrentView();
+        }
+
+        function renderCurrentView() {
+            const container = document.getElementById('app-content');
+            if (currentView === 'pokedex') {
+                container.innerHTML = generatePokedexHTML();
+                document.body.className = "bg-gray-100 text-gray-800 min-h-screen flex flex-col game-bg-pokedex";
+            } else {
+                container.innerHTML = generateGamePageHTML(currentView);
+                const bgColors = { 'Diamante': 'game-bg-diamond', 'Perla': 'game-bg-pearl', 'Platino': 'game-bg-platinum' };
+                document.body.className = `text-gray-800 min-h-screen flex flex-col ${bgColors[currentView]}`;
+            }
+        }
+
+        function generatePokedexHTML() {
+            const totalCaught = Object.values(caughtState).filter(v => v).length;
+            const progressPercent = Math.round((totalCaught / pokedex.length) * 100);
+
+            let html = `
+                <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-200">
+                    <div class="p-6 bg-slate-800 text-white border-b border-gray-700">
+                        <h1 class="text-3xl font-extrabold flex flex-wrap items-center gap-3">
+                            Pokédex de Sinnoh (Gen 4)
+                            <span class="text-sm font-normal bg-cyan-600 px-3 py-1 rounded-full text-cyan-100">
+                                ${totalCaught} / ${pokedex.length} Atrapados
+                            </span>
+                        </h1>
+                        <p class="text-slate-400 mt-2 text-sm">Nuevos Pokémon introducidos en la región de Sinnoh y evoluciones cruzadas.</p>
+                        <div class="w-full bg-slate-700 rounded-full h-2.5 mt-4">
+                            <div class="bg-cyan-500 h-2.5 rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
+                        </div>
+                        <div class="mt-6 flex flex-col sm:flex-row gap-4">
+                            <input type="text" placeholder="Buscar por nombre o número..." class="px-4 py-2 rounded-lg text-gray-800 w-full sm:w-1/2 focus:ring-2 focus:ring-cyan-500 outline-none" value="${searchQuery}" onkeyup="updateSearch(this.value)">
+                            <select class="px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-cyan-500 outline-none cursor-pointer" onchange="updateFilter(this.value)">
+                                <option value="all" ${filterState === 'all' ? 'selected' : ''}>Todos los Pokémon</option>
+                                <option value="caught" ${filterState === 'caught' ? 'selected' : ''}>Solo Atrapados</option>
+                                <option value="missing" ${filterState === 'missing' ? 'selected' : ''}>Faltantes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="uppercase tracking-wider border-b-2 border-gray-200 bg-gray-50 text-gray-600 font-bold">
+                                <tr>
+                                    <th class="px-6 py-4 text-center">Atrapado</th>
+                                    <th class="px-6 py-4 text-center">Nº Nac.</th>
+                                    <th class="px-6 py-4">Sprite</th>
+                                    <th class="px-6 py-4">Pokémon</th>
+                                    <th class="px-6 py-4">Evolución</th>
+                                    <th class="px-6 py-4">Versión Destacada</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+            `;
+
+            const filteredPokedex = pokedex.filter(poke => {
+                const isCaught = caughtState[poke.id] || false;
+                const matchesSearch = poke.name.toLowerCase().includes(searchQuery) || String(poke.id).includes(searchQuery);
+                let matchesFilter = true;
+                if (filterState === 'caught') matchesFilter = isCaught;
+                if (filterState === 'missing') matchesFilter = !isCaught;
+                return matchesSearch && matchesFilter;
+            });
+
+            if (filteredPokedex.length === 0) {
+                html += `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No se encontraron Pokémon.</td></tr>`;
+            }
+
+            filteredPokedex.forEach(poke => {
+                const isCaught = caughtState[poke.id] || false;
+                let badges = '';
+                const games = [
+                    { name: 'Diamante', color: 'bg-cyan-100 text-cyan-700 border-cyan-300' },
+                    { name: 'Perla', color: 'bg-pink-100 text-pink-700 border-pink-300' },
+                    { name: 'Platino', color: 'bg-slate-200 text-slate-700 border-slate-400' }
+                ];
+
+                games.forEach(g => {
+                    if (isAvailableInGame(poke.id, g.name)) {
+                        badges += `<button onclick="navigate('${g.name}')" class="px-2 py-1 text-xs border rounded-md font-semibold mr-2 transition hover:opacity-70 ${g.color}">${g.name}</button>`;
+                    }
+                });
+
+                if (badges === '') badges = `<span class="text-xs text-gray-400 italic">Otras rutas/Evolución</span>`;
+
+                html += `
+                    <tr class="hover:bg-gray-50 transition duration-150 ${isCaught ? 'bg-cyan-50/50' : ''}">
+                        <td class="px-6 py-4 text-center">
+                            <input type="checkbox" class="w-6 h-6 text-cyan-600 rounded border-gray-300 focus:ring-cyan-500 cursor-pointer checkbox-anim" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${poke.id})">
+                        </td>
+                        <td class="px-6 py-4 text-center font-mono text-gray-500">#${String(poke.id).padStart(3, '0')}</td>
+                        <td class="px-6 py-2">
+                            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.id}.png" alt="${poke.name}" class="w-12 h-12 inline-block object-contain pixelated" onerror="this.style.display='none'">
+                        </td>
+                        <td class="px-6 py-4 font-bold text-base">
+                            <a href="${getWikidexUrl(poke.name)}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline transition" title="Ver en Wikidex">${poke.name}</a>
+                        </td>
+                        <td class="px-6 py-4 text-sm font-medium text-cyan-700">${poke.evo}</td>
+                        <td class="px-6 py-4">${badges}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table></div></div>`;
+            return html;
+        }
+
+        function generateGamePageHTML(gameName) {
+            const routes = routeData[gameName];
+            let headerStyles = '';
+            if (gameName === 'Diamante') headerStyles = 'bg-cyan-500 text-white';
+            if (gameName === 'Perla') headerStyles = 'bg-pink-500 text-white';
+            if (gameName === 'Platino') headerStyles = 'bg-slate-600 text-white';
+
+            let html = `
+                <div class="mb-8">
+                    <div class="rounded-xl shadow-lg overflow-hidden border border-white/20 mb-8">
+                        <div class="p-8 ${headerStyles}">
+                            <h1 class="text-4xl font-extrabold mb-2">Edición ${gameName}</h1>
+                            <p class="text-lg opacity-90">Lugares clave, Pokémon exclusivos y Legendarios Post-Game.</p>
+                        </div>
+                    </div>
+                    <div class="space-y-8">
+            `;
+
+            if (!routes || routes.length === 0) {
+                html += `<p class="text-center text-gray-600 py-10 bg-white/50 rounded-xl">Datos no disponibles.</p>`;
+            } else {
+                routes.forEach(route => {
+                    html += `
+                        <div class="bg-white/90 backdrop-blur-sm rounded-xl shadow-md overflow-hidden">
+                            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                                <h2 class="text-xl font-bold text-gray-800">${route.name}</h2>
+                            </div>
+                            <div class="p-0 overflow-x-auto">
+                                <table class="w-full text-left text-sm whitespace-nowrap">
+                                    <thead class="bg-gray-100/50 text-gray-600 text-xs uppercase font-semibold">
+                                        <tr>
+                                            <th class="px-6 py-3 w-16 text-center">Atrapado</th>
+                                            <th class="px-6 py-3">Pokémon</th>
+                                            <th class="px-6 py-3">Ratio</th>
+                                            <th class="px-6 py-3">Método / Ubicación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-100">
+                    `;
+
+                    route.encounters.forEach(encounter => {
+                        const pokeName = getPokemonName(encounter.id);
+                        const isCaught = caughtState[encounter.id] || false;
+                        
+                        html += `
+                            <tr class="hover:bg-gray-50/80 transition ${isCaught ? 'bg-cyan-50/20' : ''}">
+                                <td class="px-6 py-3 text-center">
+                                    <input type="checkbox" class="w-5 h-5 text-cyan-600 rounded border-gray-300 cursor-pointer checkbox-anim focus:ring-cyan-500" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${encounter.id})">
+                                </td>
+                                <td class="px-6 py-3 font-semibold flex items-center gap-3">
+                                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${encounter.id}.png" alt="${pokeName}" class="w-10 h-10 object-contain" onerror="this.style.display='none'">
+                                    <span>
+                                        <a href="${getWikidexUrl(pokeName)}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline transition" title="Ver en Wikidex">${pokeName}</a> 
+                                        <span class="text-xs text-gray-400 font-mono ml-1">#${encounter.id}</span>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">${encounter.rate}</span></td>
+                                <td class="px-6 py-3 text-gray-600">${encounter.method}</td>
+                            </tr>
+                        `;
+                    });
+                    html += `</tbody></table></div></div>`;
+                });
+            }
+            html += `</div></div>`;
+            return html;
+        }
+
+        async function setupCloudStorage() {
+            try {
+                const localData = localStorage.getItem('sinnohTrackerData');
+                if (localData) {
+                    caughtState = JSON.parse(localData);
+                    renderCurrentView();
+                }
+
+                if (typeof __firebase_config === 'undefined') return;
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                
+                userId = auth.currentUser?.uid;
+                if (!userId) return;
+
+                document.getElementById('storage-status').textContent = "Sinnoh Tracker - Conectado al PC de Alisa (Nube activa).";
+                const docRef = doc(db, 'artifacts', appId, 'users', userId, 'trackerData', 'caughtState');
+                
+                onSnapshot(docRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        caughtState = { ...caughtState, ...snapshot.data() };
+                        renderCurrentView();
+                    }
+                });
+            } catch (error) {
+                document.getElementById('storage-status').textContent = "Sinnoh Tracker - Guardado de manera local en tu Pokédex.";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            navigate('pokedex');
+            setupCloudStorage();
+        });
+    </script>
+</body>
+</html>
