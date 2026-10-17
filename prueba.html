@@ -531,7 +531,554 @@
         // ============================================
 
         const allLocationsEncounters = [
-            // ... (tus datos de encuentros se mantienen igual)
+          const allLocationsEncounters = [
+    // 1. Pueblo Boceto
+    {
+        locationName: "Pueblo Boceto (Vaniville Town)",
+        verified: true,
+        encounters: [
+            { id: 650, inX: true, inY: true, location: "Gift", levels: "5", rate: "Único" },
+            { id: 653, inX: true, inY: true, location: "Gift", levels: "5", rate: "Único" },
+            { id: 656, inX: true, inY: true, location: "Gift", levels: "5", rate: "Único" }
+        ]
+    },
+    // 2. Pueblo Acuarela
+    {
+        locationName: "Pueblo Acuarela (Aquacorde Town)",
+        verified: true,
+        encounters: [
+            { id: 650, inX: true, inY: true, location: "Gift", levels: "5", rate: "Único" },
+            { id: 653, inX: true, inY: true, location: "Gift", levels: "5", rate: "Único" },
+            { id: 656, inX: true, inY: true, location: "Gift", levels: "5", rate: "Único" }
+        ]
+    },
+    // 3. Ruta 2
+    {
+        locationName: "Ruta 2 (Avance Trail)",
+        verified: true,
+        encounters: [
+            { id: 659, inX: true, inY: true, location: "Grass", levels: "2-3", rate: "20%" },
+            { id: 661, inX: true, inY: true, location: "Grass", levels: "2-3", rate: "20%" },
+            { id: 664, inX: true, inY: true, location: "Grass", levels: "2-3", rate: "20%" },
+            { id: 263, inX: true, inY: true, location: "Grass", levels: "3-4", rate: "15%" },
+            { id: 16, inX: true, inY: true, location: "Grass", levels: "3-4", rate: "14%" },
+            { id: 13, inX: true, inY: false, location: "Grass", levels: "3-4", rate: "11%" },
+            { id: 10, inX: false, inY: true, location: "Grass", levels: "3-4", rate: "11%" }
+        ]
+    },
+    // 4. Bosque Novarte
+    {
+        locationName: "Bosque Novarte (Santalune Forest)",
+        verified: true,
+        encounters: [
+            { id: 10, inX: false, inY: true, location: "Grass", levels: "2-3", rate: "20%" },
+            { id: 10, inX: true, inY: false, location: "Grass", levels: "2", rate: "10%" },
+            { id: 11, inX: false, inY: true, location: "Grass", levels: "4", rate: "4%" },
+            { id: 13, inX: true, inY: false, location: "Grass", levels: "2-3", rate: "20%" },
+            { id: 13, inX: false, inY: true, location: "Grass", levels: "2", rate: "10%" },
+            { id: 14, inX: true, inY: false, location: "Grass", levels: "4", rate: "4%" },
+            { id: 25, inX: true, inY: true, location: "Grass", levels: "3-4", rate: "6%" },
+            { id: 511, inX: true, inY: true, location: "Grass", levels: "4", rate: "10%" },
+            { id: 513, inX: true, inY: true, location: "Grass", levels: "4", rate: "10%" },
+            { id: 515, inX: true, inY: true, location: "Grass", levels: "4", rate: "10%" },
+            { id: 661, inX: true, inY: true, location: "Grass", levels: "4", rate: "10%" },
+            { id: 664, inX: true, inY: true, location: "Grass", levels: "2-3", rate: "20%" }
+        ]
+    },
+    // 5. Ruta 3
+    {
+        locationName: "Ruta 3 (Ouvert Way)",
+        verified: true,
+        encounters: [
+            { id: 16, inX: true, inY: true, location: "Grass", levels: "4", rate: "10%" },
+            { id: 25, inX: true, inY: true, location: "Grass", levels: "4-5", rate: "5%" },
+            { id: 399, inX: true, inY: true, location: "Grass", levels: "3-4", rate: "20%" },
+            { id: 659, inX: true, inY: true, location: "Grass", levels: "3-4", rate: "20%" },
+            { id: 661, inX: true, inY: true, location: "Grass", levels: "3, 5", rate: "20%" },
+            { id: 298, inX: true, inY: true, location: "Grass", levels: "5", rate: "10%" },
+            { id: 412, inX: true, inY: true, location: "Grass", levels: "5", rate: "10%" },
+            { id: 206, inX: true, inY: true, location: "Grass", levels: "5", rate: "5%" },
+            { id: 183, inX: true, inY: true, location: "Surfing", levels: "25, 27", rate: "34%" },
+            { id: 284, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "66%" },
+            { id: 129, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
+            { id: 118, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" },
+            { id: 341, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "35%" },
+            { id: 119, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "35%" },
+            { id: 130, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "60%" },
+            { id: 342, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "5%" }
+        ]
+    },
+    // 6. Ciudad Novarte (Intercambio)
+    {
+        locationName: "Ciudad Novarte (Santalune City) - Intercambio",
+        verified: true,
+        encounters: [
+            { id: 83, inX: true, inY: true, location: "Trade (Bunnelby)", levels: "10", rate: "Único" }
+        ]
+    },
+    // 7. Ruta 4
+    {
+        locationName: "Ruta 4 (Parterre Way)",
+        verified: true,
+        encounters: [
+            { id: 669, inX: true, inY: true, location: "Yellow Flowers", levels: "6-8", rate: "30%" },
+            { id: 415, inX: true, inY: true, location: "Yellow Flowers", levels: "6-8", rate: "30%" },
+            { id: 165, inX: true, inY: true, location: "Yellow Flowers", levels: "8", rate: "10%" },
+            { id: 406, inX: true, inY: true, location: "Yellow Flowers", levels: "8", rate: "10%" },
+            { id: 300, inX: true, inY: true, location: "Yellow Flowers", levels: "8", rate: "10%" },
+            { id: 280, inX: true, inY: true, location: "Yellow Flowers", levels: "8", rate: "5%" }
+        ]
+    },
+    // 8. Ciudad Luminalia (Regalo)
+    {
+        locationName: "Ciudad Luminalia (Lumiose City) - Laboratorio",
+        verified: true,
+        encounters: [
+            { id: 1, inX: true, inY: true, location: "Gift", levels: "10", rate: "Único" },
+            { id: 4, inX: true, inY: true, location: "Gift", levels: "10", rate: "Único" },
+            { id: 7, inX: true, inY: true, location: "Gift", levels: "10", rate: "Único" }
+        ]
+    },
+    // 9. Ruta 5
+    {
+        locationName: "Ruta 5 (Versant Road)",
+        verified: true,
+        encounters: [
+            { id: 667, inX: true, inY: true, location: "Grass", levels: "8-10", rate: "20%" },
+            { id: 672, inX: true, inY: true, location: "Grass", levels: "8-10", rate: "20%" },
+            { id: 674, inX: true, inY: true, location: "Grass", levels: "8-10", rate: "20%" },
+            { id: 676, inX: true, inY: true, location: "Grass", levels: "8-10", rate: "20%" },
+            { id: 63, inX: true, inY: true, location: "Grass", levels: "10", rate: "10%" },
+            { id: 84, inX: true, inY: true, location: "Grass", levels: "8, 10", rate: "10%" },
+            { id: 316, inX: true, inY: true, location: "Horde Encounter", levels: "8", rate: "60%" },
+            { id: 559, inX: true, inY: true, location: "Horde Encounter", levels: "8", rate: "35%" },
+            { id: 311, inX: true, inY: false, location: "Horde Encounter", levels: "8", rate: "5%" },
+            { id: 312, inX: false, inY: true, location: "Horde Encounter", levels: "8", rate: "5%" }
+        ]
+    },
+    // 10. Ruta 7 (Este)
+    {
+        locationName: "Ruta 7 (Rivière Walk) - Este",
+        verified: true,
+        encounters: [
+            { id: 682, inX: false, inY: true, location: "Grass", levels: "13-14", rate: "20%" },
+            { id: 684, inX: true, inY: false, location: "Grass", levels: "13-14", rate: "20%" },
+            { id: 315, inX: true, inY: true, location: "Grass", levels: "12-14", rate: "10%" },
+            { id: 235, inX: true, inY: true, location: "Grass", levels: "14", rate: "10%" },
+            { id: 133, inX: true, inY: true, location: "Grass", levels: "11, 13", rate: "10%" },
+            { id: 143, inX: true, inY: true, location: "Special (Poké Flute)", levels: "15", rate: "100%" },
+            { id: 54, inX: true, inY: true, location: "Horde Encounter", levels: "7-8", rate: "35%" },
+            { id: 187, inX: true, inY: true, location: "Horde Encounter", levels: "7", rate: "60%" }
+        ]
+    },
+    // 11. Ruta 6
+    {
+        locationName: "Ruta 6 (Palais Lane)",
+        verified: true,
+        encounters: [
+            { id: 677, inX: true, inY: true, location: "Grass", levels: "11-12", rate: "20%" },
+            { id: 83, inX: true, inY: true, location: "Grass", levels: "10-12", rate: "20%" },
+            { id: 104, inX: true, inY: true, location: "Grass", levels: "10, 12", rate: "15%" },
+            { id: 163, inX: true, inY: true, location: "Grass", levels: "11-12", rate: "15%" },
+            { id: 316, inX: true, inY: true, location: "Grass", levels: "10-12", rate: "15%" },
+            { id: 531, inX: true, inY: true, location: "Shaking/Bubbling spots", levels: "10-12", rate: "50%" },
+            { id: 543, inX: true, inY: true, location: "Shaking/Bubbling spots", levels: "10-12", rate: "50%" }
+        ]
+    },
+    // 12. Cueva Conexa
+    {
+        locationName: "Cueva Conexa (Connecting Cave)",
+        verified: true,
+        encounters: [
+            { id: 293, inX: true, inY: true, location: "Cave Floor", levels: "13-15", rate: "30%" },
+            { id: 307, inX: true, inY: true, location: "Cave Floor", levels: "13-15", rate: "30%" },
+            { id: 41, inX: true, inY: true, location: "Cave Floor", levels: "13-15", rate: "30%" },
+            { id: 610, inX: true, inY: true, location: "Cave Floor", levels: "13-15", rate: "10%" },
+            { id: 41, inX: true, inY: true, location: "Horde Encounter", levels: "8", rate: "60%" },
+            { id: 293, inX: true, inY: true, location: "Horde Encounter", levels: "7", rate: "35%" },
+            { id: 610, inX: true, inY: true, location: "Horde Encounter", levels: "7-8", rate: "5%" }
+        ]
+    },
+    // 13. Ruta 8 (Agua)
+    {
+        locationName: "Ruta 8 (Muraille Coast) - Agua",
+        verified: true,
+        encounters: [
+            { id: 72, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "60%" },
+            { id: 320, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "35%" },
+            { id: 370, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
+            { id: 557, inX: true, inY: true, location: "Rock Smash", levels: "13-15", rate: "65%" },
+            { id: 688, inX: true, inY: true, location: "Rock Smash", levels: "13-15", rate: "35%" }
+        ]
+    },
+    // 14. Pueblo Relieve (Intercambios en Hotel)
+    {
+        locationName: "Pueblo Relieve (Ambrette Town) - Hotel",
+        verified: true,
+        encounters: [
+            { id: 129, inX: true, inY: true, location: "Trade (Gyarados)", levels: "5", rate: "Único" },
+            { id: 133, inX: true, inY: true, location: "Trade (Cualquiera)", levels: "5", rate: "Único" }
+        ]
+    },
+    // 15. Ruta 9
+    {
+        locationName: "Ruta 9 (Spikes Passage)",
+        verified: true,
+        encounters: [
+            { id: 111, inX: true, inY: true, location: "Rhyhorn Ride", levels: "18-20", rate: "60%" },
+            { id: 688, inX: true, inY: true, location: "Rhyhorn Ride", levels: "19-20", rate: "20%" },
+            { id: 451, inX: true, inY: true, location: "Rhyhorn Ride", levels: "18, 20", rate: "20%" }
+        ]
+    },
+    // 16. Cueva Brillante
+    {
+        locationName: "Cueva Brillante (Glittering Cave)",
+        verified: true,
+        encounters: [
+            { id: 66, inX: true, inY: true, location: "Cave Floor", levels: "15-17", rate: "30%" },
+            { id: 95, inX: true, inY: true, location: "Cave Floor", levels: "17", rate: "10%" },
+            { id: 104, inX: true, inY: true, location: "Cave Floor", levels: "15-16", rate: "20%" },
+            { id: 111, inX: true, inY: true, location: "Cave Floor", levels: "17", rate: "10%" },
+            { id: 115, inX: true, inY: true, location: "Cave Floor", levels: "17", rate: "5%" },
+            { id: 303, inX: true, inY: true, location: "Cave Floor", levels: "15-16", rate: "5%" },
+            { id: 337, inX: true, inY: true, location: "Cave Floor", levels: "17", rate: "10%" },
+            { id: 338, inX: true, inY: true, location: "Cave Floor", levels: "17", rate: "10%" },
+            { id: 95, inX: true, inY: true, location: "Rock Smash", levels: "15-17", rate: "35%" },
+            { id: 557, inX: true, inY: true, location: "Rock Smash", levels: "15-17", rate: "65%" },
+            { id: 696, inX: true, inY: true, location: "Fossil (Gift)", levels: "20", rate: "Único" },
+            { id: 698, inX: true, inY: true, location: "Fossil (Gift)", levels: "20", rate: "Único" }
+        ]
+    },
+    // 17. Ciudad Relieve (Intercambio)
+    {
+        locationName: "Ciudad Relieve (Cyllage City) - Intercambio",
+        verified: true,
+        encounters: [
+            { id: 208, inX: true, inY: true, location: "Trade (Luvdisc)", levels: "20", rate: "Único" }
+        ]
+    },
+    // 18. Ruta 10
+    {
+        locationName: "Ruta 10 (Menhir Trail)",
+        verified: true,
+        encounters: [
+            { id: 701, inX: true, inY: true, location: "Yellow Flowers", levels: "19-21", rate: "20%" },
+            { id: 359, inX: true, inY: true, location: "Yellow Flowers", levels: "20-21", rate: "15%" },
+            { id: 559, inX: true, inY: true, location: "Yellow Flowers", levels: "19-20", rate: "15%" },
+            { id: 228, inX: true, inY: false, location: "Yellow Flowers", levels: "19-21", rate: "10%" },
+            { id: 309, inX: false, inY: true, location: "Yellow Flowers", levels: "19-21", rate: "10%" }
+        ]
+    },
+    // 19. Ruta 11
+    {
+        locationName: "Ruta 11 (Miroir Way)",
+        verified: true,
+        encounters: [
+            { id: 702, inX: true, inY: true, location: "Grass", levels: "21-23", rate: "20%" },
+            { id: 694, inX: true, inY: true, location: "Grass", levels: "21-23", rate: "20%" },
+            { id: 434, inX: true, inY: false, location: "Grass", levels: "22-23", rate: "10%" },
+            { id: 509, inX: false, inY: true, location: "Grass", levels: "22-23", rate: "10%" },
+            { id: 568, inX: true, inY: true, location: "Grass", levels: "21-22", rate: "15%" }
+        ]
+    },
+    // 20. Cueva Reflejos
+    {
+        locationName: "Cueva Reflejos (Reflection Cave)",
+        verified: true,
+        encounters: [
+            { id: 122, inX: true, inY: true, location: "Cave Floor", levels: "22-23", rate: "20%" },
+            { id: 202, inX: true, inY: true, location: "Cave Floor", levels: "22", rate: "10%" },
+            { id: 302, inX: true, inY: true, location: "Cave Floor", levels: "22-23", rate: "5%" },
+            { id: 433, inX: true, inY: true, location: "Cave Floor", levels: "21-22", rate: "15%" },
+            { id: 524, inX: true, inY: true, location: "Cave Floor", levels: "21-22", rate: "20%" },
+            { id: 577, inX: true, inY: true, location: "Cave Floor", levels: "22-23", rate: "20%" },
+            { id: 703, inX: true, inY: true, location: "Cave Floor", levels: "23", rate: "10%" }
+        ]
+    },
+    // 21. Ciudad Yantra (Agua)
+    {
+        locationName: "Ciudad Yantra (Shalour City) - Agua",
+        verified: true,
+        encounters: [
+            { id: 72, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "60%" },
+            { id: 458, inX: true, inY: true, location: "Surfing", levels: "27", rate: "35%" },
+            { id: 370, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
+            { id: 223, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" },
+            { id: 170, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "35%" }
+        ]
+    },
+    // 22. Torre Maestra (Regalo)
+    {
+        locationName: "Torre Maestra (Tower of Mastery) - Regalo",
+        verified: true,
+        encounters: [
+            { id: 448, inX: true, inY: true, location: "Gift", levels: "32", rate: "Único" }
+        ]
+    },
+    // 23. Ruta 12
+    {
+        locationName: "Ruta 12 (Fourrage Road)",
+        verified: true,
+        encounters: [
+            { id: 672, inX: true, inY: true, location: "Grass", levels: "25-27", rate: "20%" },
+            { id: 214, inX: false, inY: true, location: "Grass", levels: "27", rate: "10%" },
+            { id: 127, inX: true, inY: false, location: "Grass", levels: "27", rate: "10%" },
+            { id: 72, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "60%" },
+            { id: 131, inX: true, inY: true, location: "Surfing", levels: "27", rate: "1%" },
+            { id: 458, inX: true, inY: true, location: "Surfing", levels: "27", rate: "15%" },
+            { id: 370, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
+            { id: 223, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" },
+            { id: 366, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "35%" },
+            { id: 557, inX: true, inY: true, location: "Rock Smash", levels: "23-25", rate: "66%" },
+            { id: 688, inX: true, inY: true, location: "Rock Smash", levels: "23-25", rate: "34%" },
+            { id: 131, inX: true, inY: true, location: "Gift", levels: "30", rate: "Único" }
+        ]
+    },
+    // 24. Bahía Azul
+    {
+        locationName: "Bahía Azul (Azure Bay)",
+        verified: true,
+        encounters: [
+            { id: 79, inX: true, inY: true, location: "Grass", levels: "25-27", rate: "40%" },
+            { id: 102, inX: true, inY: true, location: "Grass", levels: "26", rate: "10%" },
+            { id: 441, inX: true, inY: true, location: "Grass", levels: "25-27", rate: "35%" },
+            { id: 686, inX: true, inY: true, location: "Grass", levels: "26-27", rate: "15%" },
+            { id: 72, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "84%" },
+            { id: 131, inX: true, inY: true, location: "Surfing", levels: "27", rate: "1%" },
+            { id: 458, inX: true, inY: true, location: "Surfing", levels: "27", rate: "15%" },
+            { id: 370, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
+            { id: 170, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "35%" },
+            { id: 223, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" },
+            { id: 171, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "5%" },
+            { id: 224, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "35%" },
+            { id: 594, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "60%" },
+            { id: 557, inX: true, inY: true, location: "Rock Smash", levels: "23-25", rate: "66%" },
+            { id: 688, inX: true, inY: true, location: "Rock Smash", levels: "23-25", rate: "34%" }
+        ]
+    },
+    // 25. Ruta 13
+    {
+        locationName: "Ruta 13 (Lumiose Badlands)",
+        verified: true,
+        encounters: [
+            { id: 51, inX: true, inY: true, location: "Dirt", levels: "26-28", rate: "40%" },
+            { id: 328, inX: true, inY: true, location: "Dirt", levels: "26-28", rate: "40%" },
+            { id: 443, inX: true, inY: true, location: "Dirt", levels: "26-28", rate: "20%" },
+            { id: 75, inX: true, inY: true, location: "Rock Smash", levels: "26-28", rate: "66%" },
+            { id: 218, inX: true, inY: true, location: "Rock Smash", levels: "26, 28", rate: "34%" }
+        ]
+    },
+    // 26. Ruta 14
+    {
+        locationName: "Ruta 14 (Laverre Nature Trail)",
+        verified: true,
+        encounters: [
+            { id: 704, inX: true, inY: true, location: "Swamp", levels: "30-32", rate: "15%" },
+            { id: 195, inX: true, inY: true, location: "Swamp", levels: "30-32", rate: "15%" },
+            { id: 616, inX: true, inY: true, location: "Swamp", levels: "30-32", rate: "15%" },
+            { id: 318, inX: true, inY: true, location: "Surfing", levels: "30-35", rate: "60%" },
+            { id: 129, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
+            { id: 339, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" }
+        ]
+    },
+    // 27. Ruta 15
+    {
+        locationName: "Ruta 15 (Brun Way)",
+        verified: true,
+        encounters: [
+            { id: 708, inX: true, inY: true, location: "Red Flowers", levels: "34-36", rate: "20%" },
+            { id: 710, inX: true, inY: true, location: "Red Flowers", levels: "34-36", rate: "20%" },
+            { id: 453, inX: true, inY: true, location: "Red Flowers", levels: "34-35", rate: "15%" }
+        ]
+    },
+    // 28. Hotel Desolación
+    {
+        locationName: "Hotel Desolación (Lost Hotel)",
+        verified: true,
+        encounters: [
+            { id: 82, inX: true, inY: true, location: "Indoors", levels: "37-38", rate: "20%" },
+            { id: 101, inX: true, inY: true, location: "Indoors", levels: "37-38", rate: "20%" },
+            { id: 607, inX: true, inY: true, location: "Indoors", levels: "37-38", rate: "20%" },
+            { id: 624, inX: true, inY: true, location: "Indoors", levels: "36-37", rate: "20%" },
+            { id: 707, inX: true, inY: true, location: "Indoors", levels: "36-38", rate: "20%" },
+            { id: 569, inX: true, inY: true, location: "Trash Cans", levels: "36-38", rate: "30%" },
+            { id: 479, inX: true, inY: true, location: "Trash Cans (Tuesdays)", levels: "38", rate: "20%" }
+        ]
+    },
+    // 29. Ruta 16
+    {
+        locationName: "Ruta 16 (Mélancolie Path)",
+        verified: true,
+        encounters: [
+            { id: 305, inX: true, inY: false, location: "Yellow Flowers", levels: "35-36", rate: "10%" },
+            { id: 247, inX: false, inY: true, location: "Yellow Flowers", levels: "35-36", rate: "10%" },
+            { id: 707, inX: true, inY: true, location: "Grass", levels: "35-37", rate: "20%" }
+        ]
+    },
+    // 30. Gruta Helada
+    {
+        locationName: "Gruta Helada (Frost Cavern)",
+        verified: true,
+        encounters: [
+            { id: 93, inX: true, inY: true, location: "Ice Floor", levels: "38-40", rate: "16%" },
+            { id: 124, inX: true, inY: true, location: "Ice Floor", levels: "39-40", rate: "20%" },
+            { id: 221, inX: true, inY: true, location: "Ice Floor", levels: "38-39", rate: "20%" },
+            { id: 614, inX: true, inY: true, location: "Ice Floor", levels: "39-40", rate: "20%" },
+            { id: 615, inX: true, inY: true, location: "Ice Floor", levels: "40", rate: "4%" },
+            { id: 712, inX: true, inY: true, location: "Ice Floor", levels: "39-40", rate: "20%" },
+            { id: 61, inX: true, inY: true, location: "Surfing", levels: "38-40", rate: "66%" },
+            { id: 419, inX: true, inY: true, location: "Surfing", levels: "38-40", rate: "34%" },
+            { id: 60, inX: true, inY: true, location: "Fishing Old Rod", levels: "20", rate: "100%" },
+            { id: 61, inX: true, inY: true, location: "Fishing Good Rod", levels: "30", rate: "35%" },
+            { id: 550, inX: true, inY: true, location: "Fishing Good Rod", levels: "30", rate: "65%" },
+            { id: 61, inX: true, inY: true, location: "Fishing Super Rod", levels: "40", rate: "65%" },
+            { id: 550, inX: true, inY: true, location: "Fishing Super Rod", levels: "40", rate: "35%" }
+        ]
+    },
+    // 31. Ruta 17
+    {
+        locationName: "Ruta 17 (Mamoswine Road)",
+        verified: true,
+        encounters: [
+            { id: 460, inX: true, inY: true, location: "Snow Area", levels: "38-40", rate: "30%" },
+            { id: 225, inX: true, inY: true, location: "Snow Area", levels: "38-39", rate: "30%" },
+            { id: 582, inX: true, inY: true, location: "Snow Area", levels: "38-39", rate: "20%" }
+        ]
+    },
+    // 32. Ruta 18
+    {
+        locationName: "Ruta 18 (Vallée Étroite Way)",
+        verified: true,
+        encounters: [
+            { id: 625, inX: true, inY: true, location: "Grass", levels: "46-48", rate: "20%" },
+            { id: 632, inX: true, inY: true, location: "Grass", levels: "46-48", rate: "20%" },
+            { id: 452, inX: true, inY: true, location: "Grass", levels: "46-47", rate: "15%" }
+        ]
+    },
+    // 33. Cueva Términus
+    {
+        locationName: "Cueva Términus (Terminus Cave)",
+        verified: true,
+        encounters: [
+            { id: 28, inX: true, inY: true, location: "Cave Floor", levels: "45-46", rate: "20%" },
+            { id: 75, inX: true, inY: true, location: "Cave Floor", levels: "44-46", rate: "20%" },
+            { id: 247, inX: false, inY: true, location: "Cave Floor", levels: "45-46", rate: "20%" },
+            { id: 305, inX: true, inY: false, location: "Cave Floor", levels: "45-46", rate: "20%" },
+            { id: 632, inX: true, inY: true, location: "Cave Floor", levels: "44-46", rate: "40%" },
+            { id: 75, inX: true, inY: true, location: "Rock Smash", levels: "44-46", rate: "95%" },
+            { id: 213, inX: true, inY: true, location: "Rock Smash", levels: "44-46", rate: "5%" },
+            { id: 718, inX: true, inY: true, location: "Deep Cave", levels: "70", rate: "Único" }
+        ]
+    },
+    // 34. Ruta 19
+    {
+        locationName: "Ruta 19 (Grande Vallée Way)",
+        verified: true,
+        encounters: [
+            { id: 705, inX: true, inY: true, location: "Yellow Flowers", levels: "46-47", rate: "20%" },
+            { id: 24, inX: true, inY: true, location: "Yellow Flowers", levels: "48", rate: "10%" },
+            { id: 195, inX: true, inY: true, location: "Yellow Flowers", levels: "46-48", rate: "30%" },
+            { id: 452, inX: true, inY: true, location: "Yellow Flowers", levels: "48", rate: "10%" },
+            { id: 455, inX: true, inY: true, location: "Yellow Flowers", levels: "46, 48", rate: "5%" },
+            { id: 588, inX: true, inY: true, location: "Yellow Flowers", levels: "47", rate: "10%" },
+            { id: 616, inX: true, inY: true, location: "Yellow Flowers", levels: "47", rate: "10%" },
+            { id: 618, inX: true, inY: true, location: "Surfing", levels: "46, 48", rate: "34%" },
+            { id: 60, inX: true, inY: true, location: "Fishing Old Rod", levels: "25", rate: "100%" },
+            { id: 339, inX: true, inY: true, location: "Fishing Good Rod", levels: "35", rate: "65%" },
+            { id: 186, inX: true, inY: true, location: "Fishing Super Rod", levels: "50", rate: "5%" },
+            { id: 340, inX: true, inY: true, location: "Fishing Super Rod", levels: "45", rate: "35%" },
+            { id: 23, inX: true, inY: true, location: "Horde Encounter", levels: "25", rate: "5%" },
+            { id: 70, inX: true, inY: true, location: "Horde Encounter", levels: "24", rate: "60%" },
+            { id: 207, inX: true, inY: true, location: "Horde Encounter", levels: "24", rate: "35%" }
+        ]
+    },
+    // 35. Ciudad Fractal (Intercambio)
+    {
+        locationName: "Ciudad Fractal (Snowbelle City) - Intercambio",
+        verified: true,
+        encounters: [
+            { id: 625, inX: true, inY: true, location: "Trade (Jigglypuff)", levels: "50", rate: "Único" }
+        ]
+    },
+    // 36. Ruta 20
+    {
+        locationName: "Ruta 20 (Winding Woods)",
+        verified: true,
+        encounters: [
+            { id: 709, inX: true, inY: true, location: "Forest Grass", levels: "50-52", rate: "20%" },
+            { id: 127, inX: true, inY: false, location: "Forest Grass", levels: "51-52", rate: "10%" },
+            { id: 214, inX: false, inY: true, location: "Forest Grass", levels: "51-52", rate: "10%" }
+        ]
+    },
+    // 37. Villa Pokémon
+    {
+        locationName: "Villa Pokémon (Pokémon Village)",
+        verified: true,
+        encounters: [
+            { id: 39, inX: true, inY: true, location: "Yellow Flowers", levels: "50", rate: "10%" },
+            { id: 132, inX: true, inY: true, location: "Yellow Flowers", levels: "48-49", rate: "20%" },
+            { id: 164, inX: true, inY: true, location: "Yellow Flowers", levels: "50", rate: "10%" },
+            { id: 571, inX: true, inY: true, location: "Yellow Flowers", levels: "48-50", rate: "10%" },
+            { id: 575, inX: true, inY: true, location: "Yellow Flowers", levels: "48-50", rate: "30%" },
+            { id: 591, inX: true, inY: true, location: "Yellow Flowers", levels: "49-50", rate: "20%" },
+            { id: 271, inX: true, inY: true, location: "Surfing", levels: "48-50", rate: "66%" },
+            { id: 61, inX: true, inY: true, location: "Surfing", levels: "48-50", rate: "34%" },
+            { id: 60, inX: true, inY: true, location: "Fishing Old Rod", levels: "30", rate: "100%" },
+            { id: 61, inX: true, inY: true, location: "Fishing Good Rod", levels: "40", rate: "35%" },
+            { id: 550, inX: true, inY: true, location: "Fishing Good Rod", levels: "40", rate: "65%" },
+            { id: 61, inX: true, inY: true, location: "Fishing Super Rod", levels: "50", rate: "65%" },
+            { id: 550, inX: true, inY: true, location: "Fishing Super Rod", levels: "50", rate: "35%" },
+            { id: 150, inX: true, inY: true, location: "Dungeon", levels: "70", rate: "Único" }
+        ]
+    },
+    // 38. Ruta 21
+    {
+        locationName: "Ruta 21 (Dernière Way)",
+        verified: true,
+        encounters: [
+            { id: 334, inX: true, inY: true, location: "Grass", levels: "48-50", rate: "20%" },
+            { id: 217, inX: true, inY: true, location: "Grass", levels: "48-50", rate: "20%" },
+            { id: 319, inX: true, inY: true, location: "Surfing", levels: "45-50", rate: "60%" },
+            { id: 129, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" }
+        ]
+    },
+    // 39. Ruta 22
+    {
+        locationName: "Ruta 22 (Détourner Way)",
+        verified: true,
+        encounters: [
+            { id: 659, inX: true, inY: true, location: "Grass", levels: "5-6", rate: "20%" },
+            { id: 667, inX: true, inY: true, location: "Grass", levels: "5-6", rate: "20%" },
+            { id: 298, inX: true, inY: true, location: "Grass", levels: "6-7", rate: "20%" },
+            { id: 54, inX: true, inY: true, location: "Grass", levels: "6", rate: "10%" },
+            { id: 83, inX: true, inY: true, location: "Grass", levels: "7", rate: "10%" },
+            { id: 399, inX: true, inY: true, location: "Grass", levels: "6", rate: "10%" },
+            { id: 206, inX: true, inY: true, location: "Grass", levels: "7", rate: "5%" },
+            { id: 447, inX: true, inY: true, location: "Grass", levels: "6-7", rate: "5%" },
+            { id: 660, inX: true, inY: true, location: "Yellow Flowers", levels: "27", rate: "10%" },
+            { id: 184, inX: true, inY: true, location: "Yellow Flowers", levels: "25-26", rate: "20%" },
+            { id: 400, inX: true, inY: true, location: "Yellow Flowers", levels: "26-27", rate: "20%" },
+            { id: 55, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "95%" },
+            { id: 184, inX: true, inY: true, location: "Surfing", levels: "25, 27", rate: "5%" },
+            { id: 129, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
+            { id: 118, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" },
+            { id: 318, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "35%" },
+            { id: 119, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "35%" },
+            { id: 130, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "60%" },
+            { id: 319, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "5%" }
+        ]
+    },
+    // 40. Calle Victoria
+    {
+        locationName: "Calle Victoria (Victory Road)",
+        verified: true,
+        encounters: [
+            { id: 625, inX: true, inY: true, location: "Cave Floor", levels: "57-59", rate: "20%" },
+            { id: 620, inX: true, inY: true, location: "Cave Floor", levels: "57-59", rate: "20%" },
+            { id: 445, inX: true, inY: true, location: "Cave Floor", levels: "59-60", rate: "10%" }
+        ]
+    }
+];
         ];
 
         const versionExclusives = {
@@ -873,12 +1420,248 @@
             }
         };
 
-        // ... (el resto de funciones: generateEncountersHTML, generateExclusivesHTML, setupCloudStorage, etc. se mantienen igual)
-        // Por brevedad, se omiten aquí pero deben copiarse del archivo original.
+        function generateFormsHTML() {
+            const query = formSearchQuery.trim();
+            const visible = pokemonForms.filter(p =>
+                p.name.toLowerCase().includes(query) ||
+                p.category.toLowerCase().includes(query) ||
+                p.variants.some(v => v.toLowerCase().includes(query))
+            );
+            const total = pokemonForms.reduce((sum, p) => sum + p.variants.length, 0);
+            const registered = pokemonForms.reduce((sum, p) => sum + p.variants.filter((v, i) => formState[`${p.id}:${p.name}:${v}`]).length, 0);
+            let html = `
+                <div class="bg-slate-800 rounded-xl shadow-xl overflow-hidden border border-slate-700">
+                    <div class="p-6 bg-slate-900 border-b border-slate-700">
+                        <h1 class="text-3xl font-extrabold text-white">Formas y diferencias Pokémon</h1>
+                        <p class="text-slate-400 mt-2">Registra por separado las variantes de sexo, formas alternas y coloraciones. Este seguimiento no altera el progreso de la Pokédex regional.</p>
+                        <div class="mt-5 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+                            <input type="text" placeholder="Buscar Pokémon, forma o categoría..." class="px-4 py-3 rounded-lg bg-slate-950 text-white w-full sm:max-w-xl border border-slate-700 focus:ring-2 focus:ring-sky-500 outline-none" value="${formSearchQuery.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')}" onkeyup="updateFormSearch(this.value)">
+                            <span class="text-sm text-sky-300 font-semibold whitespace-nowrap">${registered} / ${total} variantes registradas</span>
+                        </div>
+                    </div>
+                    <div class="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            `;
+            visible.forEach(p => {
+                const keyBase = `${p.id}:${p.name}:`;
+                const checkedCount = p.variants.filter(v => formState[keyBase + v]).length;
+                html += `
+                    <section class="rounded-xl bg-slate-900 border border-slate-700 p-5">
+                        <div class="flex gap-3 items-center mb-3">
+                            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png" alt="${p.name}" class="w-14 h-14 object-contain" onerror="this.style.display='none'">
+                            <div class="min-w-0">
+                                <h2 class="text-lg font-bold text-white">${p.name}</h2>
+                                <p class="text-xs text-slate-400">N.º Nacional ${p.id} · ${p.category}</p>
+                            </div>
+                            <span class="ml-auto text-xs rounded-full px-2 py-1 bg-slate-800 text-sky-300">${checkedCount}/${p.variants.length}</span>
+                        </div>
+                        <p class="text-sm text-slate-400 mb-4">${p.note}</p>
+                        <div class="space-y-2">
+                `;
+                p.variants.forEach(v => {
+                    const key = keyBase + v;
+                    const checked = !!formState[key];
+                    html += `
+                        <label class="flex items-center gap-3 rounded-lg p-3 ${checked ? 'bg-sky-950/60' : 'bg-slate-800'} cursor-pointer hover:bg-slate-700/70">
+                            <input type="checkbox" class="w-5 h-5 accent-sky-500" ${checked ? 'checked' : ''} onchange="toggleFormCaught(${JSON.stringify(key).replace(/"/g, '&quot;')})">
+                            <span class="text-sm ${checked ? 'text-sky-200' : 'text-slate-200'}">${v}</span>
+                        </label>
+                    `;
+                });
+                html += `</div></section>`;
+            });
+            if (!visible.length) html += `<p class="text-slate-400 col-span-full py-10 text-center">No se encontraron formas con esa búsqueda.</p>`;
+            html += `</div></div>`;
+            return html;
+        }
 
-        // IMPORTANTE: Para que el archivo funcione, debes pegar el resto del código original
-        // (generateEncountersHTML, generateExclusivesHTML, setupCloudStorage, etc.)
-        // que no ha sido modificado.
+
+        // Color representativo por forma de aparición
+        const encounterMethodStyles = {
+            "Grass":            { label: "Hierba",              c: "#22c55e" },
+            "Forest Grass":     { label: "Hierba del bosque",   c: "#15803d" },
+            "Yellow Flowers":   { label: "Flores amarillas",    c: "#facc15" },
+            "Red Flowers":      { label: "Flores rojas",        c: "#f43f5e" },
+            "Surfing":          { label: "Surf",                c: "#3b82f6" },
+            "Fishing Old Rod":  { label: "Caña Vieja",          c: "#67e8f9" },
+            "Fishing Good Rod": { label: "Caña Buena",          c: "#14b8a6" },
+            "Fishing Super Rod":{ label: "Supercaña",           c: "#6366f1" },
+            "Cave Floor":       { label: "Suelo de cueva",      c: "#a8856a" },
+            "Deep Cave":        { label: "Cueva profunda",      c: "#78716c" },
+            "Dungeon":          { label: "Mazmorra",            c: "#9333ea" },
+            "Rock Smash":       { label: "Golpe Roca",          c: "#f97316" },
+            "Ice Floor":        { label: "Suelo de hielo",      c: "#22d3ee" },
+            "Snow Area":        { label: "Zona nevada",         c: "#e2e8f0" },
+            "Swamp":            { label: "Pantano",             c: "#84cc16" },
+            "Dirt":             { label: "Tierra",              c: "#d97706" },
+            "Horde Encounter":  { label: "Encuentro en grupo",  c: "#ec4899" },
+            "Trash Cans":       { label: "Cubos de basura",     c: "#a1a1aa" },
+            "Rhyhorn Ride":     { label: "Paseo en Rhyhorn",    c: "#b45309" },
+            "Shadows":          { label: "Sombras",             c: "#a78bfa" },
+            "Special":          { label: "Especial",            c: "#fb923c" },
+            "Starter":          { label: "Inicial",             c: "#38bdf8" },
+            "Purple Flowers":   { label: "Flores moradas",      c: "#c084fc" },
+            "Indoors":          { label: "Interior",            c: "#94a3b8" },
+            "Fossil":           { label: "Fósil (regalo)",      c: "#fbbf24" }
+            "Trade":            { label: "Intercambio",         c: "#a855f7" },
+            "Gift":             { label: "Regalo",              c: "#f472b6" },
+            "Fossil (Gift)":    { label: "Fósil (Regalo)",      c: "#fbbf24" }
+        };
+        function getEncounterMethod(location) {
+            if (encounterMethodStyles[location]) return location;
+            const base = location.replace(/\s*\(.*\)\s*$/, '').trim();
+            return encounterMethodStyles[base] ? base : (base.split(' ')[0] in encounterMethodStyles ? base.split(' ')[0] : null);
+        }
+        function renderMethodBadge(location) {
+            const key = getEncounterMethod(location);
+            const c = key ? encounterMethodStyles[key].c : '#94a3b8';
+            return `<span class="inline-block px-3 py-1 rounded-full text-xs font-bold" style="color:${c};background:${c}22;border:1px solid ${c}88">${location}</span>`;
+        }
+        function renderMethodLegend() {
+            return Object.values(encounterMethodStyles).map(m =>
+                `<span class="inline-flex items-center gap-1.5 text-xs text-slate-300"><span class="w-3 h-3 rounded-full" style="background:${m.c}"></span>${m.label}</span>`
+            ).join('');
+        }
+
+        function generateEncountersHTML() {
+            let html = `
+                <div class="space-y-8">
+                    <div class="rounded-xl shadow-lg border border-slate-700 bg-slate-800 p-6 sm:p-8">
+                        <h1 class="text-3xl font-extrabold text-white mb-2">Guía Única de Encuentros (Estilo Bulbapedia)</h1>
+                        <p class="text-slate-300 mb-4">Verificación de apariciones con colores oficiales según disponibilidad por versión (X / Y).</p>
+                        <input type="text" placeholder="Buscar por lugar o Pokémon..." class="px-4 py-2.5 rounded-lg bg-slate-950 text-white w-full border border-slate-700 focus:ring-2 focus:ring-sky-500 outline-none" value="${searchQuery}" onkeyup="updateSearch(this.value)">
+                        <div class="flex flex-wrap gap-x-4 gap-y-2 mt-4">${renderMethodLegend()}</div>
+                    </div>
+            `;
+
+            const filteredLocations = allLocationsEncounters.filter(loc => {
+                const matchesLoc = loc.locationName.toLowerCase().includes(searchQuery);
+                const matchesMon = loc.encounters.some(e => getPokemonName(e.id).toLowerCase().includes(searchQuery));
+                return matchesLoc || matchesMon;
+            });
+
+            filteredLocations.forEach(loc => {
+                html += `
+                    <div class="bg-slate-800 rounded-xl shadow-md border border-slate-700 overflow-hidden">
+                        <div class="px-6 py-4 bg-slate-950 border-b border-slate-700">
+                            <h2 class="text-xl font-bold text-sky-400 flex flex-wrap items-center gap-3">${loc.locationName}<span class="text-xs font-semibold px-2 py-1 rounded-full ${loc.verified ? 'bg-emerald-900/60 text-emerald-300' : 'bg-slate-800 text-slate-400'}">${loc.verified ? '✔ Verificado' : 'Sin verificar'}</span></h2>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm whitespace-nowrap border-collapse">
+                                <thead class="bg-slate-900 text-slate-400 text-xs uppercase font-semibold border-b border-slate-700">
+                                    <tr>
+                                        <th class="px-4 py-3 w-16 text-center">Atrapar</th>
+                                        <th class="px-6 py-3">Pokémon</th>
+                                        <th class="px-4 py-3 text-center" colspan="2">Games</th>
+                                        <th class="px-6 py-3 text-center">Location</th>
+                                        <th class="px-6 py-3 text-center">Levels</th>
+                                        <th class="px-6 py-3 text-center">Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-700/50">
+                `;
+
+                loc.encounters.forEach(encounter => {
+                    const pokeName = getPokemonName(encounter.id);
+                    const isCaught = caughtState[encounter.id] || false;
+
+                    const classX = encounter.inX ? 'game-badge-x-active' : 'game-badge-x-inactive';
+                    const classY = encounter.inY ? 'game-badge-y-active' : 'game-badge-y-inactive';
+
+                    html += `
+                        <tr class="hover:bg-slate-700/50 transition ${isCaught ? 'bg-sky-950/30' : ''}">
+                            <td class="px-4 py-3 text-center">
+                                <input type="checkbox" class="w-5 h-5 text-sky-500 rounded border-slate-600 cursor-pointer checkbox-anim" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${encounter.id})">
+                            </td>
+                            <td class="px-6 py-3 font-semibold flex items-center gap-3">
+                                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${encounter.id}.png" alt="${pokeName}" class="w-10 h-10 object-contain" onerror="this.style.display='none'">
+                                <span><a href="${getWikidexUrl(pokeName)}" target="_blank" class="text-sky-400 hover:underline">${pokeName}</a></span>
+                            </td>
+                            <td class="px-1 py-3 text-center w-8">
+                                <span class="px-2.5 py-1 text-xs font-black rounded ${classX}">X</span>
+                            </td>
+                            <td class="px-1 py-3 text-center w-8">
+                                <span class="px-2.5 py-1 text-xs font-black rounded ${classY}">Y</span>
+                            </td>
+                            <td class="px-6 py-3 text-center">${renderMethodBadge(encounter.location)}</td>
+                            <td class="px-6 py-3 text-center text-slate-300 font-mono">${encounter.levels}</td>
+                            <td class="px-6 py-3 text-center font-bold text-sky-400 font-mono">${encounter.rate}</td>
+                        </tr>
+                    `;
+                });
+
+                html += `</tbody></table></div></div>`;
+            });
+
+            html += `</div>`;
+            return html;
+        }
+
+        function generateExclusivesHTML() {
+            let html = `
+                <div class="bg-slate-800 rounded-xl shadow-xl overflow-hidden border border-slate-700 p-8">
+                    <h1 class="text-3xl font-extrabold mb-6 text-white">Pokémon Exclusivos por Versión</h1>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            `;
+            for (const [version, list] of Object.entries(versionExclusives)) {
+                let badgeColor = version === 'Pokémon X' ? 'bg-sky-600' : 'bg-rose-600';
+                html += `
+                    <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 shadow-sm">
+                        <h2 class="text-2xl font-bold mb-4 text-white p-3 rounded-lg ${badgeColor}">${version}</h2>
+                        <ul class="space-y-3">
+                `;
+                list.forEach(item => {
+                    html += `
+                        <li class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <span class="font-bold text-slate-200">${item.name}</span>
+                            <span class="text-xs text-slate-400 bg-slate-900 px-2 py-1 rounded">${item.note}</span>
+                        </li>
+                    `;
+                });
+                html += `</ul></div>`;
+            }
+            html += `</div></div>`;
+            return html;
+        }
+
+        async function setupCloudStorage() {
+            formState = JSON.parse(localStorage.getItem('kalosTrackerForms') || '{}');
+            try {
+                const firebaseConfig = JSON.parse(window.__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                const userCred = await signInAnonymously(auth);
+                userId = userCred.user.uid;
+                document.getElementById('storage-status').innerText = "Holomisor conectado a Firebase.";
+                const docRef = doc(db, 'artifacts', appId, 'users', userId, 'trackerData', 'caughtState');
+                onSnapshot(docRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        caughtState = { ...JSON.parse(localStorage.getItem('kalosTrackerData') || '{}'), ...docSnap.data() };
+                        renderCurrentView();
+                    } else {
+                        caughtState = JSON.parse(localStorage.getItem('kalosTrackerData') || '{}');
+                        setDoc(docRef, caughtState);
+                        renderCurrentView();
+                    }
+                });
+                const formDocRef = doc(db, 'artifacts', appId, 'users', userId, 'trackerData', 'formState');
+                onSnapshot(formDocRef, (formSnap) => {
+                    if (formSnap.exists()) {
+                        formState = { ...JSON.parse(localStorage.getItem('kalosTrackerForms') || '{}'), ...formSnap.data() };
+                    } else {
+                        formState = JSON.parse(localStorage.getItem('kalosTrackerForms') || '{}');
+                        setDoc(formDocRef, formState);
+                    }
+                    renderCurrentView();
+                });
+            } catch (e) {
+                caughtState = JSON.parse(localStorage.getItem('kalosTrackerData') || '{}');
+                formState = JSON.parse(localStorage.getItem('kalosTrackerForms') || '{}');
+                document.getElementById('storage-status').innerText = "Modo Local activo.";
+                renderCurrentView();
+            }
+        }
+        setupCloudStorage();
 
     </script>
 </body>
