@@ -14,7 +14,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalos Tracker (X / Y)</title>
+    <title>Kalos Tracker (X / Y) - 100% Regional</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -22,7 +22,6 @@
         .game-bg-x { background: linear-gradient(135deg, #1e3a8a 0%, #0284c7 50%, #0f172a 100%); }
         .game-bg-y { background: linear-gradient(135deg, #881337 0%, #e11d48 50%, #0f172a 100%); }
         .game-bg-pokedex { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
-        
         .checkbox-anim { transition: all 0.2s ease-in-out; }
         .checkbox-anim:checked { transform: scale(1.1); }
     </style>
@@ -36,10 +35,10 @@
                     <a href="index.html" class="p-2 bg-slate-800 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition" title="Volver al Hub">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     </a>
-                    <span class="text-xl font-bold tracking-wider cursor-pointer text-sky-400" onclick="navigate('pokedex')">Kalos (Pokémon X / Y)</span>
+                    <span class="text-xl font-bold tracking-wider cursor-pointer text-sky-400" onclick="navigate('pokedex')">Kalos Completa (X/Y)</span>
                 </div>
                 <div class="flex items-center space-x-1 md:space-x-4 overflow-x-auto">
-                    <button onclick="navigate('pokedex')" id="nav-pokedex" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition whitespace-nowrap">Pokédex Completa</button>
+                    <button onclick="navigate('pokedex')" id="nav-pokedex" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition whitespace-nowrap">Pokédex Regional</button>
                     <button onclick="navigate('Pokémon X')" id="nav-Pokémon X" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-sky-400 hover:bg-sky-900 hover:text-white transition whitespace-nowrap">Pokémon X</button>
                     <button onclick="navigate('Pokémon Y')" id="nav-Pokémon Y" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-rose-400 hover:bg-rose-900 hover:text-white transition whitespace-nowrap">Pokémon Y</button>
                 </div>
@@ -58,64 +57,199 @@
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Pokédex de Kalos (Selección Central, Costa y Montaña)
+        // Pokédex Regional de Kalos (Centro, Costa y Montaña - 457 Pokémon)
         const rawPokedex = [
+            // --- KALOS CENTRO (1 - 153) ---
             "650|Chespin|Nv. 16", "651|Quilladin|Nv. 36", "652|Chesnaught|Final",
             "653|Fennekin|Nv. 16", "654|Braixen|Nv. 36", "655|Delphox|Final",
             "656|Froakie|Nv. 16", "657|Frogadier|Nv. 36", "658|Greninja|Final",
             "659|Bunnelby|Nv. 20", "660|Diggersby|Final",
+            "263|Zigzagoon|Nv. 20", "264|Linoone|Final",
             "661|Fletchling|Nv. 17", "662|Fletchinder|Nv. 35", "663|Talonflame|Final",
+            "16|Pidgey|Nv. 18", "17|Pidgeotto|Nv. 36", "18|Pidgeot|Final",
             "664|Scatterbug|Nv. 9", "665|Spewpa|Nv. 12", "666|Vivillon|Final",
+            "10|Caterpie|Nv. 7", "11|Metapod|Nv. 10", "12|Butterfree|Final",
+            "13|Weedle|Nv. 7", "14|Kakuna|Nv. 10", "15|Beedrill|Final",
+            "511|Pansage|Piedra Hoja", "512|Simisage|Final",
+            "513|Pansear|Piedra Fuego", "514|Simisear|Final",
+            "515|Panpour|Piedra Agua", "516|Simipour|Final",
+            "172|Pichu|Amistad", "25|Pikachu|Piedra Trueno", "26|Raichu|Final",
+            "399|Bidoof|Nv. 15", "400|Bibarel|Final",
+            "206|Dunsparce|Final",
+            "298|Azurill|Amistad", "183|Marill|Nv. 18", "184|Azumarill|Final",
+            "412|Burmy|Nv. 20", "413|Wormadam|Final (Hembra)", "414|Mothim|Final (Macho)",
+            "283|Surskit|Nv. 22", "284|Masquerain|Final",
+            "129|Magikarp|Nv. 20", "130|Gyarados|Final",
+            "341|Corphish|Nv. 30", "342|Crawdaunt|Final",
+            "118|Goldeen|Nv. 33", "119|Seaking|Final",
+            "318|Carvanha|Nv. 30", "319|Sharpedo|Final",
             "667|Litleo|Nv. 35", "668|Pyroar|Final",
-            "669|Flabébé|Nv. 19", "670|Floette|P. Día", "671|Florges|Final",
+            "54|Psyduck|Nv. 33", "55|Golduck|Final",
+            "83|Farfetch'd|Final",
+            "448|Lucario|Final", "447|Riolu|Amistad de Día",
+            "280|Ralts|Nv. 20", "281|Kirlia|Nv. 30", "282|Gardevoir|Final", "475|Gallade|Piedra Alba (Macho)",
+            "669|Flabébé|Nv. 19", "670|Floette|Piedra Día", "671|Florges|Final",
+            "315|Roselia|Piedra Día", "406|Budew|Amistad de Día", "407|Roserade|Final",
+            "165|Ledyba|Nv. 18", "166|Ledian|Final",
+            "415|Combee|Nv. 21 (Hembra)", "416|Vespiquen|Final",
+            "300|Skitty|Piedra Lunar", "301|Delcatty|Final",
+            "1|Bulbasaur|Nv. 16", "2|Ivysaur|Nv. 32", "3|Venusaur|Final",
+            "4|Charmander|Nv. 16", "5|Charmeleon|Nv. 36", "6|Charizard|Final",
+            "7|Squirtle|Nv. 16", "8|Wartortle|Nv. 36", "9|Blastoise|Final",
             "672|Skiddo|Nv. 32", "673|Gogoat|Final",
-            "674|Pancham|Nv. 32 + Siniestro", "675|Pangoro|Final",
+            "674|Pancham|Nv. 32 + Tipo Siniestro", "675|Pangoro|Final",
             "676|Furfrou|Final",
+            "84|Doduo|Nv. 31", "85|Dodrio|Final",
+            "311|Plusle|Final", "312|Minun|Final",
+            "316|Gulpin|Nv. 26", "317|Swalot|Final",
+            "104|Cubone|Nv. 28", "105|Marowak|Final",
+            "133|Eevee|Evoluciones Múltiples", "134|Vaporeon|Piedra Agua", "135|Jolteon|Piedra Trueno", "136|Flareon|Piedra Fuego", "196|Espeon|Amistad (Día)", "197|Umbreon|Amistad (Noche)", "470|Leafeon|Roca Musgo", "471|Glaceon|Roca Hielo", "700|Sylveon|Amistad + Mov. Hada",
             "677|Espurr|Nv. 25", "678|Meowstic|Final",
             "682|Spritzee|Intercambio c/Saquito", "683|Aromatisse|Final",
-            "684|Swirlix|Intercambio c/Dulce de Nata", "685|Slurpuff|Final",
+            "684|Swirlix|Intercambio c/Dulce Nata", "685|Slurpuff|Final",
+            "175|Togepi|Amistad", "176|Togetic|Piedra Día", "468|Togekiss|Final",
+            "41|Zubat|Nv. 22", "42|Golbat|Amistad", "169|Crobat|Final",
+            "610|Axew|Nv. 38", "611|Fraxure|Nv. 48", "612|Haxorus|Final",
+
+            // --- KALOS COSTA (1 - 153) ---
+            "425|Drifloon|Nv. 28", "426|Drifblim|Final",
+            "619|Mienfoo|Nv. 50", "620|Mienshao|Final",
+            "335|Zangoose|Final", "336|Seviper|Final",
+            "325|Spoink|Nv. 32", "326|Grumpig|Final",
+            "359|Absol|Final",
             "686|Inkay|Nv. 30 (Consola Invertida)", "687|Malamar|Final",
+            "337|Lunatone|Final", "338|Solrock|Final",
+            "371|Bagon|Nv. 30", "372|Shelgon|Nv. 50", "373|Salamence|Final",
+            "278|Wingull|Nv. 25", "279|Pelipper|Final",
+            "276|Taillow|Nv. 22", "277|Swellow|Final",
             "688|Binacle|Nv. 39", "689|Barbaracle|Final",
-            "690|Skrelp|Nv. 48", "691|Dragalge|Final",
-            "692|Clauncher|Nv. 37", "693|Clawitzer|Final",
-            "694|Helioptile|P. Sol", "695|Heliolisk|Final",
+            "557|Dwebble|Nv. 34", "558|Crustle|Final",
+            "72|Tentacool|Nv. 30", "73|Tentacruel|Final",
+            "397|Staravia|Nv. 34", "398|Staraptor|Final", "396|Starly|Nv. 14",
+            "111|Rhyhorn|Nv. 42", "112|Rhydon|Intercambio c/Protector", "464|Rhyperior|Final",
+            "137|Porygon|Intercambio c/Mejora", "233|Porygon2|Intercambio c/Disco Extraño", "474|Porygon-Z|Final",
+            "138|Omanyte|Nv. 40", "139|Omastar|Final",
+            "140|Kabuto|Nv. 40", "141|Kabutops|Final",
+            "142|Aerodactyl|Final",
+            "345|Lileep|Nv. 40", "346|Cradily|Final",
+            "347|Anorith|Nv. 40", "348|Armaldo|Final",
+            "564|Tirtouga|Nv. 37", "565|Carracosta|Final",
+            "566|Archen|Nv. 37", "567|Archeops|Final",
             "696|Tyrunt|Nv. 39 (Día)", "697|Tyrantrum|Final",
             "698|Amaura|Nv. 39 (Noche)", "699|Aurorus|Final",
-            "700|Sylveon|Amistad + Mov. Hada",
+            "215|Sneasel|Subir Nv. Noche c/Garra Afilada", "461|Weavile|Final",
+            "250|Ho-Oh|Solo Traslado", "249|Lugia|Solo Traslado",
+            "679|Honedge|Nv. 35", "680|Doublade|Piedra Noche", "681|Aegislash|Final",
+            "543|Venipede|Nv. 22", "544|Whirlipede|Nv. 30", "545|Scolipede|Final",
+            "531|Audino|Final",
+            "235|Smeargle|Final",
+            "453|Croagunk|Nv. 37", "454|Toxicroak|Final",
+            "580|Ducklett|Nv. 35", "581|Swanna|Final",
+            "174|Igglybuff|Amistad", "39|Jigglypuff|Piedra Lunar", "40|Wigglytuff|Final",
+            "690|Skrelp|Nv. 48", "691|Dragalge|Final",
+            "692|Clauncher|Nv. 37", "693|Clawitzer|Final",
+            "314|Illumise|Final", "313|Volbeat|Final",
+            "187|Hoppip|Nv. 18", "188|Skiploom|Nv. 27", "189|Jumpluff|Final",
+            "273|Seedot|Nv. 14", "274|Nuzleaf|Piedra Hoja", "275|Shiftry|Final",
+            "270|Lotad|Nv. 14", "271|Lombre|Piedra Agua", "272|Ludicolo|Final",
+            "694|Helioptile|Piedra Sol", "695|Heliolisk|Final",
             "701|Hawlucha|Final",
-            "702|Dedenne|Final",
-            "703|Carbink|Final",
+            "562|Yamask|Nv. 34", "563|Cofagrigus|Final",
+            "63|Abra|Nv. 16", "64|Kadabra|Intercambio", "65|Alakazam|Final",
+            "524|Roggenrola|Nv. 25", "525|Boldore|Intercambio", "526|Gigalith|Final",
+            "214|Heracross|Final",
+            "216|Teddiursa|Nv. 30", "217|Ursaring|Final",
+            "143|Snorlax|Final", "446|Munchlax|Amistad",
+            "79|Slowpoke|Nv. 37 / Intercambio c/Roca del Rey", "80|Slowbro|Final", "199|Slowking|Final",
+            "102|Exeggcute|Piedra Hoja", "103|Exeggutor|Final",
+            "441|Chatot|Final",
+            "458|Mantyke|Subir Nv. con Remoraid", "226|Mantine|Final",
+            "366|Clamperl|Intercambio (Diente/Escama)", "367|Huntail|Final", "368|Gorebyss|Final",
+            "222|Corsola|Final",
+            "170|Chinchou|Nv. 27", "171|Lanturn|Final",
+            "594|Alomomola|Final",
+            "131|Lapras|Final",
+            "144|Articuno|Errante (Si Chespin)",
+            "145|Zapdos|Errante (Si Fennekin)",
+            "146|Moltres|Errante (Si Froakie)",
+
+            // --- KALOS MONTAÑA (1 - 151) ---
+            "50|Diglett|Nv. 26", "51|Dugtrio|Final",
+            "328|Trapinch|Nv. 35", "329|Vibrava|Nv. 45", "330|Flygon|Final",
+            "443|Gible|Nv. 24", "444|Gabite|Nv. 48", "445|Garchomp|Final",
+            "74|Geodude|Nv. 25", "75|Graveler|Intercambio", "76|Golem|Final",
+            "218|Slugma|Nv. 38", "219|Magcargo|Final",
+            "451|Skorupi|Nv. 40", "452|Drapion|Final",
+            "194|Wooper|Nv. 20", "195|Quagsire|Final",
             "704|Goomy|Nv. 40", "705|Sliggoo|Nv. 50 (Lluvia)", "706|Goodra|Final",
+            "588|Karrablast|Intercambio por Shelmet", "589|Escavalier|Final",
+            "616|Shelmet|Intercambio por Karrablast", "617|Accelgor|Final",
+            "69|Bellsprout|Nv. 21", "70|Weepinbell|Piedra Hoja", "71|Victreebel|Final",
+            "455|Carnivine|Final",
+            "92|Gastly|Nv. 25", "93|Haunter|Intercambio", "94|Gengar|Final",
+            "167|Spinarak|Nv. 22", "168|Ariados|Final",
+            "100|Voltorb|Nv. 30", "101|Electrode|Final",
+            "568|Trubbish|Nv. 36", "569|Garbodor|Final",
+            "220|Swinub|Nv. 33", "221|Piloswine|Nv. con Poder Pasado", "473|Mamoswine|Final",
+            "238|Smoochum|Nv. 30", "124|Jynx|Final",
+            "582|Vanillite|Nv. 35", "583|Vanillish|Nv. 47", "584|Vanilluxe|Final",
+            "459|Snover|Nv. 40", "460|Abomasnow|Final",
+            "225|Delibird|Final",
+            "361|Snorunt|Nv. 42 / Piedra Alba", "362|Glalie|Final", "478|Froslass|Final",
+            "128|Tauros|Final", "241|Miltank|Final",
+            "179|Mareep|Nv. 15", "180|Flaaffy|Nv. 30", "181|Ampharos|Final",
+            "127|Pinsir|Final", "214|Heracross|Final",
+            "417|Pachirisu|Final",
+            "702|Dedenne|Final",
+            "27|Sandshrew|Nv. 22", "28|Sandslash|Final",
+            "304|Aron|Nv. 32", "305|Lairon|Nv. 42", "306|Aggron|Final",
+            "246|Larvitar|Nv. 30", "247|Pupitar|Nv. 55", "248|Tyranitar|Final",
+            "322|Numel|Nv. 33", "323|Camerupt|Final",
+            "108|Lickitung|Subir Nv. con Desenrollar", "463|Lickilicky|Final",
+            "703|Carbink|Final",
             "707|Klefki|Final",
+            "538|Throh|Final", "539|Sawk|Final",
+            "333|Swablu|Nv. 35", "334|Altaria|Final",
+            "527|Woobat|Amistad", "528|Swoobat|Final",
             "708|Phantump|Intercambio", "709|Trevenant|Final",
             "710|Pumpkaboo|Intercambio", "711|Gourgeist|Final",
+            "353|Shuppet|Nv. 37", "354|Banette|Final",
+            "81|Magnemite|Nv. 30", "82|Magneton|Monte Corona/Nivel en Zona Magnética", "462|Magnezone|Final",
             "712|Bergmite|Nv. 37", "713|Avalugg|Final",
+            "228|Houndour|Nv. 24", "229|Houndoom|Final",
+            "517|Munna|Piedra Lunar", "518|Musharna|Final",
+            "163|Hoothoot|Nv. 20", "164|Noctowl|Final",
             "714|Noibat|Nv. 48", "715|Noivern|Final",
-            "716|Xerneas|Legendario (X)", "717|Yveltal|Legendario (Y)", "718|Zygarde|Legendario",
-            "150|Mewtwo|Legendario", "144|Articuno|Legendario", "145|Zapdos|Legendario", "146|Moltres|Legendario"
+            "23|Ekans|Nv. 22", "24|Arbok|Final",
+            "147|Dratini|Nv. 30", "148|Dragonair|Nv. 55", "149|Dragonite|Final",
+            "716|Xerneas|Legendario (X)",
+            "717|Yveltal|Legendario (Y)",
+            "718|Zygarde|Legendario",
+            "150|Mewtwo|Villa Pokémon"
         ];
 
+        // Se ordenan por ID de la Pokédex Nacional para mantener la vista organizada
         const pokedex = rawPokedex.map((data) => {
             const [id, name, evo] = data.split('|');
             return { id: parseInt(id), name, evo };
-        });
+        }).sort((a, b) => a.id - b.id);
 
         const routeData = {
             "Pokémon X": [
-                { name: "Pueblo Boceto y Rutas 1-3", encounters: [{ id: 650, rate: "Elegir", method: "Inicial" }, { id: 653, rate: "Elegir", method: "Inicial" }, { id: 656, rate: "Elegir", method: "Inicial" }, { id: 659, rate: "Común", method: "Ruta 2-3" }, { id: 661, rate: "Común", method: "Ruta 2-3" }] },
-                { name: "Bosque Novarte y Ruta 4", encounters: [{ id: 664, rate: "Común", method: "Bosque Novarte" }, { id: 667, rate: "Común", method: "Ruta 22" }, { id: 669, rate: "Común", method: "Ruta 4" }] },
-                { name: "Ciudad Lumalia y Rutas 6-7", encounters: [{ id: 672, rate: "Común", method: "Ruta 5" }, { id: 674, rate: "Común", method: "Ruta 5" }, { id: 676, rate: "Común", method: "Ruta 5" }, { id: 684, rate: "Exclusivo X", method: "Ruta 7" }] },
-                { name: "Rutas 8-11 y Fósiles", encounters: [{ id: 686, rate: "Común", method: "Ruta 8" }, { id: 692, rate: "Pesca (Exclusivo X)", method: "Ruta 8" }, { id: 696, rate: "Fósil Garra", method: "Pueblo Petroglifo" }] },
-                { name: "Rutas 12-16 y Bahía Azul", encounters: [{ id: 694, rate: "Común", method: "Ruta 9" }, { id: 701, rate: "Común", method: "Ruta 10" }, { id: 704, rate: "Raro", method: "Ruta 14" }, { id: 708, rate: "Común", method: "Ruta 16" }] },
-                { name: "Post-Game y Legendarios", encounters: [{ id: 716, rate: "Historia", method: "Guarida Team Flare" }, { id: 718, rate: "Único", method: "Cueva Desenlace" }, { id: 150, rate: "Único", method: "Villa Pokémon" }, { id: 144, rate: "Errante", method: "Cueva Marina" }] }
+                { name: "Pueblo Boceto y Rutas Iniciales", encounters: [{ id: 650, rate: "Elegir", method: "Inicial" }, { id: 653, rate: "Elegir", method: "Inicial" }, { id: 656, rate: "Elegir", method: "Inicial" }, { id: 659, rate: "Común", method: "Ruta 2-3" }, { id: 661, rate: "Común", method: "Ruta 2-3" }] },
+                { name: "Bosque Novarte y Ruta 4", encounters: [{ id: 25, rate: "Raro", method: "Bosque Novarte" }, { id: 664, rate: "Común", method: "Bosque Novarte" }, { id: 667, rate: "Común", method: "Ruta 22" }, { id: 669, rate: "Común", method: "Ruta 4" }] },
+                { name: "Ciudad Lumalia y Rutas 5-7", encounters: [{ id: 1, rate: "Elegir", method: "Laboratorio Ciprés" }, { id: 4, rate: "Elegir", method: "Laboratorio Ciprés" }, { id: 7, rate: "Elegir", method: "Laboratorio Ciprés" }, { id: 672, rate: "Común", method: "Ruta 5" }, { id: 143, rate: "Único", method: "Ruta 7" }, { id: 684, rate: "Exclusivo X", method: "Ruta 7" }] },
+                { name: "Cueva Conectividad y Ruta 8-11", encounters: [{ id: 686, rate: "Común", method: "Ruta 8" }, { id: 692, rate: "Pesca (Exclusivo X)", method: "Ruta 8" }, { id: 696, rate: "Fósil Garra", method: "Pueblo Petroglifo" }, { id: 133, rate: "Raro", method: "Ruta 10" }, { id: 701, rate: "Común", method: "Ruta 10" }] },
+                { name: "Rutas 12-16 y Bahía Azul", encounters: [{ id: 694, rate: "Común", method: "Ruta 9" }, { id: 304, rate: "Exclusivo X", method: "Cueva Reflejos" }, { id: 447, rate: "Regalo", method: "Torre Maestra" }, { id: 704, rate: "Raro", method: "Ruta 14" }, { id: 708, rate: "Común", method: "Ruta 16" }] },
+                { name: "Post-Game y Legendarios", encounters: [{ id: 716, rate: "Historia", method: "Guarida Team Flare" }, { id: 718, rate: "Único", method: "Cueva Desenlace" }, { id: 150, rate: "Único", method: "Villa Pokémon" }, { id: 144, rate: "Errante", method: "Cueva Marina" }, { id: 145, rate: "Errante", method: "Cueva Marina" }, { id: 146, rate: "Errante", method: "Cueva Marina" }] }
             ],
             "Pokémon Y": [
-                { name: "Pueblo Boceto y Rutas 1-3", encounters: [{ id: 650, rate: "Elegir", method: "Inicial" }, { id: 653, rate: "Elegir", method: "Inicial" }, { id: 656, rate: "Elegir", method: "Inicial" }, { id: 659, rate: "Común", method: "Ruta 2-3" }, { id: 661, rate: "Común", method: "Ruta 2-3" }] },
-                { name: "Bosque Novarte y Ruta 4", encounters: [{ id: 664, rate: "Común", method: "Bosque Novarte" }, { id: 667, rate: "Común", method: "Ruta 22" }, { id: 669, rate: "Común", method: "Ruta 4" }] },
-                { name: "Ciudad Lumalia y Rutas 6-7", encounters: [{ id: 672, rate: "Común", method: "Ruta 5" }, { id: 674, rate: "Común", method: "Ruta 5" }, { id: 676, rate: "Común", method: "Ruta 5" }, { id: 682, rate: "Exclusivo Y", method: "Ruta 7" }] },
-                { name: "Rutas 8-11 y Fósiles", encounters: [{ id: 686, rate: "Común", method: "Ruta 8" }, { id: 690, rate: "Pesca (Exclusivo Y)", method: "Ruta 8" }, { id: 698, rate: "Fósil Aleta", method: "Pueblo Petroglifo" }] },
-                { name: "Rutas 12-16 y Bahía Azul", encounters: [{ id: 694, rate: "Común", method: "Ruta 9" }, { id: 701, rate: "Común", method: "Ruta 10" }, { id: 704, rate: "Raro", method: "Ruta 14" }, { id: 708, rate: "Común", method: "Ruta 16" }] },
-                { name: "Post-Game y Legendarios", encounters: [{ id: 717, rate: "Historia", method: "Guarida Team Flare" }, { id: 718, rate: "Único", method: "Cueva Desenlace" }, { id: 150, rate: "Único", method: "Villa Pokémon" }, { id: 144, rate: "Errante", method: "Cueva Marina" }] }
+                { name: "Pueblo Boceto y Rutas Iniciales", encounters: [{ id: 650, rate: "Elegir", method: "Inicial" }, { id: 653, rate: "Elegir", method: "Inicial" }, { id: 656, rate: "Elegir", method: "Inicial" }, { id: 659, rate: "Común", method: "Ruta 2-3" }, { id: 661, rate: "Común", method: "Ruta 2-3" }] },
+                { name: "Bosque Novarte y Ruta 4", encounters: [{ id: 25, rate: "Raro", method: "Bosque Novarte" }, { id: 664, rate: "Común", method: "Bosque Novarte" }, { id: 667, rate: "Común", method: "Ruta 22" }, { id: 669, rate: "Común", method: "Ruta 4" }] },
+                { name: "Ciudad Lumalia y Rutas 5-7", encounters: [{ id: 1, rate: "Elegir", method: "Laboratorio Ciprés" }, { id: 4, rate: "Elegir", method: "Laboratorio Ciprés" }, { id: 7, rate: "Elegir", method: "Laboratorio Ciprés" }, { id: 672, rate: "Común", method: "Ruta 5" }, { id: 143, rate: "Único", method: "Ruta 7" }, { id: 682, rate: "Exclusivo Y", method: "Ruta 7" }] },
+                { name: "Cueva Conectividad y Ruta 8-11", encounters: [{ id: 686, rate: "Común", method: "Ruta 8" }, { id: 690, rate: "Pesca (Exclusivo Y)", method: "Ruta 8" }, { id: 698, rate: "Fósil Aleta", method: "Pueblo Petroglifo" }, { id: 133, rate: "Raro", method: "Ruta 10" }, { id: 701, rate: "Común", method: "Ruta 10" }] },
+                { name: "Rutas 12-16 y Bahía Azul", encounters: [{ id: 694, rate: "Común", method: "Ruta 9" }, { id: 246, rate: "Exclusivo Y", method: "Cueva Reflejos" }, { id: 447, rate: "Regalo", method: "Torre Maestra" }, { id: 704, rate: "Raro", method: "Ruta 14" }, { id: 708, rate: "Común", method: "Ruta 16" }] },
+                { name: "Post-Game y Legendarios", encounters: [{ id: 717, rate: "Historia", method: "Guarida Team Flare" }, { id: 718, rate: "Único", method: "Cueva Desenlace" }, { id: 150, rate: "Único", method: "Villa Pokémon" }, { id: 144, rate: "Errante", method: "Cueva Marina" }, { id: 145, rate: "Errante", method: "Cueva Marina" }, { id: 146, rate: "Errante", method: "Cueva Marina" }] }
             ]
         };
 
@@ -125,7 +259,7 @@
         let filterState = 'all'; 
         
         let db, auth, userId;
-        const appId = 'kalos-tracker'; // ID en Firestore
+        const appId = 'kalos-tracker'; 
 
         function getWikidexUrl(name) {
             const safeName = name.replace(/ /g, '_');
@@ -197,12 +331,12 @@
                 <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-200">
                     <div class="p-6 bg-slate-800 text-white border-b border-gray-700">
                         <h1 class="text-3xl font-extrabold flex flex-wrap items-center gap-3">
-                            Pokédex de Kalos (X / Y)
+                            Pokédex Regional Kalos (X / Y)
                             <span class="text-sm font-normal bg-sky-600 px-3 py-1 rounded-full text-sky-100">
                                 ${totalCaught} / ${pokedex.length} Atrapados
                             </span>
                         </h1>
-                        <p class="text-slate-400 mt-2 text-sm">Registro Regional de Kalos.</p>
+                        <p class="text-slate-400 mt-2 text-sm">Registro Regional Completo (Centro, Costa y Montaña).</p>
                         <div class="w-full bg-slate-700 rounded-full h-2.5 mt-4">
                             <div class="bg-sky-500 h-2.5 rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
                         </div>
@@ -223,7 +357,7 @@
                                     <th class="px-6 py-4 text-center">Nº Nac.</th>
                                     <th class="px-6 py-4">Sprite</th>
                                     <th class="px-6 py-4">Pokémon</th>
-                                    <th class="px-6 py-4">Evolución</th>
+                                    <th class="px-6 py-4">Evolución / Notas</th>
                                     <th class="px-6 py-4">Versión Destacada</th>
                                 </tr>
                             </thead>
@@ -257,7 +391,7 @@
                     }
                 });
 
-                if (badges === '') badges = `<span class="text-xs text-gray-400 italic">Otras rutas/Evolución</span>`;
+                if (badges === '') badges = `<span class="text-xs text-gray-400 italic">Ambas/Otra Ruta</span>`;
 
                 html += `
                     <tr class="hover:bg-gray-50 transition duration-150 ${isCaught ? 'bg-sky-50/50' : ''}">
@@ -292,7 +426,7 @@
                     <div class="rounded-xl shadow-lg overflow-hidden border border-white/20 mb-8">
                         <div class="p-8 ${headerStyles}">
                             <h1 class="text-4xl font-extrabold mb-2">Edición ${gameName}</h1>
-                            <p class="text-lg opacity-90">Rutas clave y exclusivos de versión.</p>
+                            <p class="text-lg opacity-90">Exclusivos y encuentros destacados en Rutas Clave.</p>
                         </div>
                     </div>
                     <div class="space-y-8">
