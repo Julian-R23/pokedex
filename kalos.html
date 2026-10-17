@@ -57,182 +57,368 @@
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Pokédex Regional de Kalos (Centro, Costa y Montaña - 457 Pokémon)
-        const rawPokedex = [
-            // --- KALOS CENTRO (1 - 153) ---
-            "650|Chespin|Nv. 16", "651|Quilladin|Nv. 36", "652|Chesnaught|Final",
-            "653|Fennekin|Nv. 16", "654|Braixen|Nv. 36", "655|Delphox|Final",
-            "656|Froakie|Nv. 16", "657|Frogadier|Nv. 36", "658|Greninja|Final",
-            "659|Bunnelby|Nv. 20", "660|Diggersby|Final",
-            "263|Zigzagoon|Nv. 20", "264|Linoone|Final",
-            "661|Fletchling|Nv. 17", "662|Fletchinder|Nv. 35", "663|Talonflame|Final",
-            "16|Pidgey|Nv. 18", "17|Pidgeotto|Nv. 36", "18|Pidgeot|Final",
-            "664|Scatterbug|Nv. 9", "665|Spewpa|Nv. 12", "666|Vivillon|Final",
-            "10|Caterpie|Nv. 7", "11|Metapod|Nv. 10", "12|Butterfree|Final",
-            "13|Weedle|Nv. 7", "14|Kakuna|Nv. 10", "15|Beedrill|Final",
-            "511|Pansage|Piedra Hoja", "512|Simisage|Final",
-            "513|Pansear|Piedra Fuego", "514|Simisear|Final",
-            "515|Panpour|Piedra Agua", "516|Simipour|Final",
-            "172|Pichu|Amistad", "25|Pikachu|Piedra Trueno", "26|Raichu|Final",
-            "399|Bidoof|Nv. 15", "400|Bibarel|Final",
-            "206|Dunsparce|Final",
-            "298|Azurill|Amistad", "183|Marill|Nv. 18", "184|Azumarill|Final",
-            "412|Burmy|Nv. 20", "413|Wormadam|Final (Hembra)", "414|Mothim|Final (Macho)",
-            "283|Surskit|Nv. 22", "284|Masquerain|Final",
-            "129|Magikarp|Nv. 20", "130|Gyarados|Final",
-            "341|Corphish|Nv. 30", "342|Crawdaunt|Final",
-            "118|Goldeen|Nv. 33", "119|Seaking|Final",
-            "318|Carvanha|Nv. 30", "319|Sharpedo|Final",
-            "667|Litleo|Nv. 35", "668|Pyroar|Final",
-            "54|Psyduck|Nv. 33", "55|Golduck|Final",
-            "83|Farfetch'd|Final",
-            "448|Lucario|Final", "447|Riolu|Amistad de Día",
-            "280|Ralts|Nv. 20", "281|Kirlia|Nv. 30", "282|Gardevoir|Final", "475|Gallade|Piedra Alba (Macho)",
-            "669|Flabébé|Nv. 19", "670|Floette|Piedra Día", "671|Florges|Final",
-            "315|Roselia|Piedra Día", "406|Budew|Amistad de Día", "407|Roserade|Final",
-            "165|Ledyba|Nv. 18", "166|Ledian|Final",
-            "415|Combee|Nv. 21 (Hembra)", "416|Vespiquen|Final",
-            "300|Skitty|Piedra Lunar", "301|Delcatty|Final",
-            "1|Bulbasaur|Nv. 16", "2|Ivysaur|Nv. 32", "3|Venusaur|Final",
-            "4|Charmander|Nv. 16", "5|Charmeleon|Nv. 36", "6|Charizard|Final",
-            "7|Squirtle|Nv. 16", "8|Wartortle|Nv. 36", "9|Blastoise|Final",
-            "672|Skiddo|Nv. 32", "673|Gogoat|Final",
-            "674|Pancham|Nv. 32 + Tipo Siniestro", "675|Pangoro|Final",
-            "676|Furfrou|Final",
-            "84|Doduo|Nv. 31", "85|Dodrio|Final",
-            "311|Plusle|Final", "312|Minun|Final",
-            "316|Gulpin|Nv. 26", "317|Swalot|Final",
-            "104|Cubone|Nv. 28", "105|Marowak|Final",
-            "133|Eevee|Evoluciones Múltiples", "134|Vaporeon|Piedra Agua", "135|Jolteon|Piedra Trueno", "136|Flareon|Piedra Fuego", "196|Espeon|Amistad (Día)", "197|Umbreon|Amistad (Noche)", "470|Leafeon|Roca Musgo", "471|Glaceon|Roca Hielo", "700|Sylveon|Amistad + Mov. Hada",
-            "677|Espurr|Nv. 25", "678|Meowstic|Final",
-            "682|Spritzee|Intercambio c/Saquito", "683|Aromatisse|Final",
-            "684|Swirlix|Intercambio c/Dulce Nata", "685|Slurpuff|Final",
-            "175|Togepi|Amistad", "176|Togetic|Piedra Día", "468|Togekiss|Final",
-            "41|Zubat|Nv. 22", "42|Golbat|Amistad", "169|Crobat|Final",
-            "610|Axew|Nv. 38", "611|Fraxure|Nv. 48", "612|Haxorus|Final",
+        // Pokédex Regional Oficial de Kalos ordenada estrictamente por zonas (Centro, Costa y Montaña)
+        const pokedex = [
+            // --- KALOS CENTRO (#001 - #153) ---
+            { regionalId: 1, natId: 650, name: "Chespin", evo: "Nv. 16", zone: "Centro" },
+            { regionalId: 2, natId: 651, name: "Quilladin", evo: "Nv. 36", zone: "Centro" },
+            { regionalId: 3, natId: 652, name: "Chesnaught", evo: "Final", zone: "Centro" },
+            { regionalId: 4, natId: 653, name: "Fennekin", evo: "Nv. 16", zone: "Centro" },
+            { regionalId: 5, natId: 654, name: "Braixen", evo: "Nv. 36", zone: "Centro" },
+            { regionalId: 6, natId: 655, name: "Delphox", evo: "Final", zone: "Centro" },
+            { regionalId: 7, natId: 656, name: "Froakie", evo: "Nv. 16", zone: "Centro" },
+            { regionalId: 8, natId: 657, name: "Frogadier", evo: "Nv. 36", zone: "Centro" },
+            { regionalId: 9, natId: 658, name: "Greninja", evo: "Final", zone: "Centro" },
+            { regionalId: 10, natId: 659, name: "Bunnelby", evo: "Nv. 20", zone: "Centro" },
+            { regionalId: 11, natId: 660, name: "Diggersby", evo: "Final", zone: "Centro" },
+            { regionalId: 12, natId: 263, name: "Zigzagoon", evo: "Nv. 20", zone: "Centro" },
+            { regionalId: 13, natId: 264, name: "Linoone", evo: "Final", zone: "Centro" },
+            { regionalId: 14, natId: 661, name: "Fletchling", evo: "Nv. 17", zone: "Centro" },
+            { regionalId: 15, natId: 662, name: "Fletchinder", evo: "Nv. 35", zone: "Centro" },
+            { regionalId: 16, natId: 663, name: "Talonflame", evo: "Final", zone: "Centro" },
+            { regionalId: 17, natId: 16, name: "Pidgey", evo: "Nv. 18", zone: "Centro" },
+            { regionalId: 18, natId: 17, name: "Pidgeotto", evo: "Nv. 36", zone: "Centro" },
+            { regionalId: 19, natId: 18, name: "Pidgeot", evo: "Final", zone: "Centro" },
+            { regionalId: 20, natId: 664, name: "Scatterbug", evo: "Nv. 9", zone: "Centro" },
+            { regionalId: 21, natId: 665, name: "Spewpa", evo: "Nv. 12", zone: "Centro" },
+            { regionalId: 22, natId: 666, name: "Vivillon", evo: "Final", zone: "Centro" },
+            { regionalId: 23, natId: 10, name: "Caterpie", evo: "Nv. 7", zone: "Centro" },
+            { regionalId: 24, natId: 11, name: "Metapod", evo: "Nv. 10", zone: "Centro" },
+            { regionalId: 25, natId: 12, name: "Butterfree", evo: "Final", zone: "Centro" },
+            { regionalId: 26, natId: 13, name: "Weedle", evo: "Nv. 7", zone: "Centro" },
+            { regionalId: 27, natId: 14, name: "Kakuna", evo: "Nv. 10", zone: "Centro" },
+            { regionalId: 28, natId: 15, name: "Beedrill", evo: "Final", zone: "Centro" },
+            { regionalId: 29, natId: 511, name: "Pansage", evo: "Piedra Hoja", zone: "Centro" },
+            { regionalId: 30, natId: 512, name: "Simisage", evo: "Final", zone: "Centro" },
+            { regionalId: 31, natId: 513, name: "Pansear", evo: "Piedra Fuego", zone: "Centro" },
+            { regionalId: 32, natId: 514, name: "Simisear", evo: "Final", zone: "Centro" },
+            { regionalId: 33, natId: 515, name: "Panpour", evo: "Piedra Agua", zone: "Centro" },
+            { regionalId: 34, natId: 516, name: "Simipour", evo: "Final", zone: "Centro" },
+            { regionalId: 35, natId: 172, name: "Pichu", evo: "Amistad", zone: "Centro" },
+            { regionalId: 36, natId: 25, name: "Pikachu", evo: "Piedra Trueno", zone: "Centro" },
+            { regionalId: 37, natId: 26, name: "Raichu", evo: "Final", zone: "Centro" },
+            { regionalId: 38, natId: 399, name: "Bidoof", evo: "Nv. 15", zone: "Centro" },
+            { regionalId: 39, natId: 400, name: "Bibarel", evo: "Final", zone: "Centro" },
+            { regionalId: 40, natId: 206, name: "Dunsparce", evo: "Final", zone: "Centro" },
+            { regionalId: 41, natId: 298, name: "Azurill", evo: "Amistad", zone: "Centro" },
+            { regionalId: 42, natId: 183, name: "Marill", evo: "Nv. 18", zone: "Centro" },
+            { regionalId: 43, natId: 184, name: "Azumarill", evo: "Final", zone: "Centro" },
+            { regionalId: 44, natId: 412, name: "Burmy", evo: "Nv. 20", zone: "Centro" },
+            { regionalId: 45, natId: 413, name: "Wormadam", evo: "Final (Hembra)", zone: "Centro" },
+            { regionalId: 46, natId: 414, name: "Mothim", evo: "Final (Macho)", zone: "Centro" },
+            { regionalId: 47, natId: 283, name: "Surskit", evo: "Nv. 22", zone: "Centro" },
+            { regionalId: 48, natId: 284, name: "Masquerain", evo: "Final", zone: "Centro" },
+            { regionalId: 49, natId: 129, name: "Magikarp", evo: "Nv. 20", zone: "Centro" },
+            { regionalId: 50, natId: 130, name: "Gyarados", evo: "Final", zone: "Centro" },
+            { regionalId: 51, natId: 341, name: "Corphish", evo: "Nv. 30", zone: "Centro" },
+            { regionalId: 52, natId: 342, name: "Crawdaunt", evo: "Final", zone: "Centro" },
+            { regionalId: 53, natId: 118, name: "Goldeen", evo: "Nv. 33", zone: "Centro" },
+            { regionalId: 54, natId: 119, name: "Seaking", evo: "Final", zone: "Centro" },
+            { regionalId: 55, natId: 318, name: "Carvanha", evo: "Nv. 30", zone: "Centro" },
+            { regionalId: 56, natId: 319, name: "Sharpedo", evo: "Final", zone: "Centro" },
+            { regionalId: 57, natId: 667, name: "Litleo", evo: "Nv. 35", zone: "Centro" },
+            { regionalId: 58, natId: 668, name: "Pyroar", evo: "Final", zone: "Centro" },
+            { regionalId: 59, natId: 54, name: "Psyduck", evo: "Nv. 33", zone: "Centro" },
+            { regionalId: 60, natId: 55, name: "Golduck", evo: "Final", zone: "Centro" },
+            { regionalId: 61, natId: 83, name: "Farfetch'd", evo: "Final", zone: "Centro" },
+            { regionalId: 62, natId: 447, name: "Riolu", evo: "Amistad de Día", zone: "Centro" },
+            { regionalId: 63, natId: 448, name: "Lucario", evo: "Final", zone: "Centro" },
+            { regionalId: 64, natId: 280, name: "Ralts", evo: "Nv. 20", zone: "Centro" },
+            { regionalId: 65, natId: 281, name: "Kirlia", evo: "Nv. 30", zone: "Centro" },
+            { regionalId: 66, natId: 282, name: "Gardevoir", evo: "Final", zone: "Centro" },
+            { regionalId: 67, natId: 475, name: "Gallade", evo: "Piedra Alba (Macho)", zone: "Centro" },
+            { regionalId: 68, natId: 669, name: "Flabébé", evo: "Nv. 19", zone: "Centro" },
+            { regionalId: 69, natId: 670, name: "Floette", evo: "Piedra Día", zone: "Centro" },
+            { regionalId: 70, natId: 671, name: "Florges", evo: "Final", zone: "Centro" },
+            { regionalId: 71, natId: 406, name: "Budew", evo: "Amistad de Día", zone: "Centro" },
+            { regionalId: 72, natId: 315, name: "Roselia", evo: "Piedra Día", zone: "Centro" },
+            { regionalId: 73, natId: 407, name: "Roserade", evo: "Final", zone: "Centro" },
+            { regionalId: 74, natId: 165, name: "Ledyba", evo: "Nv. 18", zone: "Centro" },
+            { regionalId: 75, natId: 166, name: "Ledian", evo: "Final", zone: "Centro" },
+            { regionalId: 76, natId: 415, name: "Combee", evo: "Nv. 21 (Hembra)", zone: "Centro" },
+            { regionalId: 77, natId: 416, name: "Vespiquen", evo: "Final", zone: "Centro" },
+            { regionalId: 78, natId: 300, name: "Skitty", evo: "Piedra Lunar", zone: "Centro" },
+            { regionalId: 79, natId: 301, name: "Delcatty", evo: "Final", zone: "Centro" },
+            { regionalId: 80, natId: 1, name: "Bulbasaur", evo: "Nv. 16", zone: "Centro" },
+            { regionalId: 81, natId: 2, name: "Ivysaur", evo: "Nv. 32", zone: "Centro" },
+            { regionalId: 82, natId: 3, name: "Venusaur", evo: "Final", zone: "Centro" },
+            { regionalId: 83, natId: 4, name: "Charmander", evo: "Nv. 16", zone: "Centro" },
+            { regionalId: 84, natId: 5, name: "Charmeleon", evo: "Nv. 36", zone: "Centro" },
+            { regionalId: 85, natId: 6, name: "Charizard", evo: "Final", zone: "Centro" },
+            { regionalId: 86, natId: 7, name: "Squirtle", evo: "Nv. 16", zone: "Centro" },
+            { regionalId: 87, natId: 8, name: "Wartortle", evo: "Nv. 36", zone: "Centro" },
+            { regionalId: 88, natId: 9, name: "Blastoise", evo: "Final", zone: "Centro" },
+            { regionalId: 89, natId: 672, name: "Skiddo", evo: "Nv. 32", zone: "Centro" },
+            { regionalId: 90, natId: 673, name: "Gogoat", evo: "Final", zone: "Centro" },
+            { regionalId: 91, natId: 674, name: "Pancham", evo: "Nv. 32 + Siniestro", zone: "Centro" },
+            { regionalId: 92, natId: 675, name: "Pangoro", evo: "Final", zone: "Centro" },
+            { regionalId: 93, natId: 676, name: "Furfrou", evo: "Final", zone: "Centro" },
+            { regionalId: 94, natId: 84, name: "Doduo", evo: "Nv. 31", zone: "Centro" },
+            { regionalId: 95, natId: 85, name: "Dodrio", evo: "Final", zone: "Centro" },
+            { regionalId: 96, natId: 311, name: "Plusle", evo: "Final", zone: "Centro" },
+            { regionalId: 97, natId: 312, name: "Minun", evo: "Final", zone: "Centro" },
+            { regionalId: 98, natId: 316, name: "Gulpin", evo: "Nv. 26", zone: "Centro" },
+            { regionalId: 99, natId: 317, name: "Swalot", evo: "Final", zone: "Centro" },
+            { regionalId: 100, natId: 104, name: "Cubone", evo: "Nv. 28", zone: "Centro" },
+            { regionalId: 101, natId: 105, name: "Marowak", evo: "Final", zone: "Centro" },
+            { regionalId: 102, natId: 133, name: "Eevee", evo: "Evoluciones Múltiples", zone: "Centro" },
+            { regionalId: 103, natId: 134, name: "Vaporeon", evo: "Piedra Agua", zone: "Centro" },
+            { regionalId: 104, natId: 135, name: "Jolteon", evo: "Piedra Trueno", zone: "Centro" },
+            { regionalId: 105, natId: 136, name: "Flareon", evo: "Piedra Fuego", zone: "Centro" },
+            { regionalId: 106, natId: 196, name: "Espeon", evo: "Amistad (Día)", zone: "Centro" },
+            { regionalId: 107, natId: 197, name: "Umbreon", evo: "Amistad (Noche)", zone: "Centro" },
+            { regionalId: 108, natId: 470, name: "Leafeon", evo: "Roca Musgo", zone: "Centro" },
+            { regionalId: 109, natId: 471, name: "Glaceon", evo: "Roca Hielo", zone: "Centro" },
+            { regionalId: 110, natId: 700, name: "Sylveon", evo: "Amistad + Mov. Hada", zone: "Centro" },
+            { regionalId: 111, natId: 677, name: "Espurr", evo: "Nv. 25", zone: "Centro" },
+            { regionalId: 112, natId: 678, name: "Meowstic", evo: "Final", zone: "Centro" },
+            { regionalId: 113, natId: 682, name: "Spritzee", evo: "Intercambio c/Saquito", zone: "Centro" },
+            { regionalId: 114, natId: 683, name: "Aromatisse", evo: "Final", zone: "Centro" },
+            { regionalId: 115, natId: 684, name: "Swirlix", evo: "Intercambio c/Dulce Nata", zone: "Centro" },
+            { regionalId: 116, natId: 685, name: "Slurpuff", evo: "Final", zone: "Centro" },
+            { regionalId: 117, natId: 175, name: "Togepi", evo: "Amistad", zone: "Centro" },
+            { regionalId: 118, natId: 176, name: "Togetic", evo: "Piedra Día", zone: "Centro" },
+            { regionalId: 119, natId: 468, name: "Togekiss", evo: "Final", zone: "Centro" },
+            { regionalId: 120, natId: 41, name: "Zubat", evo: "Nv. 22", zone: "Centro" },
+            { regionalId: 121, natId: 42, name: "Golbat", evo: "Amistad", zone: "Centro" },
+            { regionalId: 122, natId: 169, name: "Crobat", evo: "Final", zone: "Centro" },
+            { regionalId: 123, natId: 610, name: "Axew", evo: "Nv. 38", zone: "Centro" },
+            { regionalId: 124, natId: 611, name: "Fraxure", evo: "Nv. 48", zone: "Centro" },
+            { regionalId: 125, natId: 612, name: "Haxorus", evo: "Final", zone: "Centro" },
 
-            // --- KALOS COSTA (1 - 153) ---
-            "425|Drifloon|Nv. 28", "426|Drifblim|Final",
-            "619|Mienfoo|Nv. 50", "620|Mienshao|Final",
-            "335|Zangoose|Final", "336|Seviper|Final",
-            "325|Spoink|Nv. 32", "326|Grumpig|Final",
-            "359|Absol|Final",
-            "686|Inkay|Nv. 30 (Consola Invertida)", "687|Malamar|Final",
-            "337|Lunatone|Final", "338|Solrock|Final",
-            "371|Bagon|Nv. 30", "372|Shelgon|Nv. 50", "373|Salamence|Final",
-            "278|Wingull|Nv. 25", "279|Pelipper|Final",
-            "276|Taillow|Nv. 22", "277|Swellow|Final",
-            "688|Binacle|Nv. 39", "689|Barbaracle|Final",
-            "557|Dwebble|Nv. 34", "558|Crustle|Final",
-            "72|Tentacool|Nv. 30", "73|Tentacruel|Final",
-            "397|Staravia|Nv. 34", "398|Staraptor|Final", "396|Starly|Nv. 14",
-            "111|Rhyhorn|Nv. 42", "112|Rhydon|Intercambio c/Protector", "464|Rhyperior|Final",
-            "137|Porygon|Intercambio c/Mejora", "233|Porygon2|Intercambio c/Disco Extraño", "474|Porygon-Z|Final",
-            "138|Omanyte|Nv. 40", "139|Omastar|Final",
-            "140|Kabuto|Nv. 40", "141|Kabutops|Final",
-            "142|Aerodactyl|Final",
-            "345|Lileep|Nv. 40", "346|Cradily|Final",
-            "347|Anorith|Nv. 40", "348|Armaldo|Final",
-            "564|Tirtouga|Nv. 37", "565|Carracosta|Final",
-            "566|Archen|Nv. 37", "567|Archeops|Final",
-            "696|Tyrunt|Nv. 39 (Día)", "697|Tyrantrum|Final",
-            "698|Amaura|Nv. 39 (Noche)", "699|Aurorus|Final",
-            "215|Sneasel|Subir Nv. Noche c/Garra Afilada", "461|Weavile|Final",
-            "250|Ho-Oh|Solo Traslado", "249|Lugia|Solo Traslado",
-            "679|Honedge|Nv. 35", "680|Doublade|Piedra Noche", "681|Aegislash|Final",
-            "543|Venipede|Nv. 22", "544|Whirlipede|Nv. 30", "545|Scolipede|Final",
-            "531|Audino|Final",
-            "235|Smeargle|Final",
-            "453|Croagunk|Nv. 37", "454|Toxicroak|Final",
-            "580|Ducklett|Nv. 35", "581|Swanna|Final",
-            "174|Igglybuff|Amistad", "39|Jigglypuff|Piedra Lunar", "40|Wigglytuff|Final",
-            "690|Skrelp|Nv. 48", "691|Dragalge|Final",
-            "692|Clauncher|Nv. 37", "693|Clawitzer|Final",
-            "314|Illumise|Final", "313|Volbeat|Final",
-            "187|Hoppip|Nv. 18", "188|Skiploom|Nv. 27", "189|Jumpluff|Final",
-            "273|Seedot|Nv. 14", "274|Nuzleaf|Piedra Hoja", "275|Shiftry|Final",
-            "270|Lotad|Nv. 14", "271|Lombre|Piedra Agua", "272|Ludicolo|Final",
-            "694|Helioptile|Piedra Sol", "695|Heliolisk|Final",
-            "701|Hawlucha|Final",
-            "562|Yamask|Nv. 34", "563|Cofagrigus|Final",
-            "63|Abra|Nv. 16", "64|Kadabra|Intercambio", "65|Alakazam|Final",
-            "524|Roggenrola|Nv. 25", "525|Boldore|Intercambio", "526|Gigalith|Final",
-            "214|Heracross|Final",
-            "216|Teddiursa|Nv. 30", "217|Ursaring|Final",
-            "143|Snorlax|Final", "446|Munchlax|Amistad",
-            "79|Slowpoke|Nv. 37 / Intercambio c/Roca del Rey", "80|Slowbro|Final", "199|Slowking|Final",
-            "102|Exeggcute|Piedra Hoja", "103|Exeggutor|Final",
-            "441|Chatot|Final",
-            "458|Mantyke|Subir Nv. con Remoraid", "226|Mantine|Final",
-            "366|Clamperl|Intercambio (Diente/Escama)", "367|Huntail|Final", "368|Gorebyss|Final",
-            "222|Corsola|Final",
-            "170|Chinchou|Nv. 27", "171|Lanturn|Final",
-            "594|Alomomola|Final",
-            "131|Lapras|Final",
-            "144|Articuno|Errante (Si Chespin)",
-            "145|Zapdos|Errante (Si Fennekin)",
-            "146|Moltres|Errante (Si Froakie)",
+            // --- KALOS COSTA (#001 - #153) ---
+            { regionalId: 1, natId: 425, name: "Drifloon", evo: "Nv. 28", zone: "Costa" },
+            { regionalId: 2, natId: 426, name: "Drifblim", evo: "Final", zone: "Costa" },
+            { regionalId: 3, natId: 619, name: "Mienfoo", evo: "Nv. 50", zone: "Costa" },
+            { regionalId: 4, natId: 620, name: "Mienshao", evo: "Final", zone: "Costa" },
+            { regionalId: 5, natId: 335, name: "Zangoose", evo: "Final", zone: "Costa" },
+            { regionalId: 6, natId: 336, name: "Seviper", evo: "Final", zone: "Costa" },
+            { regionalId: 7, natId: 325, name: "Spoink", evo: "Nv. 32", zone: "Costa" },
+            { regionalId: 8, natId: 326, name: "Grumpig", evo: "Final", zone: "Costa" },
+            { regionalId: 9, natId: 359, name: "Absol", evo: "Final", zone: "Costa" },
+            { regionalId: 10, natId: 686, name: "Inkay", evo: "Nv. 30 (Consola Invertida)", zone: "Costa" },
+            { regionalId: 11, natId: 687, name: "Malamar", evo: "Final", zone: "Costa" },
+            { regionalId: 12, natId: 337, name: "Lunatone", evo: "Final", zone: "Costa" },
+            { regionalId: 13, natId: 338, name: "Solrock", evo: "Final", zone: "Costa" },
+            { regionalId: 14, natId: 371, name: "Bagon", evo: "Nv. 30", zone: "Costa" },
+            { regionalId: 15, natId: 372, name: "Shelgon", evo: "Nv. 50", zone: "Costa" },
+            { regionalId: 16, natId: 373, name: "Salamence", evo: "Final", zone: "Costa" },
+            { regionalId: 17, natId: 278, name: "Wingull", evo: "Nv. 25", zone: "Costa" },
+            { regionalId: 18, natId: 279, name: "Pelipper", evo: "Final", zone: "Costa" },
+            { regionalId: 19, natId: 276, name: "Taillow", evo: "Nv. 22", zone: "Costa" },
+            { regionalId: 20, natId: 277, name: "Swellow", evo: "Final", zone: "Costa" },
+            { regionalId: 21, natId: 688, name: "Binacle", evo: "Nv. 39", zone: "Costa" },
+            { regionalId: 22, natId: 689, name: "Barbaracle", evo: "Final", zone: "Costa" },
+            { regionalId: 23, natId: 557, name: "Dwebble", evo: "Nv. 34", zone: "Costa" },
+            { regionalId: 24, natId: 558, name: "Crustle", evo: "Final", zone: "Costa" },
+            { regionalId: 25, natId: 72, name: "Tentacool", evo: "Nv. 30", zone: "Costa" },
+            { regionalId: 26, natId: 73, name: "Tentacruel", evo: "Final", zone: "Costa" },
+            { regionalId: 27, natId: 396, name: "Starly", evo: "Nv. 14", zone: "Costa" },
+            { regionalId: 28, natId: 397, name: "Staravia", evo: "Nv. 34", zone: "Costa" },
+            { regionalId: 29, natId: 398, name: "Staraptor", evo: "Final", zone: "Costa" },
+            { regionalId: 30, natId: 111, name: "Rhyhorn", evo: "Nv. 42", zone: "Costa" },
+            { regionalId: 31, natId: 112, name: "Rhydon", evo: "Intercambio c/Protector", zone: "Costa" },
+            { regionalId: 32, natId: 464, name: "Rhyperior", evo: "Final", zone: "Costa" },
+            { regionalId: 33, natId: 137, name: "Porygon", evo: "Intercambio c/Mejora", zone: "Costa" },
+            { regionalId: 34, natId: 233, name: "Porygon2", evo: "Intercambio c/Disco Extraño", zone: "Costa" },
+            { regionalId: 35, natId: 474, name: "Porygon-Z", evo: "Final", zone: "Costa" },
+            { regionalId: 36, natId: 138, name: "Omanyte", evo: "Nv. 40", zone: "Costa" },
+            { regionalId: 37, natId: 139, name: "Omastar", evo: "Final", zone: "Costa" },
+            { regionalId: 38, natId: 140, name: "Kabuto", evo: "Nv. 40", zone: "Costa" },
+            { regionalId: 39, natId: 141, name: "Kabutops", evo: "Final", zone: "Costa" },
+            { regionalId: 40, natId: 142, name: "Aerodactyl", evo: "Final", zone: "Costa" },
+            { regionalId: 41, natId: 345, name: "Lileep", evo: "Nv. 40", zone: "Costa" },
+            { regionalId: 42, natId: 346, name: "Cradily", evo: "Final", zone: "Costa" },
+            { regionalId: 43, natId: 347, name: "Anorith", evo: "Nv. 40", zone: "Costa" },
+            { regionalId: 44, natId: 348, name: "Armaldo", evo: "Final", zone: "Costa" },
+            { regionalId: 45, natId: 564, name: "Tirtouga", evo: "Nv. 37", zone: "Costa" },
+            { regionalId: 46, natId: 565, name: "Carracosta", evo: "Final", zone: "Costa" },
+            { regionalId: 47, natId: 566, name: "Archen", evo: "Nv. 37", zone: "Costa" },
+            { regionalId: 48, natId: 567, name: "Archeops", evo: "Final", zone: "Costa" },
+            { regionalId: 49, natId: 696, name: "Tyrunt", evo: "Nv. 39 (Día)", zone: "Costa" },
+            { regionalId: 50, natId: 697, name: "Tyrantrum", evo: "Final", zone: "Costa" },
+            { regionalId: 51, natId: 698, name: "Amaura", evo: "Nv. 39 (Noche)", zone: "Costa" },
+            { regionalId: 52, natId: 699, name: "Aurorus", evo: "Final", zone: "Costa" },
+            { regionalId: 53, natId: 215, name: "Sneasel", evo: "Nv. Noche c/Garra Afilada", zone: "Costa" },
+            { regionalId: 54, natId: 461, name: "Weavile", evo: "Final", zone: "Costa" },
+            { regionalId: 55, natId: 249, name: "Lugia", evo: "Solo Traslado", zone: "Costa" },
+            { regionalId: 56, natId: 250, name: "Ho-Oh", evo: "Solo Traslado", zone: "Costa" },
+            { regionalId: 57, natId: 679, name: "Honedge", evo: "Nv. 35", zone: "Costa" },
+            { regionalId: 58, natId: 680, name: "Doublade", evo: "Piedra Noche", zone: "Costa" },
+            { regionalId: 59, natId: 681, name: "Aegislash", evo: "Final", zone: "Costa" },
+            { regionalId: 60, natId: 543, name: "Venipede", evo: "Nv. 22", zone: "Costa" },
+            { regionalId: 61, natId: 544, name: "Whirlipede", evo: "Nv. 30", zone: "Costa" },
+            { regionalId: 62, natId: 545, name: "Scolipede", evo: "Final", zone: "Costa" },
+            { regionalId: 63, natId: 531, name: "Audino", evo: "Final", zone: "Costa" },
+            { regionalId: 64, natId: 235, name: "Smeargle", evo: "Final", zone: "Costa" },
+            { regionalId: 65, natId: 453, name: "Croagunk", evo: "Nv. 37", zone: "Costa" },
+            { regionalId: 66, natId: 454, name: "Toxicroak", evo: "Final", zone: "Costa" },
+            { regionalId: 67, natId: 580, name: "Ducklett", evo: "Nv. 35", zone: "Costa" },
+            { regionalId: 68, natId: 581, name: "Swanna", evo: "Final", zone: "Costa" },
+            { regionalId: 69, natId: 174, name: "Igglybuff", evo: "Amistad", zone: "Costa" },
+            { regionalId: 70, natId: 39, name: "Jigglypuff", evo: "Piedra Lunar", zone: "Costa" },
+            { regionalId: 71, natId: 40, name: "Wigglytuff", evo: "Final", zone: "Costa" },
+            { regionalId: 72, natId: 690, name: "Skrelp", evo: "Nv. 48", zone: "Costa" },
+            { regionalId: 73, natId: 691, name: "Dragalge", evo: "Final", zone: "Costa" },
+            { regionalId: 74, natId: 692, name: "Clauncher", evo: "Nv. 37", zone: "Costa" },
+            { regionalId: 75, natId: 693, name: "Clawitzer", evo: "Final", zone: "Costa" },
+            { regionalId: 76, natId: 313, name: "Volbeat", evo: "Final", zone: "Costa" },
+            { regionalId: 77, natId: 314, name: "Illumise", evo: "Final", zone: "Costa" },
+            { regionalId: 78, natId: 187, name: "Hoppip", evo: "Nv. 18", zone: "Costa" },
+            { regionalId: 79, natId: 188, name: "Skiploom", evo: "Nv. 27", zone: "Costa" },
+            { regionalId: 80, natId: 189, name: "Jumpluff", evo: "Final", zone: "Costa" },
+            { regionalId: 81, natId: 273, name: "Seedot", evo: "Nv. 14", zone: "Costa" },
+            { regionalId: 82, natId: 274, name: "Nuzleaf", evo: "Piedra Hoja", zone: "Costa" },
+            { regionalId: 83, natId: 275, name: "Shiftry", evo: "Final", zone: "Costa" },
+            { regionalId: 84, natId: 270, name: "Lotad", evo: "Nv. 14", zone: "Costa" },
+            { regionalId: 85, natId: 271, name: "Lombre", evo: "Piedra Agua", zone: "Costa" },
+            { regionalId: 86, natId: 272, name: "Ludicolo", evo: "Final", zone: "Costa" },
+            { regionalId: 87, natId: 694, name: "Helioptile", evo: "Piedra Sol", zone: "Costa" },
+            { regionalId: 88, natId: 695, name: "Heliolisk", evo: "Final", zone: "Costa" },
+            { regionalId: 89, natId: 701, name: "Hawlucha", evo: "Final", zone: "Costa" },
+            { regionalId: 90, natId: 562, name: "Yamask", evo: "Nv. 34", zone: "Costa" },
+            { regionalId: 91, natId: 563, name: "Cofagrigus", evo: "Final", zone: "Costa" },
+            { regionalId: 92, natId: 63, name: "Abra", evo: "Nv. 16", zone: "Costa" },
+            { regionalId: 93, natId: 64, name: "Kadabra", evo: "Intercambio", zone: "Costa" },
+            { regionalId: 94, natId: 65, name: "Alakazam", evo: "Final", zone: "Costa" },
+            { regionalId: 95, natId: 524, name: "Roggenrola", evo: "Nv. 25", zone: "Costa" },
+            { regionalId: 96, natId: 525, name: "Boldore", evo: "Intercambio", zone: "Costa" },
+            { regionalId: 97, natId: 526, name: "Gigalith", evo: "Final", zone: "Costa" },
+            { regionalId: 98, natId: 214, name: "Heracross", evo: "Final", zone: "Costa" },
+            { regionalId: 99, natId: 216, name: "Teddiursa", evo: "Nv. 30", zone: "Costa" },
+            { regionalId: 100, natId: 217, name: "Ursaring", evo: "Final", zone: "Costa" },
+            { regionalId: 101, natId: 446, name: "Munchlax", evo: "Amistad", zone: "Costa" },
+            { regionalId: 102, natId: 143, name: "Snorlax", evo: "Final", zone: "Costa" },
+            { regionalId: 103, natId: 79, name: "Slowpoke", evo: "Nv. 37 / Roca Rey", zone: "Costa" },
+            { regionalId: 104, natId: 80, name: "Slowbro", evo: "Final", zone: "Costa" },
+            { regionalId: 105, natId: 199, name: "Slowking", evo: "Final", zone: "Costa" },
+            { regionalId: 106, natId: 102, name: "Exeggcute", evo: "Piedra Hoja", zone: "Costa" },
+            { regionalId: 107, natId: 103, name: "Exeggutor", evo: "Final", zone: "Costa" },
+            { regionalId: 108, natId: 441, name: "Chatot", evo: "Final", zone: "Costa" },
+            { regionalId: 109, natId: 458, name: "Mantyke", evo: "Subir Nv. con Remoraid", zone: "Costa" },
+            { regionalId: 110, natId: 226, name: "Mantine", evo: "Final", zone: "Costa" },
+            { regionalId: 111, natId: 366, name: "Clamperl", evo: "Intercambio (Diente/Escama)", zone: "Costa" },
+            { regionalId: 112, natId: 367, name: "Huntail", evo: "Final", zone: "Costa" },
+            { regionalId: 113, natId: 368, name: "Gorebyss", evo: "Final", zone: "Costa" },
+            { regionalId: 114, natId: 222, name: "Corsola", evo: "Final", zone: "Costa" },
+            { regionalId: 115, natId: 170, name: "Chinchou", evo: "Nv. 27", zone: "Costa" },
+            { regionalId: 116, natId: 171, name: "Lanturn", evo: "Final", zone: "Costa" },
+            { regionalId: 117, natId: 594, name: "Alomomola", evo: "Final", zone: "Costa" },
+            { regionalId: 118, natId: 131, name: "Lapras", evo: "Final", zone: "Costa" },
+            { regionalId: 119, natId: 144, name: "Articuno", evo: "Errante (Si Chespin)", zone: "Costa" },
+            { regionalId: 120, natId: 145, name: "Zapdos", evo: "Errante (Si Fennekin)", zone: "Costa" },
+            { regionalId: 121, natId: 146, name: "Moltres", evo: "Errante (Si Froakie)", zone: "Costa" },
 
-            // --- KALOS MONTAÑA (1 - 151) ---
-            "50|Diglett|Nv. 26", "51|Dugtrio|Final",
-            "328|Trapinch|Nv. 35", "329|Vibrava|Nv. 45", "330|Flygon|Final",
-            "443|Gible|Nv. 24", "444|Gabite|Nv. 48", "445|Garchomp|Final",
-            "74|Geodude|Nv. 25", "75|Graveler|Intercambio", "76|Golem|Final",
-            "218|Slugma|Nv. 38", "219|Magcargo|Final",
-            "451|Skorupi|Nv. 40", "452|Drapion|Final",
-            "194|Wooper|Nv. 20", "195|Quagsire|Final",
-            "704|Goomy|Nv. 40", "705|Sliggoo|Nv. 50 (Lluvia)", "706|Goodra|Final",
-            "588|Karrablast|Intercambio por Shelmet", "589|Escavalier|Final",
-            "616|Shelmet|Intercambio por Karrablast", "617|Accelgor|Final",
-            "69|Bellsprout|Nv. 21", "70|Weepinbell|Piedra Hoja", "71|Victreebel|Final",
-            "455|Carnivine|Final",
-            "92|Gastly|Nv. 25", "93|Haunter|Intercambio", "94|Gengar|Final",
-            "167|Spinarak|Nv. 22", "168|Ariados|Final",
-            "100|Voltorb|Nv. 30", "101|Electrode|Final",
-            "568|Trubbish|Nv. 36", "569|Garbodor|Final",
-            "220|Swinub|Nv. 33", "221|Piloswine|Nv. con Poder Pasado", "473|Mamoswine|Final",
-            "238|Smoochum|Nv. 30", "124|Jynx|Final",
-            "582|Vanillite|Nv. 35", "583|Vanillish|Nv. 47", "584|Vanilluxe|Final",
-            "459|Snover|Nv. 40", "460|Abomasnow|Final",
-            "225|Delibird|Final",
-            "361|Snorunt|Nv. 42 / Piedra Alba", "362|Glalie|Final", "478|Froslass|Final",
-            "128|Tauros|Final", "241|Miltank|Final",
-            "179|Mareep|Nv. 15", "180|Flaaffy|Nv. 30", "181|Ampharos|Final",
-            "127|Pinsir|Final", "214|Heracross|Final",
-            "417|Pachirisu|Final",
-            "702|Dedenne|Final",
-            "27|Sandshrew|Nv. 22", "28|Sandslash|Final",
-            "304|Aron|Nv. 32", "305|Lairon|Nv. 42", "306|Aggron|Final",
-            "246|Larvitar|Nv. 30", "247|Pupitar|Nv. 55", "248|Tyranitar|Final",
-            "322|Numel|Nv. 33", "323|Camerupt|Final",
-            "108|Lickitung|Subir Nv. con Desenrollar", "463|Lickilicky|Final",
-            "703|Carbink|Final",
-            "707|Klefki|Final",
-            "538|Throh|Final", "539|Sawk|Final",
-            "333|Swablu|Nv. 35", "334|Altaria|Final",
-            "527|Woobat|Amistad", "528|Swoobat|Final",
-            "708|Phantump|Intercambio", "709|Trevenant|Final",
-            "710|Pumpkaboo|Intercambio", "711|Gourgeist|Final",
-            "353|Shuppet|Nv. 37", "354|Banette|Final",
-            "81|Magnemite|Nv. 30", "82|Magneton|Monte Corona/Nivel en Zona Magnética", "462|Magnezone|Final",
-            "712|Bergmite|Nv. 37", "713|Avalugg|Final",
-            "228|Houndour|Nv. 24", "229|Houndoom|Final",
-            "517|Munna|Piedra Lunar", "518|Musharna|Final",
-            "163|Hoothoot|Nv. 20", "164|Noctowl|Final",
-            "714|Noibat|Nv. 48", "715|Noivern|Final",
-            "23|Ekans|Nv. 22", "24|Arbok|Final",
-            "147|Dratini|Nv. 30", "148|Dragonair|Nv. 55", "149|Dragonite|Final",
-            "716|Xerneas|Legendario (X)",
-            "717|Yveltal|Legendario (Y)",
-            "718|Zygarde|Legendario",
-            "150|Mewtwo|Villa Pokémon"
+            // --- KALOS MONTAÑA (#001 - #151) ---
+            { regionalId: 1, natId: 50, name: "Diglett", evo: "Nv. 26", zone: "Montaña" },
+            { regionalId: 2, natId: 51, name: "Dugtrio", evo: "Final", zone: "Montaña" },
+            { regionalId: 3, natId: 328, name: "Trapinch", evo: "Nv. 35", zone: "Montaña" },
+            { regionalId: 4, natId: 329, name: "Vibrava", evo: "Nv. 45", zone: "Montaña" },
+            { regionalId: 5, natId: 330, name: "Flygon", evo: "Final", zone: "Montaña" },
+            { regionalId: 6, natId: 443, name: "Gible", evo: "Nv. 24", zone: "Montaña" },
+            { regionalId: 7, natId: 444, name: "Gabite", evo: "Nv. 48", zone: "Montaña" },
+            { regionalId: 8, natId: 445, name: "Garchomp", evo: "Final", zone: "Montaña" },
+            { regionalId: 9, natId: 74, name: "Geodude", evo: "Nv. 25", zone: "Montaña" },
+            { regionalId: 10, natId: 75, name: "Graveler", evo: "Intercambio", zone: "Montaña" },
+            { regionalId: 11, natId: 76, name: "Golem", evo: "Final", zone: "Montaña" },
+            { regionalId: 12, natId: 218, name: "Slugma", evo: "Nv. 38", zone: "Montaña" },
+            { regionalId: 13, natId: 219, name: "Magcargo", evo: "Final", zone: "Montaña" },
+            { regionalId: 14, natId: 451, name: "Skorupi", evo: "Nv. 40", zone: "Montaña" },
+            { regionalId: 15, natId: 452, name: "Drapion", evo: "Final", zone: "Montaña" },
+            { regionalId: 16, natId: 194, name: "Wooper", evo: "Nv. 20", zone: "Montaña" },
+            { regionalId: 17, natId: 195, name: "Quagsire", evo: "Final", zone: "Montaña" },
+            { regionalId: 18, natId: 704, name: "Goomy", evo: "Nv. 40", zone: "Montaña" },
+            { regionalId: 19, natId: 705, name: "Sliggoo", evo: "Nv. 50 (Lluvia)", zone: "Montaña" },
+            { regionalId: 20, natId: 706, name: "Goodra", evo: "Final", zone: "Montaña" },
+            { regionalId: 21, natId: 588, name: "Karrablast", evo: "Intercambio x Shelmet", zone: "Montaña" },
+            { regionalId: 22, natId: 589, name: "Escavalier", evo: "Final", zone: "Montaña" },
+            { regionalId: 23, natId: 616, name: "Shelmet", evo: "Intercambio x Karrablast", zone: "Montaña" },
+            { regionalId: 24, natId: 617, name: "Accelgor", evo: "Final", zone: "Montaña" },
+            { regionalId: 25, natId: 69, name: "Bellsprout", evo: "Nv. 21", zone: "Montaña" },
+            { regionalId: 26, natId: 70, name: "Weepinbell", evo: "Piedra Hoja", zone: "Montaña" },
+            { regionalId: 27, natId: 71, name: "Victreebel", evo: "Final", zone: "Montaña" },
+            { regionalId: 28, natId: 455, name: "Carnivine", evo: "Final", zone: "Montaña" },
+            { regionalId: 29, natId: 92, name: "Gastly", evo: "Nv. 25", zone: "Montaña" },
+            { regionalId: 30, natId: 93, name: "Haunter", evo: "Intercambio", zone: "Montaña" },
+            { regionalId: 31, natId: 94, name: "Gengar", evo: "Final", zone: "Montaña" },
+            { regionalId: 32, natId: 167, name: "Spinarak", evo: "Nv. 22", zone: "Montaña" },
+            { regionalId: 33, natId: 168, name: "Ariados", evo: "Final", zone: "Montaña" },
+            { regionalId: 34, natId: 100, name: "Voltorb", evo: "Nv. 30", zone: "Montaña" },
+            { regionalId: 35, natId: 101, name: "Electrode", evo: "Final", zone: "Montaña" },
+            { regionalId: 36, natId: 568, name: "Trubbish", evo: "Nv. 36", zone: "Montaña" },
+            { regionalId: 37, natId: 569, name: "Garbodor", evo: "Final", zone: "Montaña" },
+            { regionalId: 38, natId: 220, name: "Swinub", evo: "Nv. 33", zone: "Montaña" },
+            { regionalId: 39, natId: 221, name: "Piloswine", evo: "Nv. c/ Poder Pasado", zone: "Montaña" },
+            { regionalId: 40, natId: 473, name: "Mamoswine", evo: "Final", zone: "Montaña" },
+            { regionalId: 41, natId: 238, name: "Smoochum", evo: "Nv. 30", zone: "Montaña" },
+            { regionalId: 42, natId: 124, name: "Jynx", evo: "Final", zone: "Montaña" },
+            { regionalId: 43, natId: 582, name: "Vanillite", evo: "Nv. 35", zone: "Montaña" },
+            { regionalId: 44, natId: 583, name: "Vanillish", evo: "Nv. 47", zone: "Montaña" },
+            { regionalId: 45, natId: 584, name: "Vanilluxe", evo: "Final", zone: "Montaña" },
+            { regionalId: 46, natId: 459, name: "Snover", evo: "Nv. 40", zone: "Montaña" },
+            { regionalId: 47, natId: 460, name: "Abomasnow", evo: "Final", zone: "Montaña" },
+            { regionalId: 48, natId: 225, name: "Delibird", evo: "Final", zone: "Montaña" },
+            { regionalId: 49, natId: 361, name: "Snorunt", evo: "Nv. 42 / Piedra Alba", zone: "Montaña" },
+            { regionalId: 50, natId: 362, name: "Glalie", evo: "Final", zone: "Montaña" },
+            { regionalId: 51, natId: 478, name: "Froslass", evo: "Final", zone: "Montaña" },
+            { regionalId: 52, natId: 128, name: "Tauros", evo: "Final", zone: "Montaña" },
+            { regionalId: 53, natId: 241, name: "Miltank", evo: "Final", zone: "Montaña" },
+            { regionalId: 54, natId: 179, name: "Mareep", evo: "Nv. 15", zone: "Montaña" },
+            { regionalId: 55, natId: 180, name: "Flaaffy", evo: "Nv. 30", zone: "Montaña" },
+            { regionalId: 56, natId: 181, name: "Ampharos", evo: "Final", zone: "Montaña" },
+            { regionalId: 57, natId: 127, name: "Pinsir", evo: "Final", zone: "Montaña" },
+            { regionalId: 58, natId: 214, name: "Heracross", evo: "Final", zone: "Montaña" },
+            { regionalId: 59, natId: 417, name: "Pachirisu", evo: "Final", zone: "Montaña" },
+            { regionalId: 60, natId: 702, name: "Dedenne", evo: "Final", zone: "Montaña" },
+            { regionalId: 61, natId: 27, name: "Sandshrew", evo: "Nv. 22", zone: "Montaña" },
+            { regionalId: 62, natId: 28, name: "Sandslash", evo: "Final", zone: "Montaña" },
+            { regionalId: 63, natId: 304, name: "Aron", evo: "Nv. 32", zone: "Montaña" },
+            { regionalId: 64, natId: 305, name: "Lairon", evo: "Nv. 42", zone: "Montaña" },
+            { regionalId: 65, natId: 306, name: "Aggron", evo: "Final", zone: "Montaña" },
+            { regionalId: 66, natId: 246, name: "Larvitar", evo: "Nv. 30", zone: "Montaña" },
+            { regionalId: 67, natId: 247, name: "Pupitar", evo: "Nv. 55", zone: "Montaña" },
+            { regionalId: 68, natId: 248, name: "Tyranitar", evo: "Final", zone: "Montaña" },
+            { regionalId: 69, natId: 322, name: "Numel", evo: "Nv. 33", zone: "Montaña" },
+            { regionalId: 70, natId: 323, name: "Camerupt", evo: "Final", zone: "Montaña" },
+            { regionalId: 71, natId: 108, name: "Lickitung", evo: "Nv. con Desenrollar", zone: "Montaña" },
+            { regionalId: 72, natId: 463, name: "Lickilicky", evo: "Final", zone: "Montaña" },
+            { regionalId: 73, natId: 703, name: "Carbink", evo: "Final", zone: "Montaña" },
+            { regionalId: 74, natId: 707, name: "Klefki", evo: "Final", zone: "Montaña" },
+            { regionalId: 75, natId: 538, name: "Throh", evo: "Final", zone: "Montaña" },
+            { regionalId: 76, natId: 539, name: "Sawk", evo: "Final", zone: "Montaña" },
+            { regionalId: 77, natId: 333, name: "Swablu", evo: "Nv. 35", zone: "Montaña" },
+            { regionalId: 78, natId: 334, name: "Altaria", evo: "Final", zone: "Montaña" },
+            { regionalId: 79, natId: 527, name: "Woobat", evo: "Amistad", zone: "Montaña" },
+            { regionalId: 80, natId: 528, name: "Swoobat", evo: "Final", zone: "Montaña" },
+            { regionalId: 81, natId: 708, name: "Phantump", evo: "Intercambio", zone: "Montaña" },
+            { regionalId: 82, natId: 709, name: "Trevenant", evo: "Final", zone: "Montaña" },
+            { regionalId: 83, natId: 710, name: "Pumpkaboo", evo: "Intercambio", zone: "Montaña" },
+            { regionalId: 84, natId: 711, name: "Gourgeist", evo: "Final", zone: "Montaña" },
+            { regionalId: 85, natId: 353, name: "Shuppet", evo: "Nv. 37", zone: "Montaña" },
+            { regionalId: 86, natId: 354, name: "Banette", evo: "Final", zone: "Montaña" },
+            { regionalId: 87, natId: 81, name: "Magnemite", evo: "Nv. 30", zone: "Montaña" },
+            { regionalId: 88, natId: 82, name: "Magneton", evo: "Zona Magnética", zone: "Montaña" },
+            { regionalId: 89, natId: 462, name: "Magnezone", evo: "Final", zone: "Montaña" },
+            { regionalId: 90, natId: 712, name: "Bergmite", evo: "Nv. 37", zone: "Montaña" },
+            { regionalId: 91, natId: 713, name: "Avalugg", evo: "Final", zone: "Montaña" },
+            { regionalId: 92, natId: 228, name: "Houndour", evo: "Nv. 24", zone: "Montaña" },
+            { regionalId: 93, natId: 229, name: "Houndoom", evo: "Final", zone: "Montaña" },
+            { regionalId: 94, natId: 517, name: "Munna", evo: "Piedra Lunar", zone: "Montaña" },
+            { regionalId: 95, natId: 518, name: "Musharna", evo: "Final", zone: "Montaña" },
+            { regionalId: 96, natId: 163, name: "Hoothoot", evo: "Nv. 20", zone: "Montaña" },
+            { regionalId: 97, natId: 164, name: "Noctowl", evo: "Final", zone: "Montaña" },
+            { regionalId: 98, natId: 714, name: "Noibat", evo: "Nv. 48", zone: "Montaña" },
+            { regionalId: 99, natId: 715, name: "Noivern", evo: "Final", zone: "Montaña" },
+            { regionalId: 100, natId: 23, name: "Ekans", evo: "Nv. 22", zone: "Montaña" },
+            { regionalId: 101, natId: 24, name: "Arbok", evo: "Final", zone: "Montaña" },
+            { regionalId: 102, natId: 147, name: "Dratini", evo: "Nv. 30", zone: "Montaña" },
+            { regionalId: 103, natId: 148, name: "Dragonair", evo: "Nv. 55", zone: "Montaña" },
+            { regionalId: 104, natId: 149, name: "Dragonite", evo: "Final", zone: "Montaña" },
+            { regionalId: 105, natId: 716, name: "Xerneas", evo: "Legendario (X)", zone: "Montaña" },
+            { regionalId: 106, natId: 717, name: "Yveltal", evo: "Legendario (Y)", zone: "Montaña" },
+            { regionalId: 107, natId: 718, name: "Zygarde", evo: "Legendario", zone: "Montaña" },
+            { regionalId: 108, natId: 150, name: "Mewtwo", evo: "Villa Pokémon", zone: "Montaña" }
         ];
-
-        // Se ordenan por ID de la Pokédex Nacional para mantener la vista organizada
-        const pokedex = rawPokedex.map((data) => {
-            const [id, name, evo] = data.split('|');
-            return { id: parseInt(id), name, evo };
-        }).sort((a, b) => a.id - b.id);
 
         const routeData = {
             "Pokémon X": [
@@ -256,7 +442,8 @@
         let caughtState = {}; 
         let currentView = 'pokedex';
         let searchQuery = '';
-        let filterState = 'all'; 
+        let filterState = 'all';
+        let zoneFilter = 'all'; // Filtro de zona regional (all, Centro, Costa, Montaña)
         
         let db, auth, userId;
         const appId = 'kalos-tracker'; 
@@ -267,7 +454,7 @@
         }
 
         function getPokemonName(id) {
-            const p = pokedex.find(p => p.id === id);
+            const p = pokedex.find(p => p.natId === id);
             return p ? p.name : `Desconocido (${id})`;
         }
 
@@ -279,8 +466,8 @@
             return false;
         }
 
-        window.toggleCaught = async function(pokemonId) {
-            caughtState[pokemonId] = !caughtState[pokemonId];
+        window.toggleCaught = async function(natId) {
+            caughtState[natId] = !caughtState[natId];
             renderCurrentView(); 
             localStorage.setItem('kalosTrackerData', JSON.stringify(caughtState));
             
@@ -311,6 +498,11 @@
             renderCurrentView();
         }
 
+        window.updateZoneFilter = function(value) {
+            zoneFilter = value;
+            renderCurrentView();
+        }
+
         function renderCurrentView() {
             const container = document.getElementById('app-content');
             if (currentView === 'pokedex') {
@@ -324,6 +516,7 @@
         }
 
         function generatePokedexHTML() {
+            // El total de la Pokédex regional de Kalos cuenta con 457 entradas totales combinadas
             const totalCaught = Object.values(caughtState).filter(v => v).length;
             const progressPercent = Math.round((totalCaught / pokedex.length) * 100);
 
@@ -336,12 +529,18 @@
                                 ${totalCaught} / ${pokedex.length} Atrapados
                             </span>
                         </h1>
-                        <p class="text-slate-400 mt-2 text-sm">Registro Regional Completo (Centro, Costa y Montaña).</p>
+                        <p class="text-slate-400 mt-2 text-sm">Registro Regional ordenado por zonas oficiales (Centro, Costa y Montaña).</p>
                         <div class="w-full bg-slate-700 rounded-full h-2.5 mt-4">
                             <div class="bg-sky-500 h-2.5 rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
                         </div>
-                        <div class="mt-6 flex flex-col sm:flex-row gap-4">
-                            <input type="text" placeholder="Buscar por nombre o número..." class="px-4 py-2 rounded-lg text-gray-800 w-full sm:w-1/2 focus:ring-2 focus:ring-sky-500 outline-none" value="${searchQuery}" onkeyup="updateSearch(this.value)">
+                        <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <input type="text" placeholder="Buscar por nombre o número..." class="px-4 py-2 rounded-lg text-gray-800 w-full focus:ring-2 focus:ring-sky-500 outline-none" value="${searchQuery}" onkeyup="updateSearch(this.value)">
+                            <select class="px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer" onchange="updateZoneFilter(this.value)">
+                                <option value="all" ${zoneFilter === 'all' ? 'selected' : ''}>Todas las Zonas</option>
+                                <option value="Centro" ${zoneFilter === 'Centro' ? 'selected' : ''}>Kalos Centro</option>
+                                <option value="Costa" ${zoneFilter === 'Costa' ? 'selected' : ''}>Kalos Costa</option>
+                                <option value="Montaña" ${zoneFilter === 'Montaña' ? 'selected' : ''}>Kalos Montaña</option>
+                            </select>
                             <select class="px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer" onchange="updateFilter(this.value)">
                                 <option value="all" ${filterState === 'all' ? 'selected' : ''}>Todos los Pokémon</option>
                                 <option value="caught" ${filterState === 'caught' ? 'selected' : ''}>Solo Atrapados</option>
@@ -354,7 +553,9 @@
                             <thead class="uppercase tracking-wider border-b-2 border-gray-200 bg-gray-50 text-gray-600 font-bold">
                                 <tr>
                                     <th class="px-6 py-4 text-center">Atrapado</th>
+                                    <th class="px-6 py-4 text-center">Nº Reg.</th>
                                     <th class="px-6 py-4 text-center">Nº Nac.</th>
+                                    <th class="px-6 py-4">Zona</th>
                                     <th class="px-6 py-4">Sprite</th>
                                     <th class="px-6 py-4">Pokémon</th>
                                     <th class="px-6 py-4">Evolución / Notas</th>
@@ -365,20 +566,21 @@
             `;
 
             const filteredPokedex = pokedex.filter(poke => {
-                const isCaught = caughtState[poke.id] || false;
-                const matchesSearch = poke.name.toLowerCase().includes(searchQuery) || String(poke.id).includes(searchQuery);
+                const isCaught = caughtState[poke.natId] || false;
+                const matchesSearch = poke.name.toLowerCase().includes(searchQuery) || String(poke.natId).includes(searchQuery) || String(poke.regionalId).includes(searchQuery);
+                const matchesZone = (zoneFilter === 'all' || poke.zone === zoneFilter);
                 let matchesFilter = true;
                 if (filterState === 'caught') matchesFilter = isCaught;
                 if (filterState === 'missing') matchesFilter = !isCaught;
-                return matchesSearch && matchesFilter;
+                return matchesSearch && matchesZone && matchesFilter;
             });
 
             if (filteredPokedex.length === 0) {
-                html += `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No se encontraron Pokémon.</td></tr>`;
+                html += `<tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">No se encontraron Pokémon.</td></tr>`;
             }
 
             filteredPokedex.forEach((poke) => {
-                const isCaught = caughtState[poke.id] || false;
+                const isCaught = caughtState[poke.natId] || false;
                 let badges = '';
                 const games = [
                     { name: 'Pokémon X', color: 'bg-sky-100 text-sky-800 border-sky-300' },
@@ -386,21 +588,30 @@
                 ];
 
                 games.forEach(g => {
-                    if (isAvailableInGame(poke.id, g.name)) {
+                    if (isAvailableInGame(poke.natId, g.name)) {
                         badges += `<button onclick="navigate('${g.name}')" class="px-2 py-1 text-xs border rounded-md font-semibold mr-2 transition hover:opacity-70 ${g.color}">${g.name}</button>`;
                     }
                 });
 
                 if (badges === '') badges = `<span class="text-xs text-gray-400 italic">Ambas/Otra Ruta</span>`;
 
+                let zoneBadgeColor = 'bg-slate-100 text-slate-800';
+                if (poke.zone === 'Centro') zoneBadgeColor = 'bg-emerald-100 text-emerald-800';
+                if (poke.zone === 'Costa') zoneBadgeColor = 'bg-blue-100 text-blue-800';
+                if (poke.zone === 'Montaña') zoneBadgeColor = 'bg-amber-100 text-amber-800';
+
                 html += `
                     <tr class="hover:bg-gray-50 transition duration-150 ${isCaught ? 'bg-sky-50/50' : ''}">
                         <td class="px-6 py-4 text-center">
-                            <input type="checkbox" class="w-6 h-6 text-sky-600 rounded border-gray-300 focus:ring-sky-500 cursor-pointer checkbox-anim" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${poke.id})">
+                            <input type="checkbox" class="w-6 h-6 text-sky-600 rounded border-gray-300 focus:ring-sky-500 cursor-pointer checkbox-anim" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${poke.natId})">
                         </td>
-                        <td class="px-6 py-4 text-center font-mono text-gray-500">#${String(poke.id).padStart(3, '0')}</td>
+                        <td class="px-6 py-4 text-center font-mono font-bold text-sky-900">#${String(poke.regionalId).padStart(3, '0')}</td>
+                        <td class="px-6 py-4 text-center font-mono text-gray-500">#${String(poke.natId).padStart(3, '0')}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2.5 py-1 text-xs font-semibold rounded-full ${zoneBadgeColor}">${poke.zone}</span>
+                        </td>
                         <td class="px-6 py-2">
-                            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.id}.png" alt="${poke.name}" class="w-12 h-12 inline-block object-contain pixelated" onerror="this.style.display='none'">
+                            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.natId}.png" alt="${poke.name}" class="w-12 h-12 inline-block object-contain pixelated" onerror="this.style.display='none'">
                         </td>
                         <td class="px-6 py-4 font-bold text-base">
                             <a href="${getWikidexUrl(poke.name)}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline transition" title="Ver en Wikidex">${poke.name}</a>
@@ -484,49 +695,40 @@
 
         async function setupCloudStorage() {
             try {
-                const localData = localStorage.getItem('kalosTrackerData');
-                if (localData) {
-                    caughtState = JSON.parse(localData);
-                    renderCurrentView();
-                }
-
-                if (typeof __firebase_config === 'undefined') return;
-                const firebaseConfig = JSON.parse(__firebase_config);
+                const firebaseConfig = JSON.parse(window.__firebase_config);
                 const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
                 auth = getAuth(app);
+                db = getFirestore(app);
 
-                await signInAnonymously(auth);
+                const userCred = await signInAnonymously(auth);
+                userId = userCred.user.uid;
 
-                let mySyncCode = localStorage.getItem('pokemonSyncCode');
-                if (!mySyncCode) {
-                    mySyncCode = prompt("Ingresa una palabra secreta para sincronizar tu progreso (ej. JulianDex2026):");
-                    if (mySyncCode) {
-                        localStorage.setItem('pokemonSyncCode', mySyncCode.trim());
-                    }
-                }
+                document.getElementById('storage-status').innerText = "Holomisor sincronizado con la Nube (Firebase Activo).";
 
-                userId = mySyncCode ? mySyncCode.trim() : auth.currentUser?.uid;
-                if (!userId) return;
-                
-                document.getElementById('storage-status').textContent = "Kalos Tracker - Conectado al Holomisor (Nube activa).";
                 const docRef = doc(db, 'artifacts', appId, 'users', userId, 'trackerData', 'caughtState');
-                
-                onSnapshot(docRef, (snapshot) => {
-                    if (snapshot.exists()) {
-                        caughtState = { ...caughtState, ...snapshot.data() };
+                onSnapshot(docRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const cloudData = docSnap.data();
+                        const localData = JSON.parse(localStorage.getItem('kalosTrackerData') || '{}');
+                        caughtState = { ...localData, ...cloudData };
+                        renderCurrentView();
+                    } else {
+                        const localData = JSON.parse(localStorage.getItem('kalosTrackerData') || '{}');
+                        caughtState = localData;
+                        setDoc(docRef, caughtState);
                         renderCurrentView();
                     }
                 });
             } catch (error) {
-                document.getElementById('storage-status').textContent = "Kalos Tracker - Guardado de manera local en tu Holomisor.";
+                console.error("Error conectando a la nube:", error);
+                const localData = JSON.parse(localStorage.getItem('kalosTrackerData') || '{}');
+                caughtState = localData;
+                document.getElementById('storage-status').innerText = "Modo Local activado (Sin conexión a la Nube).";
+                renderCurrentView();
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            navigate('pokedex');
-            setupCloudStorage();
-        });
+        setupCloudStorage();
     </script>
 </body>
 </html>
