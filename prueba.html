@@ -13,13 +13,19 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalos Tracker (X / Y) - Guía Completa de Encuentros (Bulbapedia)</title>
+    <title>Kalos Tracker (X / Y) - Estilo Oficial Bulbapedia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .checkbox-anim { transition: all 0.2s ease-in-out; }
         .checkbox-anim:checked { transform: scale(1.1); }
+        
+        /* Estilos Bulbapedia para insignias de versión */
+        .game-badge-x-active { background-color: #1d64b4; color: #ffffff; border: 1px solid #1d64b4; }
+        .game-badge-x-inactive { background-color: #ffffff; color: #1d64b4; border: 1px solid #1d64b4; }
+        .game-badge-y-active { background-color: #e2182b; color: #ffffff; border: 1px solid #e2182b; }
+        .game-badge-y-inactive { background-color: #ffffff; color: #e2182b; border: 1px solid #e2182b; }
     </style>
 </head>
 <body class="bg-slate-900 text-gray-100 min-h-screen flex flex-col">
@@ -28,11 +34,11 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center space-x-3">
-                    <span class="text-xl font-bold tracking-wider cursor-pointer text-sky-400" onclick="navigate('encounters')">Kalos Tracker (X/Y)</span>
+                    <span class="text-xl font-bold tracking-wider cursor-pointer text-sky-400" onclick="navigate('pokedex')">Kalos Tracker (X/Y)</span>
                 </div>
                 <div class="flex items-center space-x-1 md:space-x-4 overflow-x-auto">
+                    <button onclick="navigate('pokedex')" id="nav-pokedex" class="nav-btn px-3 py-2 rounded-md text-sm font-medium bg-slate-800 text-white transition whitespace-nowrap">Pokédex Regional</button>
                     <button onclick="navigate('encounters')" id="nav-encounters" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition whitespace-nowrap">Guía de Encuentros</button>
-                    <button onclick="navigate('pokedex')" id="nav-pokedex" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition whitespace-nowrap">Pokédex Regional</button>
                     <button onclick="navigate('Exclusivos')" id="nav-Exclusivos" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-amber-400 hover:bg-amber-900 hover:text-white transition whitespace-nowrap">Exclusivos de Versión</button>
                 </div>
             </div>
@@ -42,7 +48,7 @@
     <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full"></main>
 
     <footer class="bg-slate-950 text-slate-400 py-6 text-center text-sm mt-auto border-t border-slate-800">
-        <p id="storage-status">Kalos Tracker - Conectado con base de datos de Bulbapedia...</p>
+        <p id="storage-status">Kalos Tracker - Sincronizado con Bulbapedia...</p>
     </footer>
 
     <script type="module">
@@ -105,394 +111,97 @@
             {
                 locationName: "Pueblo Boceto (Vaniville Town)",
                 encounters: [
-                    { id: 650, games: ["X", "Y"], location: "Starter (Elección)", levels: "5", rate: "100%" },
-                    { id: 653, games: ["X", "Y"], location: "Starter (Elección)", levels: "5", rate: "100%" },
-                    { id: 656, games: ["X", "Y"], location: "Starter (Elección)", levels: "5", rate: "100%" }
+                    { id: 650, inX: true, inY: true, location: "Starter", levels: "5", rate: "100%" },
+                    { id: 653, inX: true, inY: true, location: "Starter", levels: "5", rate: "100%" },
+                    { id: 656, inX: true, inY: true, location: "Starter", levels: "5", rate: "100%" }
                 ]
             },
             {
                 locationName: "Ruta 2 (Avance Trail)",
                 encounters: [
-                    { id: 659, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "2-3", rate: "20%" },
-                    { id: 661, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "2-3", rate: "20%" },
-                    { id: 664, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "2-3", rate: "20%" },
-                    { id: 263, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3-4", rate: "15%" },
-                    { id: 16, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3-4", rate: "14%" },
-                    { id: 13, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3-4", rate: "11%" },
-                    { id: 10, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3-4", rate: "11%" }
+                    { id: 659, inX: true, inY: true, location: "Grass", levels: "2-3", rate: "20%" },
+                    { id: 661, inX: true, inY: true, location: "Grass", levels: "2-3", rate: "20%" },
+                    { id: 664, inX: true, inY: true, location: "Grass", levels: "2-3", rate: "20%" },
+                    { id: 263, inX: true, inY: true, location: "Grass", levels: "3-4", rate: "15%" },
+                    { id: 16, inX: true, inY: true, location: "Grass", levels: "3-4", rate: "14%" },
+                    { id: 13, inX: true, inY: true, location: "Grass", levels: "3-4", rate: "11%" },
+                    { id: 10, inX: true, inY: true, location: "Grass", levels: "3-4", rate: "11%" }
                 ]
             },
             {
                 locationName: "Bosque Novarte (Santalune Forest)",
                 encounters: [
-                    { id: 664, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "2-4", rate: "20%" },
-                    { id: 13, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "2-4", rate: "20%" },
-                    { id: 10, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "2-3", rate: "20%" },
-                    { id: 511, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "4", rate: "10%" },
-                    { id: 513, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "4", rate: "10%" },
-                    { id: 515, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "4", rate: "10%" },
-                    { id: 25, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3-4", rate: "6%" }
+                    { id: 10, inX: false, inY: true, location: "Grass", levels: "2-3", rate: "20%" },
+                    { id: 10, inX: true, inY: false, location: "Grass", levels: "2", rate: "10%" },
+                    { id: 11, inX: false, inY: true, location: "Grass", levels: "4", rate: "4%" },
+                    { id: 13, inX: true, inY: false, location: "Grass", levels: "2-3", rate: "20%" },
+                    { id: 13, inX: false, inY: true, location: "Grass", levels: "2", rate: "10%" },
+                    { id: 14, inX: true, inY: false, location: "Grass", levels: "4", rate: "4%" },
+                    { id: 25, inX: true, inY: true, location: "Grass", levels: "3-4", rate: "6%" },
+                    { id: 511, inX: true, inY: true, location: "Grass", levels: "4", rate: "10%" },
+                    { id: 513, inX: true, inY: true, location: "Grass", levels: "4", rate: "10%" },
+                    { id: 515, inX: true, inY: true, location: "Grass", levels: "4", rate: "10%" },
+                    { id: 661, inX: true, inY: true, location: "Grass", levels: "4", rate: "10%" },
+                    { id: 664, inX: true, inY: true, location: "Grass", levels: "2-3", rate: "20%" }
                 ]
             },
             {
                 locationName: "Ruta 3 (Ouvert Way)",
                 encounters: [
-                    { id: 399, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3-4", rate: "20%" },
-                    { id: 659, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3-4", rate: "20%" },
-                    { id: 661, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3, 5", rate: "20%" },
-                    { id: 298, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3-5", rate: "10%" },
-                    { id: 412, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "5", rate: "10%" },
-                    { id: 206, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "5", rate: "5%" }
+                    { id: 399, inX: true, inY: true, location: "Grass", levels: "3-4", rate: "20%" },
+                    { id: 659, inX: true, inY: true, location: "Grass", levels: "3-4", rate: "20%" },
+                    { id: 661, inX: true, inY: true, location: "Grass", levels: "3, 5", rate: "20%" },
+                    { id: 298, inX: true, inY: true, location: "Grass", levels: "3-5", rate: "10%" },
+                    { id: 412, inX: true, inY: true, location: "Grass", levels: "5", rate: "10%" },
+                    { id: 206, inX: true, inY: true, location: "Grass", levels: "5", rate: "5%" }
                 ]
             },
             {
                 locationName: "Ruta 4 (Parterre Way)",
                 encounters: [
-                    { id: 669, games: ["X", "Y"], location: "Yellow Flowers", levels: "4-5", rate: "20%" },
-                    { id: 172, games: ["X", "Y"], location: "Yellow Flowers", levels: "4-5", rate: "15%" },
-                    { id: 406, games: ["X", "Y"], location: "Yellow Flowers", levels: "4-5", rate: "15%" },
-                    { id: 280, games: ["X", "Y"], location: "Yellow Flowers", levels: "4", rate: "10%" },
-                    { id: 165, games: ["X", "Y"], location: "Yellow Flowers", levels: "4-5", rate: "10%" },
-                    { id: 300, games: ["X", "Y"], location: "Yellow Flowers", levels: "8", rate: "5%" },
-                    { id: 179, games: ["X", "Y"], location: "Horde Encounter", levels: "7", rate: "35%" }
-                ]
-            },
-            {
-                locationName: "Ciudad Luminalia - Laboratorio Prof. Ciprés",
-                encounters: [
-                    { id: 1, games: ["X", "Y"], location: "Kanto Starter (Regalo)", levels: "10", rate: "100%" },
-                    { id: 4, games: ["X", "Y"], location: "Kanto Starter (Regalo)", levels: "10", rate: "100%" },
-                    { id: 7, games: ["X", "Y"], location: "Kanto Starter (Regalo)", levels: "10", rate: "100%" }
-                ]
-            },
-            {
-                locationName: "Ruta 5 (Versant Road)",
-                encounters: [
-                    { id: 667, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "8-10", rate: "20%" },
-                    { id: 672, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "8-10", rate: "20%" },
-                    { id: 674, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "8-10", rate: "20%" },
-                    { id: 676, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "8-10", rate: "20%" },
-                    { id: 63, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "10", rate: "10%" },
-                    { id: 84, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "8, 10", rate: "10%" },
-                    { id: 311, games: ["X", "Y"], location: "Horde Encounter", levels: "6", rate: "35%" },
-                    { id: 312, games: ["X", "Y"], location: "Horde Encounter", levels: "6", rate: "35%" }
-                ]
-            },
-            {
-                locationName: "Ruta 6 (Palais Lane)",
-                encounters: [
-                    { id: 677, games: ["X", "Y"], location: "Grass (Camino largo)", levels: "11-12", rate: "20%" },
-                    { id: 83, games: ["X", "Y"], location: "Grass (Camino largo)", levels: "10-12", rate: "20%" },
-                    { id: 104, games: ["X", "Y"], location: "Grass (Camino largo)", levels: "10, 12", rate: "15%" },
-                    { id: 163, games: ["X", "Y"], location: "Grass (Camino largo)", levels: "11-12", rate: "15%" },
-                    { id: 316, games: ["X", "Y"], location: "Grass (Camino largo)", levels: "10-12", rate: "15%" },
-                    { id: 543, games: ["X", "Y"], location: "Bush Shake (Arbustos)", levels: "10-12", rate: "50%" }
-                ]
-            },
-            {
-                locationName: "Palacio Cénit (Parfum Palace)",
-                encounters: [
-                    { id: 129, games: ["X", "Y"], location: "Fishing (Caña Vieja)", levels: "15", rate: "100%" },
-                    { id: 118, games: ["X", "Y"], location: "Fishing (Caña Buena)", levels: "25", rate: "65%" },
-                    { id: 341, games: ["X", "Y"], location: "Fishing (Caña Buena)", levels: "25", rate: "35%" }
-                ]
-            },
-            {
-                locationName: "Ruta 7 (Rivière Walk)",
-                encounters: [
-                    { id: 682, games: ["Y"], location: "Grass (Hierba alta)", levels: "13-14", rate: "20%" },
-                    { id: 684, games: ["X"], location: "Grass (Hierba alta)", levels: "13-14", rate: "20%" },
-                    { id: 315, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "12-14", rate: "15%" },
-                    { id: 669, games: ["X", "Y"], location: "Yellow Flowers", levels: "12-14", rate: "15%" },
-                    { id: 133, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "11, 13", rate: "10%" },
-                    { id: 313, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "13", rate: "10%" },
-                    { id: 314, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "13", rate: "10%" },
-                    { id: 143, games: ["X", "Y"], location: "Bridge (Evento Snorlax)", levels: "15", rate: "100%" }
-                ]
-            },
-            {
-                locationName: "Cueva Conecta (Connecting Cave)",
-                encounters: [
-                    { id: 41, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "13-15", rate: "25%" },
-                    { id: 293, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "13-15", rate: "25%" },
-                    { id: 527, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "13-15", rate: "20%" },
-                    { id: 610, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "14-15", rate: "15%" },
-                    { id: 213, games: ["X", "Y"], location: "Rock Smash (Golpe Roca)", levels: "13-15", rate: "66%" }
-                ]
-            },
-            {
-                locationName: "Ruta 8 (Muraille Coast)",
-                encounters: [
-                    { id: 686, games: ["X", "Y"], location: "Grass (Acantilado)", levels: "13-15", rate: "20%" },
-                    { id: 325, games: ["X", "Y"], location: "Grass (Acantilado)", levels: "13-15", rate: "20%" },
-                    { id: 335, games: ["X", "Y"], location: "Grass (Acantilado)", levels: "14", rate: "15%" },
-                    { id: 336, games: ["X", "Y"], location: "Grass (Acantilado)", levels: "14", rate: "15%" },
-                    { id: 359, games: ["X", "Y"], location: "Grass (Acantilado)", levels: "15", rate: "10%" },
-                    { id: 371, games: ["X", "Y"], location: "Grass (Acantilado)", levels: "14-15", rate: "10%" },
-                    { id: 690, games: ["Y"], location: "Fishing (Caña Buena)", levels: "25", rate: "35%" },
-                    { id: 692, games: ["X"], location: "Fishing (Caña Buena)", levels: "25", rate: "35%" }
-                ]
-            },
-            {
-                locationName: "Pueblo Petroglifo (Ambrette Town)",
-                encounters: [
-                    { id: 696, games: ["X", "Y"], location: "Fossil Restorer (Mandíbula)", levels: "20", rate: "100%" },
-                    { id: 698, games: ["X", "Y"], location: "Fossil Restorer (Aleta)", levels: "20", rate: "100%" }
-                ]
-            },
-            {
-                locationName: "Ruta 9 (Spikes Passage)",
-                encounters: [
-                    { id: 111, games: ["X", "Y"], location: "Rhyhorn Ride Area", levels: "18-20", rate: "60%" },
-                    { id: 688, games: ["X", "Y"], location: "Rhyhorn Ride Area", levels: "19-20", rate: "20%" },
-                    { id: 451, games: ["X", "Y"], location: "Rhyhorn Ride Area", levels: "18, 20", rate: "20%" }
-                ]
-            },
-            {
-                locationName: "Cueva Brillante (Glittering Cave)",
-                encounters: [
-                    { id: 679, games: ["X", "Y"], location: "Shadows (Sombras)", levels: "16-18", rate: "25%" },
-                    { id: 524, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "16-18", rate: "20%" },
-                    { id: 111, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "17-18", rate: "20%" },
-                    { id: 304, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "16, 18", rate: "15%" },
-                    { id: 557, games: ["X", "Y"], location: "Rock Smash (Golpe Roca)", levels: "16-18", rate: "66%" },
-                    { id: 95, games: ["X", "Y"], location: "Rock Smash (Golpe Roca)", levels: "16-18", rate: "34%" }
-                ]
-            },
-            {
-                locationName: "Ruta 10 (Menhir Trail)",
-                encounters: [
-                    { id: 701, games: ["X", "Y"], location: "Yellow Flowers", levels: "19-21", rate: "20%" },
-                    { id: 359, games: ["X", "Y"], location: "Yellow Flowers", levels: "20-21", rate: "15%" },
-                    { id: 559, games: ["X", "Y"], location: "Yellow Flowers", levels: "19-20", rate: "15%" },
-                    { id: 215, games: ["X", "Y"], location: "Yellow Flowers", levels: "19, 21", rate: "10%" },
-                    { id: 228, games: ["X"], location: "Yellow Flowers", levels: "19, 21", rate: "10%" },
-                    { id: 309, games: ["Y"], location: "Yellow Flowers", levels: "19, 21", rate: "10%" },
-                    { id: 179, games: ["X", "Y"], location: "Horde Encounter", levels: "10", rate: "35%" },
-                    { id: 23, games: ["X", "Y"], location: "Horde Encounter", levels: "10", rate: "35%" }
-                ]
-            },
-            {
-                locationName: "Cueva Reflejos (Reflection Cave)",
-                encounters: [
-                    { id: 439, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "21-23", rate: "20%" },
-                    { id: 524, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "21-23", rate: "20%" },
-                    { id: 574, games: ["X"], location: "Cave Floor (Suelo)", levels: "21-22", rate: "15%" },
-                    { id: 577, games: ["Y"], location: "Cave Floor (Suelo)", levels: "21-22", rate: "15%" },
-                    { id: 703, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "22-23", rate: "10%" },
-                    { id: 619, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "21-23", rate: "10%" },
-                    { id: 116, games: ["X", "Y"], location: "Ceiling Shadows (Techo)", levels: "21-23", rate: "30%" }
-                ]
-            },
-            {
-                locationName: "Ruta 11 (Miroir Way)",
-                encounters: [
-                    { id: 702, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "21-23", rate: "20%" },
-                    { id: 694, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "21-23", rate: "20%" },
-                    { id: 619, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "21, 23", rate: "15%" },
-                    { id: 235, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "22-23", rate: "10%" },
-                    { id: 434, games: ["Y"], location: "Grass (Hierba alta)", levels: "22-23", rate: "10%" },
-                    { id: 316, games: ["X", "Y"], location: "Horde Encounter", levels: "11", rate: "35%" }
-                ]
-            },
-            {
-                locationName: "Ruta 12 (Fourrage Way)",
-                encounters: [
-                    { id: 672, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "25-27", rate: "20%" },
-                    { id: 128, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "25, 27", rate: "15%" },
-                    { id: 241, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "25, 27", rate: "15%" },
-                    { id: 214, games: ["Y"], location: "Grass (Hierba alta)", levels: "27", rate: "10%" },
-                    { id: 127, games: ["X"], location: "Grass (Hierba alta)", levels: "27", rate: "10%" },
-                    { id: 279, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "25-27", rate: "10%" },
-                    { id: 131, games: ["X", "Y"], location: "NPC Gift (Regalo Surf)", levels: "30", rate: "100%" }
-                ]
-            },
-            {
-                locationName: "Bahía Azul (Azure Bay)",
-                encounters: [
-                    { id: 279, games: ["X", "Y"], location: "Grass (Islas)", levels: "25-27", rate: "20%" },
-                    { id: 278, games: ["X", "Y"], location: "Surfing (Surf)", levels: "25-27", rate: "30%" },
-                    { id: 72, games: ["X", "Y"], location: "Surfing (Surf)", levels: "25-27", rate: "30%" },
-                    { id: 366, games: ["X", "Y"], location: "Fishing (Caña Buena)", levels: "25", rate: "35%" },
-                    { id: 130, games: ["X", "Y"], location: "Fishing (Supercaña)", levels: "35", rate: "35%" }
+                    { id: 669, inX: true, inY: true, location: "Yellow Flowers", levels: "4-5", rate: "20%" },
+                    { id: 172, inX: true, inY: true, location: "Yellow Flowers", levels: "4-5", rate: "15%" },
+                    { id: 406, inX: true, inY: true, location: "Yellow Flowers", levels: "4-5", rate: "15%" },
+                    { id: 280, inX: true, inY: true, location: "Yellow Flowers", levels: "4", rate: "10%" },
+                    { id: 165, inX: true, inY: true, location: "Yellow Flowers", levels: "4-5", rate: "10%" },
+                    { id: 300, inX: true, inY: true, location: "Yellow Flowers", levels: "8", rate: "5%" }
                 ]
             },
             {
                 locationName: "Ruta 13 (Lumiose Badlands)",
                 encounters: [
-                    { id: 51, games: ["X", "Y"], location: "Dirt (Nubes de Polvo)", levels: "26-28", rate: "40%" },
-                    { id: 328, games: ["X", "Y"], location: "Dirt (Nubes de Polvo)", levels: "26-28", rate: "40%" },
-                    { id: 443, games: ["X", "Y"], location: "Dirt (Nubes de Polvo)", levels: "26-28", rate: "20%" },
-                    { id: 75, games: ["X", "Y"], location: "Rock Smash (Golpe Roca)", levels: "26-28", rate: "66%" },
-                    { id: 218, games: ["X", "Y"], location: "Rock Smash (Golpe Roca)", levels: "26, 28", rate: "34%" }
-                ]
-            },
-            {
-                locationName: "Ruta 14 (Laverre Nature Trail)",
-                encounters: [
-                    { id: 704, games: ["X", "Y"], location: "Swamp (Pantano)", levels: "30-32", rate: "15%" },
-                    { id: 195, games: ["X", "Y"], location: "Swamp (Pantano)", levels: "30-32", rate: "15%" },
-                    { id: 616, games: ["X", "Y"], location: "Swamp (Pantano)", levels: "30-32", rate: "15%" },
-                    { id: 588, games: ["X", "Y"], location: "Swamp (Pantano)", levels: "30-32", rate: "15%" },
-                    { id: 70, games: ["X", "Y"], location: "Swamp (Pantano)", levels: "30-31", rate: "15%" },
-                    { id: 455, games: ["X", "Y"], location: "Swamp (Pantano)", levels: "31-32", rate: "10%" }
-                ]
-            },
-            {
-                locationName: "Ruta 15 (Brun Way)",
-                encounters: [
-                    { id: 708, games: ["X", "Y"], location: "Red Flowers", levels: "34-36", rate: "20%" },
-                    { id: 710, games: ["X", "Y"], location: "Red Flowers", levels: "34-36", rate: "20%" },
-                    { id: 198, games: ["X", "Y"], location: "Red Flowers", levels: "34-35", rate: "15%" },
-                    { id: 452, games: ["X", "Y"], location: "Red Flowers", levels: "35-36", rate: "10%" },
-                    { id: 625, games: ["X", "Y"], location: "Red Flowers", levels: "36", rate: "10%" },
-                    { id: 590, games: ["X", "Y"], location: "Horde Encounter", levels: "18", rate: "35%" }
-                ]
-            },
-            {
-                locationName: "Hotel Desolación (Lost Hotel)",
-                encounters: [
-                    { id: 707, games: ["X", "Y"], location: "Trash Cans (Contenedores)", levels: "36-38", rate: "30%" },
-                    { id: 569, games: ["X", "Y"], location: "Trash Cans (Contenedores)", levels: "36-38", rate: "30%" },
-                    { id: 479, games: ["X", "Y"], location: "Trash Cans (Martes)", levels: "38", rate: "20%" },
-                    { id: 568, games: ["X", "Y"], location: "Floor (Suelo)", levels: "35-37", rate: "30%" },
-                    { id: 93, games: ["X", "Y"], location: "Floor (Suelo)", levels: "35-37", rate: "25%" },
-                    { id: 101, games: ["X", "Y"], location: "Floor (Suelo)", levels: "36-38", rate: "20%" }
-                ]
-            },
-            {
-                locationName: "Ruta 16 (Melancolie Way)",
-                encounters: [
-                    { id: 708, games: ["X", "Y"], location: "Yellow Flowers", levels: "34-36", rate: "20%" },
-                    { id: 710, games: ["X", "Y"], location: "Yellow Flowers", levels: "34-36", rate: "20%" },
-                    { id: 198, games: ["X", "Y"], location: "Yellow Flowers", levels: "34-35", rate: "15%" },
-                    { id: 305, games: ["X"], location: "Yellow Flowers", levels: "35-36", rate: "10%" },
-                    { id: 247, games: ["Y"], location: "Yellow Flowers", levels: "35-36", rate: "10%" }
-                ]
-            },
-            {
-                locationName: "Gruta Helada (Frost Cavern)",
-                encounters: [
-                    { id: 712, games: ["X", "Y"], location: "Cave Ice Floor", levels: "38-40", rate: "25%" },
-                    { id: 583, games: ["X", "Y"], location: "Cave Ice Floor", levels: "38-39", rate: "20%" },
-                    { id: 614, games: ["X", "Y"], location: "Cave Ice Floor", levels: "39-40", rate: "15%" },
-                    { id: 460, games: ["X", "Y"], location: "Cave Ice Floor", levels: "38-40", rate: "15%" },
-                    { id: 124, games: ["X", "Y"], location: "Cave Ice Floor", levels: "38, 40", rate: "10%" },
-                    { id: 613, games: ["X", "Y"], location: "Horde Encounter", levels: "20", rate: "35%" }
-                ]
-            },
-            {
-                locationName: "Ruta 17 (Mamoswine Road)",
-                encounters: [
-                    { id: 460, games: ["X", "Y"], location: "Snow Area (Nieve)", levels: "38-40", rate: "30%" },
-                    { id: 225, games: ["X", "Y"], location: "Snow Area (Nieve)", levels: "38-39", rate: "30%" },
-                    { id: 221, games: ["X", "Y"], location: "Snow Area (Nieve)", levels: "39-40", rate: "20%" },
-                    { id: 473, games: ["X", "Y"], location: "Snow Area (Nieve)", levels: "40", rate: "20%" }
-                ]
-            },
-            {
-                locationName: "Ruta 18 (Vallée Étroite Way)",
-                encounters: [
-                    { id: 625, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "46-48", rate: "20%" },
-                    { id: 632, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "46-48", rate: "20%" },
-                    { id: 631, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "46-48", rate: "20%" },
-                    { id: 75, games: ["X", "Y"], location: "Rock Smash (Golpe Roca)", levels: "45-47", rate: "66%" },
-                    { id: 219, games: ["X", "Y"], location: "Rock Smash (Golpe Roca)", levels: "45-47", rate: "34%" }
-                ]
-            },
-            {
-                locationName: "Cueva Términus (Terminus Cave)",
-                encounters: [
-                    { id: 632, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "46-48", rate: "20%" },
-                    { id: 452, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "46-48", rate: "20%" },
-                    { id: 112, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "46-47", rate: "15%" },
-                    { id: 718, games: ["X", "Y"], location: "Deep Cave (Zygarde)", levels: "70", rate: "100%" }
-                ]
-            },
-            {
-                locationName: "Ruta 19 (Grande Vallée Way)",
-                encounters: [
-                    { id: 705, games: ["X", "Y"], location: "Yellow Flowers", levels: "48-50", rate: "20%" },
-                    { id: 24, games: ["X", "Y"], location: "Yellow Flowers", levels: "48-49", rate: "20%" },
-                    { id: 71, games: ["X", "Y"], location: "Yellow Flowers", levels: "48-50", rate: "15%" },
-                    { id: 209, games: ["X", "Y"], location: "Yellow Flowers", levels: "48, 50", rate: "15%" }
-                ]
-            },
-            {
-                locationName: "Ruta 20 (Winding Woods)",
-                encounters: [
-                    { id: 709, games: ["X", "Y"], location: "Forest Grass", levels: "50-52", rate: "20%" },
-                    { id: 711, games: ["X", "Y"], location: "Forest Grass", levels: "50-52", rate: "20%" },
-                    { id: 591, games: ["X", "Y"], location: "Forest Grass", levels: "50-51", rate: "15%" },
-                    { id: 127, games: ["X"], location: "Forest Grass", levels: "51-52", rate: "10%" },
-                    { id: 214, games: ["Y"], location: "Forest Grass", levels: "51-52", rate: "10%" }
-                ]
-            },
-            {
-                locationName: "Villa Pokémon (Pokémon Village)",
-                encounters: [
-                    { id: 235, games: ["X", "Y"], location: "Yellow Flowers", levels: "48-50", rate: "20%" },
-                    { id: 531, games: ["X", "Y"], location: "Yellow Flowers", levels: "48-50", rate: "20%" },
-                    { id: 591, games: ["X", "Y"], location: "Yellow Flowers", levels: "48-50", rate: "15%" },
-                    { id: 713, games: ["X", "Y"], location: "Yellow Flowers", levels: "49-50", rate: "10%" },
-                    { id: 150, games: ["X", "Y"], location: "Unknown Dungeon (Mewtwo)", levels: "70", rate: "100%" }
-                ]
-            },
-            {
-                locationName: "Ruta 21 (Dernière Way)",
-                encounters: [
-                    { id: 334, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "48-50", rate: "20%" },
-                    { id: 217, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "48-50", rate: "20%" },
-                    { id: 505, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "48-49", rate: "15%" },
-                    { id: 625, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "49-50", rate: "15%" }
-                ]
-            },
-            {
-                locationName: "Ruta 22 (Palais Galerie)",
-                encounters: [
-                    { id: 662, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "24-26", rate: "20%" },
-                    { id: 660, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "24-26", rate: "20%" },
-                    { id: 184, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "24-25", rate: "15%" },
-                    { id: 281, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "25-26", rate: "15%" },
-                    { id: 112, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "25-26", rate: "10%" }
-                ]
-            },
-            {
-                locationName: "Calle Victoria (Victory Road)",
-                encounters: [
-                    { id: 625, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "57-59", rate: "20%" },
-                    { id: 620, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "57-59", rate: "20%" },
-                    { id: 112, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "56-58", rate: "15%" },
-                    { id: 452, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "57-58", rate: "15%" },
-                    { id: 715, games: ["X", "Y"], location: "Ceiling Shadows (Techo)", levels: "58-60", rate: "30%" },
-                    { id: 634, games: ["X", "Y"], location: "Ceiling Shadows (Techo)", levels: "59-60", rate: "20%" }
+                    { id: 51, inX: true, inY: true, location: "Dirt", levels: "26-28", rate: "40%" },
+                    { id: 328, inX: true, inY: true, location: "Dirt", levels: "26-28", rate: "40%" },
+                    { id: 443, inX: true, inY: true, location: "Dirt", levels: "26-28", rate: "20%" },
+                    { id: 75, inX: true, inY: true, location: "Rock Smash", levels: "26-28", rate: "66%" },
+                    { id: 218, inX: true, inY: true, location: "Rock Smash", levels: "26, 28", rate: "34%" }
                 ]
             }
         ];
 
         const versionExclusives = {
             "Pokémon X": [
-                { name: "Swirlix / Slurpuff", note: "Ruta 7 / Intercambio con Dulce Nata" },
-                { name: "Clauncher / Clawitzer", note: "Ruta 8 (Caña Buena) / Evolución Nv. 37" },
-                { name: "Aron / Lairon / Aggron", note: "Cueva Reflejos / Evolución" },
-                { name: "Houndour / Houndoom", note: "Ruta 10 / Evolución Nv. 24" },
-                { name: "Stunky / Skuntank", note: "Ruta 11 / Evolución Nv. 34" },
-                { name: "Pinsir", note: "Ruta 20 / Bosque Errabundo" },
-                { name: "Xerneas", note: "Guarida del Team Flare (Nivel 50)" }
+                { name: "Swirlix / Slurpuff", note: "Ruta 7 / Dulce Nata" },
+                { name: "Clauncher / Clawitzer", note: "Ruta 8 / Caña Buena" },
+                { name: "Aron / Lairon / Aggron", note: "Cueva Reflejos" },
+                { name: "Houndour / Houndoom", note: "Ruta 10" },
+                { name: "Stunky / Skuntank", note: "Ruta 11" },
+                { name: "Pinsir", note: "Ruta 20" },
+                { name: "Xerneas", note: "Guarida Team Flare" }
             ],
             "Pokémon Y": [
-                { name: "Spritzee / Aromatisse", note: "Ruta 7 / Intercambio con Saquito Fragante" },
-                { name: "Skrelp / Dragalge", note: "Ruta 8 (Caña Buena) / Evolución Nv. 48" },
-                { name: "Larvitar / Pupitar / Tyranitar", note: "Cueva Reflejos / Evolución" },
-                { name: "Electrike / Manectric", note: "Ruta 10 / Evolución Nv. 26" },
-                { name: "Purrloin / Liepard", note: "Ruta 11 / Evolución Nv. 20" },
+                { name: "Spritzee / Aromatisse", note: "Ruta 7 / Saquito Fragante" },
+                { name: "Skrelp / Dragalge", note: "Ruta 8 / Caña Buena" },
+                { name: "Larvitar / Pupitar / Tyranitar", note: "Cueva Reflejos" },
+                { name: "Electrike / Manectric", note: "Ruta 10" },
+                { name: "Purrloin / Liepard", note: "Ruta 11" },
                 { name: "Heracross", note: "Ruta 12 / Ruta 20" },
-                { name: "Yveltal", note: "Guarida del Team Flare (Nivel 50)" }
+                { name: "Yveltal", note: "Guarida Team Flare" }
             ]
         };
 
         let caughtState = {}; 
-        let currentView = 'encounters';
+        let currentView = 'pokedex';
         let searchQuery = '';
         
         let db, auth, userId;
@@ -521,9 +230,11 @@
 
         window.navigate = function(viewName) {
             currentView = viewName;
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('bg-slate-800'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-800', 'text-white');
+            });
             const activeBtn = document.getElementById(`nav-${viewName}`);
-            if (activeBtn) activeBtn.classList.add('bg-slate-800');
+            if (activeBtn) activeBtn.classList.add('bg-slate-800', 'text-white');
             renderCurrentView();
             window.scrollTo(0, 0);
         }
@@ -532,10 +243,10 @@
 
         function renderCurrentView() {
             const container = document.getElementById('app-content');
-            if (currentView === 'encounters') {
-                container.innerHTML = generateEncountersHTML();
-            } else if (currentView === 'pokedex') {
+            if (currentView === 'pokedex') {
                 container.innerHTML = generatePokedexHTML();
+            } else if (currentView === 'encounters') {
+                container.innerHTML = generateEncountersHTML();
             } else if (currentView === 'Exclusivos') {
                 container.innerHTML = generateExclusivesHTML();
             }
@@ -545,8 +256,8 @@
             let html = `
                 <div class="space-y-8">
                     <div class="rounded-xl shadow-lg border border-slate-700 bg-slate-800 p-6 sm:p-8">
-                        <h1 class="text-3xl font-extrabold text-white mb-2">Guía Única de Encuentros de Kalos (X / Y)</h1>
-                        <p class="text-slate-300 mb-4">Ubicaciones y porcentajes de aparición verificados estilo Bulbapedia.</p>
+                        <h1 class="text-3xl font-extrabold text-white mb-2">Guía Única de Encuentros (Estilo Bulbapedia)</h1>
+                        <p class="text-slate-300 mb-4">Verificación de apariciones con colores oficiales según disponibilidad por juego (X / Y).</p>
                         <input type="text" placeholder="Buscar por lugar o Pokémon..." class="px-4 py-2.5 rounded-lg bg-slate-900 text-white w-full border border-slate-700 focus:ring-2 focus:ring-sky-500 outline-none" value="${searchQuery}" onkeyup="updateSearch(this.value)">
                     </div>
             `;
@@ -564,15 +275,15 @@
                             <h2 class="text-xl font-bold text-sky-400">${loc.locationName}</h2>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm whitespace-nowrap">
+                            <table class="w-full text-left text-sm whitespace-nowrap border-collapse">
                                 <thead class="bg-slate-900 text-slate-400 text-xs uppercase font-semibold border-b border-slate-700">
                                     <tr>
-                                        <th class="px-4 py-3 w-16 text-center">Captura</th>
-                                        <th class="px-4 py-3">Pokémon</th>
-                                        <th class="px-4 py-3 text-center">Games</th>
-                                        <th class="px-4 py-3">Location</th>
-                                        <th class="px-4 py-3 text-center">Levels</th>
-                                        <th class="px-4 py-3 text-center">Rate</th>
+                                        <th class="px-4 py-3 w-16 text-center">Atrapar</th>
+                                        <th class="px-6 py-3">Pokémon</th>
+                                        <th class="px-4 py-3 text-center" colspan="2">Games</th>
+                                        <th class="px-6 py-3 text-center">Location</th>
+                                        <th class="px-6 py-3 text-center">Levels</th>
+                                        <th class="px-6 py-3 text-center">Rate</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-700/50">
@@ -582,24 +293,27 @@
                     const pokeName = getPokemonName(encounter.id);
                     const isCaught = caughtState[encounter.id] || false;
 
-                    let gamesBadges = encounter.games.map(g => {
-                        const bg = g === 'X' ? 'bg-sky-600' : 'bg-rose-600';
-                        return `<span class="px-2 py-0.5 text-xs font-bold text-white ${bg} rounded mr-1">${g}</span>`;
-                    }).join('');
+                    const classX = encounter.inX ? 'game-badge-x-active' : 'game-badge-x-inactive';
+                    const classY = encounter.inY ? 'game-badge-y-active' : 'game-badge-y-inactive';
 
                     html += `
                         <tr class="hover:bg-slate-700/50 transition ${isCaught ? 'bg-sky-950/30' : ''}">
                             <td class="px-4 py-3 text-center">
                                 <input type="checkbox" class="w-5 h-5 text-sky-500 rounded border-slate-600 cursor-pointer checkbox-anim" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${encounter.id})">
                             </td>
-                            <td class="px-4 py-3 font-semibold flex items-center gap-3">
+                            <td class="px-6 py-3 font-semibold flex items-center gap-3">
                                 <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${encounter.id}.png" alt="${pokeName}" class="w-10 h-10 object-contain" onerror="this.style.display='none'">
-                                <span><a href="${getWikidexUrl(pokeName)}" target="_blank" class="text-sky-400 hover:underline">${pokeName}</a> <span class="text-xs text-slate-500 font-mono">#${encounter.id}</span></span>
+                                <span><a href="${getWikidexUrl(pokeName)}" target="_blank" class="text-sky-400 hover:underline">${pokeName}</a></span>
                             </td>
-                            <td class="px-4 py-3 text-center">${gamesBadges}</td>
-                            <td class="px-4 py-3 text-slate-300 font-medium">${encounter.location}</td>
-                            <td class="px-4 py-3 text-center text-slate-300 font-mono">${encounter.levels}</td>
-                            <td class="px-4 py-3 text-center font-bold text-sky-400 font-mono">${encounter.rate}</td>
+                            <td class="px-1 py-3 text-center w-8">
+                                <span class="px-2.5 py-1 text-xs font-black rounded ${classX}">X</span>
+                            </td>
+                            <td class="px-1 py-3 text-center w-8">
+                                <span class="px-2.5 py-1 text-xs font-black rounded ${classY}">Y</span>
+                            </td>
+                            <td class="px-6 py-3 text-center text-slate-300 font-medium">${encounter.location}</td>
+                            <td class="px-6 py-3 text-center text-slate-300 font-mono">${encounter.levels}</td>
+                            <td class="px-6 py-3 text-center font-bold text-sky-400 font-mono">${encounter.rate}</td>
                         </tr>
                     `;
                 });
@@ -608,33 +322,6 @@
             });
 
             html += `</div>`;
-            return html;
-        }
-
-        function generateExclusivesHTML() {
-            let html = `
-                <div class="bg-slate-800 rounded-xl shadow-xl overflow-hidden border border-slate-700 p-8">
-                    <h1 class="text-3xl font-extrabold mb-6 text-white">Pokémon Exclusivos por Versión</h1>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            `;
-            for (const [version, list] of Object.entries(versionExclusives)) {
-                let badgeColor = version === 'Pokémon X' ? 'bg-sky-600' : 'bg-rose-600';
-                html += `
-                    <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 shadow-sm">
-                        <h2 class="text-2xl font-bold mb-4 text-white p-3 rounded-lg ${badgeColor}">${version}</h2>
-                        <ul class="space-y-3">
-                `;
-                list.forEach(item => {
-                    html += `
-                        <li class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <span class="font-bold text-slate-200">${item.name}</span>
-                            <span class="text-xs text-slate-400 bg-slate-900 px-2 py-1 rounded">${item.note}</span>
-                        </li>
-                    `;
-                });
-                html += `</ul></div>`;
-            }
-            html += `</div></div>`;
             return html;
         }
 
@@ -647,7 +334,7 @@
                 <div class="bg-slate-800 rounded-xl shadow-xl overflow-hidden border border-slate-700">
                     <div class="p-6 bg-slate-900 text-white border-b border-slate-700">
                         <h1 class="text-3xl font-extrabold flex flex-wrap items-center gap-3">
-                            Pokédex de Kalos
+                            Pokédex Regional de Kalos
                             <span class="text-sm font-normal bg-sky-600 px-3 py-1 rounded-full text-sky-100">
                                 ${totalCaught} / ${allIds.length} Registrados
                             </span>
@@ -685,6 +372,33 @@
             });
 
             html += `</tbody></table></div></div>`;
+            return html;
+        }
+
+        function generateExclusivesHTML() {
+            let html = `
+                <div class="bg-slate-800 rounded-xl shadow-xl overflow-hidden border border-slate-700 p-8">
+                    <h1 class="text-3xl font-extrabold mb-6 text-white">Pokémon Exclusivos por Versión</h1>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            `;
+            for (const [version, list] of Object.entries(versionExclusives)) {
+                let badgeColor = version === 'Pokémon X' ? 'bg-sky-600' : 'bg-rose-600';
+                html += `
+                    <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 shadow-sm">
+                        <h2 class="text-2xl font-bold mb-4 text-white p-3 rounded-lg ${badgeColor}">${version}</h2>
+                        <ul class="space-y-3">
+                `;
+                list.forEach(item => {
+                    html += `
+                        <li class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <span class="font-bold text-slate-200">${item.name}</span>
+                            <span class="text-xs text-slate-400 bg-slate-900 px-2 py-1 rounded">${item.note}</span>
+                        </li>
+                    `;
+                });
+                html += `</ul></div>`;
+            }
+            html += `</div></div>`;
             return html;
         }
 
