@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoenn Tracker - Maqueta de Prueba</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .checkbox-anim { transition: all 0.2s ease-in-out; }
+        .checkbox-anim:checked { transform: scale(1.1); }
+    </style>
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen flex flex-col">
+
+    <!-- Barra de Navegación -->
+    <nav class="bg-slate-950 text-white shadow-xl sticky top-0 z-50 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <span class="text-xl font-bold tracking-wider cursor-pointer text-emerald-400">Hoenn Tracker (OR/AS)</span>
+                </div>
+                <div class="flex items-center space-x-1 md:space-x-4 overflow-x-auto">
+                    <button onclick="navigate('pokedex')" id="nav-pokedex" class="nav-btn px-3 py-2 rounded-md text-sm font-medium bg-slate-800 text-white transition whitespace-nowrap">Pokédex de Hoenn</button>
+                    <button onclick="navigate('encounters')" id="nav-encounters" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition whitespace-nowrap">Guía de Encuentros</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenedor Principal -->
+    <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full"></main>
+
+    <footer class="bg-slate-950 text-slate-400 py-6 text-center text-sm mt-auto border-t border-slate-800">
+        <p id="storage-status">Modo de Prueba - Sin guardado en la nube.</p>
+    </footer>
+
+    <script>
+        // ============================================
+        // 1. DATOS DE PRUEBA
+        // ============================================
+        
+        // Solo 4 Pokémon para probar la tabla
+        const pokedex = [
+            { regionalId: 1, natId: 252, name: "Treecko", evo: "Nv. 16" },
+            { regionalId: 10, natId: 261, name: "Poochyena", evo: "Nv. 18" },
+            { regionalId: 14, natId: 265, name: "Wurmple", evo: "Nv. 7" },
+            { regionalId: 29, natId: 280, name: "Ralts", evo: "Nv. 20" }
+        ];
+
+        // Solo 3 rutas para probar la columna de Zonas
+        const allLocationsEncounters = [
+            {
+                locationName: "Ruta 101 (Ruta 101)",
+                verified: true,
+                encounters: [
+                    { id: 252, inX: true, inY: true, location: "Grass", levels: "2-3", rate: "20%" },
+                    { id: 261, inX: true, inY: true, location: "Grass", levels: "2-3", rate: "40%" },
+                    { id: 265, inX: true, inY: true, location: "Grass", levels: "2-3", rate: "40%" }
+                ]
+            },
+            {
+                locationName: "Ruta 102 (Ruta 102)",
+                verified: true,
+                encounters: [
+                    { id: 261, inX: true, inY: true, location: "Grass", levels: "3-4", rate: "30%" },
+                    { id: 280, inX: true, inY: true, location: "Grass", levels: "3-4", rate: "15%" }
+                ]
+            },
+            {
+                locationName: "Ruta 104 (Ruta 104)",
+                verified: true,
+                encounters: [
+                    { id: 261, inX: true, inY: true, location: "Grass", levels: "4-5", rate: "20%" },
+                    { id: 280, inX: true, inY: true, location: "Grass", levels: "4", rate: "10%" }
+                ]
+            }
+        ];
+
+        // Formas de prueba (para Ralts)
+        const pokemonForms = [
+            { id: 280, name: "Ralts", category: "Diferencia por sexo", variants: ["Macho", "Hembra"], note: "La hembra tiene el cuerno del pecho más corto." }
+        ];
+
+        // ============================================
+        // 2. ESTADO GLOBAL
+        // ============================================
+        let caughtState = JSON.parse(localStorage.getItem('hoennTestData')) || {};
+        let currentView = 'pokedex';
+        let searchQuery = '';
+        let filterState = 'all';
+        let expandedPokemonId = null;
+        let formState = JSON.parse(localStorage.getItem('hoennTestForms')) || {};
+
+        // ============================================
+        // 3. FUNCIONES DE LÓGICA
+        // ============================================
+        window.toggleCaught = function(natId) {
+            caughtState[natId] = !caughtState[natId];
+            localStorage.setItem('hoennTestData', JSON.stringify(caughtState));
+            renderCurrentView();
+        }
+
+        window.navigate = function(viewName) {
+            currentView = viewName;
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-800', 'text-white');
+            });
+            const activeBtn = document.getElementById(`nav-${viewName}`);
+            if (activeBtn) activeBtn.classList.add('bg-slate-800', 'text-white');
+            renderCurrentView();
+            window.scrollTo(0, 0);
+        }
+
+        window.updateSearch = function(value) { searchQuery = value.toLowerCase(); renderCurrentView(); }
+        window.updateFilter = function(value) { filterState = value; renderCurrentView(); }
+
+        window.togglePokemonForms = function(natId) {
+            expandedPokemonId = expandedPokemonId === Number(natId) ? null : Number(natId);
+            renderCurrentView();
+        };
+
+        window.toggleFormCaught = function(formKey) {
+            formState[formKey] = !formState[formKey];
+            localStorage.setItem('hoennTestForms', JSON.stringify(formState));
+            renderCurrentView();
+        };
+
+        function getWikidexUrl(name) {
+            return `https://www.wikidex.net/wiki/${name.replace(/ /g, '_')}`;
+        }
+
+        function getPokemonFormGroups(natId) {
+            return pokemonForms.filter(p => Number(p.id) === Number(natId));
+        }
+
+        // ============================================
+        // 4. RENDERIZADO HTML
+        // ============================================
+        function renderCurrentView() {
+            const container = document.getElementById('app-content');
+            if (currentView === 'pokedex') {
+                container.innerHTML = generatePokedexHTML();
+            } else if (currentView === 'encounters') {
+                container.innerHTML = generateEncountersHTML();
+            }
+        }
+
+        function generatePokedexHTML() {
+            const totalCaught = Object.values(caughtState).filter(v => v).length;
+            const progressPercent = Math.round((totalCaught / pokedex.length) * 100);
+
+            let html = `
+                <div class="bg-slate-800 rounded-xl shadow-xl overflow-hidden border border-slate-700">
+                    <div class="p-6 bg-slate-900 text-white border-b border-slate-700">
+                        <h1 class="text-3xl font-extrabold flex flex-wrap items-center gap-3">
+                            Pokédex Regional de Hoenn (Prueba)
+                            <span class="text-sm font-normal bg-emerald-600 px-3 py-1 rounded-full text-emerald-100">
+                                ${totalCaught} / ${pokedex.length} Registrados
+                            </span>
+                        </h1>
+                        <div class="w-full bg-slate-700 rounded-full h-2.5 mt-4">
+                            <div class="bg-emerald-500 h-2.5 rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
+                        </div>
+                        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <input type="text" placeholder="Buscar Pokémon..." class="px-4 py-2 rounded-lg bg-slate-950 text-white w-full border border-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none" value="${searchQuery}" onkeyup="updateSearch(this.value)">
+                            <select class="px-4 py-2 rounded-lg bg-slate-950 text-white border border-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none cursor-pointer" onchange="updateFilter(this.value)">
+                                <option value="all" ${filterState === 'all' ? 'selected' : ''}>Todos</option>
+                                <option value="caught" ${filterState === 'caught' ? 'selected' : ''}>Atrapados</option>
+                                <option value="missing" ${filterState === 'missing' ? 'selected' : ''}>Faltantes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="uppercase tracking-wider border-b border-slate-700 bg-slate-900 text-slate-400 font-bold">
+                                <tr>
+                                    <th class="px-2 py-4 w-12 text-center" title="Formas">Formas</th>
+                                    <th class="px-2 py-4 w-16 text-center">Atrapado</th>
+                                    <th class="px-2 py-4 w-20 text-center">Nº Reg.</th>
+                                    <th class="px-2 py-4 w-20 text-center">Nº Nac.</th>
+                                    <th class="px-2 py-4 w-20 text-center">Sprite</th>
+                                    <th class="px-4 py-4 min-w-[150px]">Pokémon</th>
+                                    <th class="px-4 py-4 w-32">Evolución</th>
+                                    <th class="px-4 py-4 min-w-[200px]">Zonas de Aparición</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-700">
+            `;
+
+            const filteredPokedex = pokedex.filter(poke => {
+                const isCaught = caughtState[poke.natId] || false;
+                const matchesSearch = poke.name.toLowerCase().includes(searchQuery) || String(poke.natId).includes(searchQuery);
+                let matchesFilter = true;
+                if (filterState === 'caught') matchesFilter = isCaught;
+                if (filterState === 'missing') matchesFilter = !isCaught;
+                return matchesSearch && matchesFilter;
+            });
+
+            filteredPokedex.forEach((poke) => {
+                const isCaught = caughtState[poke.natId] || false;
+                
+                // Lógica para buscar zonas
+                const locations = allLocationsEncounters
+                    .filter(loc => loc.encounters.some(e => e.id === poke.natId))
+                    .map(loc => loc.locationName.split(' (')[0]);
+
+                let locationsHtml = '';
+                if (locations.length > 0) {
+                    const maxDisplay = 3;
+                    const displayedLocs = locations.slice(0, maxDisplay).map(loc => 
+                        `<span class="inline-block bg-slate-700 text-emerald-300 text-xs px-2 py-1 rounded-md mb-1 mr-1 border border-slate-600">${loc}</span>`
+                    ).join('');
+                    
+                    const extraCount = locations.length - maxDisplay;
+                    const extraHtml = extraCount > 0 
+                        ? `<span class="inline-block bg-slate-800 text-slate-400 text-xs px-2 py-1 rounded-md mb-1 border border-slate-600" title="${locations.slice(maxDisplay).join(', ')}">+${extraCount} más</span>` 
+                        : '';
+                        
+                    locationsHtml = displayedLocs + extraHtml;
+                } else {
+                    locationsHtml = `<span class="text-xs text-slate-500 italic">No salvaje / Evento</span>`;
+                }
+
+                html += `
+                    <tr class="hover:bg-slate-700/50 transition ${isCaught ? 'bg-emerald-950/30' : ''}">
+                        <td class="px-2 py-4 text-center">
+                            ${getPokemonFormGroups(poke.natId).length ? `<button type="button" onclick="togglePokemonForms(${poke.natId})" class="w-8 h-8 rounded-md bg-violet-900/50 text-violet-200 hover:bg-violet-700 hover:text-white font-bold transition" title="Mostrar u ocultar formas">${expandedPokemonId === poke.natId ? '▾' : '▸'}</button>` : ''}
+                        </td>
+                        <td class="px-2 py-4 text-center">
+                            <input type="checkbox" class="w-6 h-6 text-emerald-500 rounded border-slate-600 cursor-pointer checkbox-anim" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${poke.natId})">
+                        </td>
+                        <td class="px-2 py-4 text-center font-mono font-bold text-emerald-400">#${String(poke.regionalId).padStart(3, '0')}</td>
+                        <td class="px-2 py-4 text-center font-mono text-slate-400">#${String(poke.natId).padStart(3, '0')}</td>
+                        <td class="px-2 py-2 text-center"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.natId}.png" alt="${poke.name}" class="w-12 h-12 inline-block object-contain" onerror="this.style.display='none'"></td>
+                        <td class="px-4 py-4 font-bold text-base">
+                            <a href="${getWikidexUrl(poke.name)}" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">${poke.name}</a>
+                        </td>
+                        <td class="px-4 py-4 text-sm font-medium text-emerald-300">${poke.evo}</td>
+                        <td class="px-4 py-4 whitespace-normal">${locationsHtml}</td>
+                    </tr>
+                    ${expandedPokemonId === poke.natId && getPokemonFormGroups(poke.natId).length ? `
+                        <tr class="bg-slate-950/70 border-b border-slate-700">
+                            <td colspan="8" class="px-6 py-5">
+                                <div class="rounded-xl border border-violet-500/30 bg-slate-900 p-4">
+                                    <h3 class="text-lg font-bold text-violet-200 mb-3">Formas y diferencias de ${poke.name}</h3>
+                                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                        ${getPokemonFormGroups(poke.natId).map(group => `
+                                            <section class="rounded-lg bg-slate-800 p-4">
+                                                <h4 class="font-semibold text-emerald-200 mb-1">${group.category}</h4>
+                                                <p class="text-xs text-slate-400 mb-3">${group.note}</p>
+                                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                    ${group.variants.map(v => {
+                                                        const key = `${group.id}:${group.name}:${v}`;
+                                                        const checked = !!formState[key];
+                                                        return `<label class="flex items-center gap-2 rounded-lg p-2 ${checked ? 'bg-violet-950/60' : 'bg-slate-900'} cursor-pointer hover:bg-slate-700">
+                                                            <input type="checkbox" class="w-4 h-4 accent-violet-500" ${checked ? 'checked' : ''} onchange="toggleFormCaught('${key}')">
+                                                            <span class="text-sm ${checked ? 'text-violet-200' : 'text-slate-200'}">${v}</span>
+                                                        </label>`;
+                                                    }).join('')}
+                                                </div>
+                                            </section>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>` : ''}
+                `;
+            });
+
+            html += `</tbody></table></div></div>`;
+            return html;
+        }
+
+        function generateEncountersHTML() {
+            // Una vista simple para la pestaña de encuentros
+            let html = `<div class="bg-slate-800 rounded-xl shadow-xl p-8 border border-slate-700">
+                <h1 class="text-3xl font-extrabold text-white mb-4">Guía de Encuentros (Prueba)</h1>
+                <p class="text-slate-400">Aquí se mostrarían las rutas detalladas en el futuro.</p>
+                <div class="mt-6 space-y-4">`;
+
+            allLocationsEncounters.forEach(loc => {
+                html += `
+                    <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
+                        <h2 class="text-xl font-bold text-emerald-400 mb-2">${loc.locationName}</h2>
+                        <ul class="list-disc list-inside text-slate-300">
+                            ${loc.encounters.map(e => {
+                                const p = pokedex.find(pk => pk.natId === e.id);
+                                return `<li>${p ? p.name : e.id} (Niveles ${e.levels})</li>`;
+                            }).join('')}
+                        </ul>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+            return html;
+        }
+
+        // Inicializar
+        renderCurrentView();
+    </script>
+</body>
+</html>
