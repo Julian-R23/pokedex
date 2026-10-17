@@ -529,17 +529,7 @@
         // ============================================
 
         const allLocationsEncounters = [
-        
-    // 1. Pueblo Boceto
-    {
-        locationName: "Pueblo Boceto (Vaniville Town)",
-        verified: true,
-        encounters: [
-            { id: 650, inX: true, inY: true, location: "Gift", levels: "5", rate: "Único" },
-            { id: 653, inX: true, inY: true, location: "Gift", levels: "5", rate: "Único" },
-            { id: 656, inX: true, inY: true, location: "Gift", levels: "5", rate: "Único" }
-        ]
-    },
+    // 1. Pueblo Vaniville
     // 2. Pueblo Acuarela
     {
         locationName: "Pueblo Acuarela (Aquacorde Town)",
@@ -552,7 +542,7 @@
     },
     // 3. Ruta 2
     {
-        locationName: "Ruta 2 (Avance Trail)",
+        locationName: "Ruta 2 (Senda Avance)",
         verified: true,
         encounters: [
             { id: 659, inX: true, inY: true, location: "Grass", levels: "2-3", rate: "20%" },
@@ -564,9 +554,9 @@
             { id: 10, inX: false, inY: true, location: "Grass", levels: "3-4", rate: "11%" }
         ]
     },
-    // 4. Bosque Novarte
+    // 4. Bosque de Santalune
     {
-        locationName: "Bosque Novarte (Santalune Forest)",
+        locationName: "Bosque de Santalune (Santalune Forest)",
         verified: true,
         encounters: [
             { id: 10, inX: false, inY: true, location: "Grass", levels: "2-3", rate: "20%" },
@@ -585,30 +575,30 @@
     },
     // 5. Ruta 3
     {
-        locationName: "Ruta 3 (Ouvert Way)",
+        locationName: "Ruta 3 (Senda Ouvert)",
         verified: true,
         encounters: [
-            { id: 16, inX: true, inY: true, location: "Grass", levels: "4", rate: "10%" },
-            { id: 25, inX: true, inY: true, location: "Grass", levels: "4-5", rate: "5%" },
-            { id: 399, inX: true, inY: true, location: "Grass", levels: "3-4", rate: "20%" },
             { id: 659, inX: true, inY: true, location: "Grass", levels: "3-4", rate: "20%" },
-            { id: 661, inX: true, inY: true, location: "Grass", levels: "3, 5", rate: "20%" },
+            { id: 399, inX: true, inY: true, location: "Grass", levels: "3-4", rate: "20%" },
+            { id: 661, inX: true, inY: true, location: "Grass", levels: "3-5", rate: "20%" },
+            { id: 16, inX: true, inY: true, location: "Grass", levels: "4", rate: "10%" },
             { id: 298, inX: true, inY: true, location: "Grass", levels: "5", rate: "10%" },
             { id: 412, inX: true, inY: true, location: "Grass", levels: "5", rate: "10%" },
             { id: 206, inX: true, inY: true, location: "Grass", levels: "5", rate: "5%" },
-            { id: 183, inX: true, inY: true, location: "Surfing", levels: "25, 27", rate: "34%" },
-            { id: 284, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "66%" },
+            { id: 25, inX: true, inY: true, location: "Grass", levels: "3-5", rate: "5%" },
+            { id: 284, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "65%" },
+            { id: 183, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "35%" },
             { id: 129, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
             { id: 118, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" },
             { id: 341, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "35%" },
-            { id: 119, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "35%" },
             { id: 130, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "60%" },
+            { id: 119, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "35%" },
             { id: 342, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "5%" }
         ]
     },
-    // 6. Ciudad Novarte (Intercambio)
+    // 6. Ciudad Santalune (Intercambio)
     {
-        locationName: "Ciudad Novarte (Santalune City) - Intercambio",
+        locationName: "Ciudad Santalune (Santalune City) - Intercambio",
         verified: true,
         encounters: [
             { id: 83, inX: true, inY: true, location: "Trade (Bunnelby)", levels: "10", rate: "Único" }
@@ -616,15 +606,25 @@
     },
     // 7. Ruta 4
     {
-        locationName: "Ruta 4 (Parterre Way)",
+        locationName: "Ruta 4 (Senda Parterre)",
         verified: true,
         encounters: [
+            { id: 669, inX: true, inY: true, location: "Red Flowers", levels: "6-8", rate: "30%" },
+            { id: 165, inX: true, inY: true, location: "Red Flowers", levels: "6-8", rate: "30%" },
+            { id: 415, inX: true, inY: true, location: "Red Flowers", levels: "8", rate: "10%" },
+            { id: 406, inX: true, inY: true, location: "Red Flowers", levels: "8", rate: "10%" },
+            { id: 300, inX: true, inY: true, location: "Red Flowers", levels: "8", rate: "10%" },
+            { id: 280, inX: true, inY: true, location: "Red Flowers", levels: "8", rate: "5%" },
+            { id: 669, inX: true, inY: true, location: "Red Flowers", levels: "7", rate: "4%" },
+            { id: 669, inX: true, inY: true, location: "Red Flowers", levels: "8", rate: "1%" },
             { id: 669, inX: true, inY: true, location: "Yellow Flowers", levels: "6-8", rate: "30%" },
             { id: 415, inX: true, inY: true, location: "Yellow Flowers", levels: "6-8", rate: "30%" },
             { id: 165, inX: true, inY: true, location: "Yellow Flowers", levels: "8", rate: "10%" },
             { id: 406, inX: true, inY: true, location: "Yellow Flowers", levels: "8", rate: "10%" },
             { id: 300, inX: true, inY: true, location: "Yellow Flowers", levels: "8", rate: "10%" },
-            { id: 280, inX: true, inY: true, location: "Yellow Flowers", levels: "8", rate: "5%" }
+            { id: 280, inX: true, inY: true, location: "Yellow Flowers", levels: "8", rate: "5%" },
+            { id: 669, inX: true, inY: true, location: "Yellow Flowers", levels: "7", rate: "4%" },
+            { id: 669, inX: true, inY: true, location: "Yellow Flowers", levels: "8", rate: "1%" }
         ]
     },
     // 8. Ciudad Luminalia (Regalo)
@@ -639,79 +639,157 @@
     },
     // 9. Ruta 5
     {
-        locationName: "Ruta 5 (Versant Road)",
+        locationName: "Ruta 5 (Senda Versant)",
         verified: true,
         encounters: [
-            { id: 667, inX: true, inY: true, location: "Grass", levels: "8-10", rate: "20%" },
-            { id: 672, inX: true, inY: true, location: "Grass", levels: "8-10", rate: "20%" },
-            { id: 674, inX: true, inY: true, location: "Grass", levels: "8-10", rate: "20%" },
-            { id: 676, inX: true, inY: true, location: "Grass", levels: "8-10", rate: "20%" },
-            { id: 63, inX: true, inY: true, location: "Grass", levels: "10", rate: "10%" },
-            { id: 84, inX: true, inY: true, location: "Grass", levels: "8, 10", rate: "10%" },
-            { id: 316, inX: true, inY: true, location: "Horde Encounter", levels: "8", rate: "60%" },
-            { id: 559, inX: true, inY: true, location: "Horde Encounter", levels: "8", rate: "35%" },
-            { id: 311, inX: true, inY: false, location: "Horde Encounter", levels: "8", rate: "5%" },
-            { id: 312, inX: false, inY: true, location: "Horde Encounter", levels: "8", rate: "5%" }
+            { id: 659, inX: true, inY: true, location: "Grass", levels: "8-10", rate: "30%" },
+            { id: 676, inX: true, inY: true, location: "Grass", levels: "8-9", rate: "20%" },
+            { id: 674, inX: true, inY: true, location: "Grass", levels: "10", rate: "10%" },
+            { id: 672, inX: true, inY: true, location: "Grass", levels: "10", rate: "10%" },
+            { id: 84, inX: true, inY: true, location: "Grass", levels: "10", rate: "10%" },
+            { id: 316, inX: true, inY: true, location: "Grass", levels: "10", rate: "10%" },
+            { id: 63, inX: true, inY: true, location: "Grass", levels: "10", rate: "5%" },
+            { id: 311, inX: true, inY: false, location: "Grass", levels: "9-10", rate: "5%" },
+            { id: 312, inX: false, inY: true, location: "Grass", levels: "9-10", rate: "5%" },
+            { id: 672, inX: true, inY: true, location: "Purple Flowers", levels: "8-10", rate: "30%" },
+            { id: 674, inX: true, inY: true, location: "Purple Flowers", levels: "8-9", rate: "20%" },
+            { id: 676, inX: true, inY: true, location: "Purple Flowers", levels: "10", rate: "10%" },
+            { id: 659, inX: true, inY: true, location: "Purple Flowers", levels: "10", rate: "10%" },
+            { id: 84, inX: true, inY: true, location: "Purple Flowers", levels: "10", rate: "10%" },
+            { id: 316, inX: true, inY: true, location: "Purple Flowers", levels: "10", rate: "10%" },
+            { id: 63, inX: true, inY: true, location: "Purple Flowers", levels: "10", rate: "5%" },
+            { id: 311, inX: true, inY: false, location: "Purple Flowers", levels: "9-10", rate: "5%" },
+            { id: 312, inX: false, inY: true, location: "Purple Flowers", levels: "9-10", rate: "5%" },
+            { id: 316, inX: true, inY: true, location: "Horde Encounter", levels: "5", rate: "60%" },
+            { id: 559, inX: true, inY: true, location: "Horde Encounter", levels: "5", rate: "35%" },
+            { id: 311, inX: true, inY: false, location: "Horde Encounter", levels: "6", rate: "5%" },
+            { id: 312, inX: false, inY: true, location: "Horde Encounter", levels: "6", rate: "5%" }
         ]
     },
-    // 10. Ruta 7 (Este)
+    // 10. Ruta 6
     {
-        locationName: "Ruta 7 (Rivière Walk) - Este",
+        locationName: "Ruta 6 (Senda Palais)",
         verified: true,
         encounters: [
-            { id: 682, inX: false, inY: true, location: "Grass", levels: "13-14", rate: "20%" },
-            { id: 684, inX: true, inY: false, location: "Grass", levels: "13-14", rate: "20%" },
-            { id: 315, inX: true, inY: true, location: "Grass", levels: "12-14", rate: "10%" },
-            { id: 235, inX: true, inY: true, location: "Grass", levels: "14", rate: "10%" },
-            { id: 133, inX: true, inY: true, location: "Grass", levels: "11, 13", rate: "10%" },
-            { id: 143, inX: true, inY: true, location: "Special (Poké Flute)", levels: "15", rate: "100%" },
-            { id: 54, inX: true, inY: true, location: "Horde Encounter", levels: "7-8", rate: "35%" },
-            { id: 187, inX: true, inY: true, location: "Horde Encounter", levels: "7", rate: "60%" }
-        ]
-    },
-    // 11. Ruta 6
-    {
-        locationName: "Ruta 6 (Palais Lane)",
-        verified: true,
-        encounters: [
+            { id: 43, inX: true, inY: true, location: "Grass", levels: "10-12", rate: "30%" },
+            { id: 161, inX: true, inY: true, location: "Grass", levels: "10-11", rate: "20%" },
             { id: 677, inX: true, inY: true, location: "Grass", levels: "11-12", rate: "20%" },
-            { id: 83, inX: true, inY: true, location: "Grass", levels: "10-12", rate: "20%" },
-            { id: 104, inX: true, inY: true, location: "Grass", levels: "10, 12", rate: "15%" },
-            { id: 163, inX: true, inY: true, location: "Grass", levels: "11-12", rate: "15%" },
-            { id: 316, inX: true, inY: true, location: "Grass", levels: "10-12", rate: "15%" },
-            { id: 531, inX: true, inY: true, location: "Shaking/Bubbling spots", levels: "10-12", rate: "50%" },
-            { id: 543, inX: true, inY: true, location: "Shaking/Bubbling spots", levels: "10-12", rate: "50%" }
+            { id: 679, inX: true, inY: true, location: "Grass", levels: "11-12", rate: "15%" },
+            { id: 290, inX: true, inY: true, location: "Grass", levels: "12", rate: "10%" },
+            { id: 352, inX: true, inY: true, location: "Grass", levels: "11-12", rate: "5%" },
+            { id: 543, inX: true, inY: true, location: "Shaking/Bubbling spots", levels: "10-12", rate: "80%" },
+            { id: 531, inX: true, inY: true, location: "Shaking/Bubbling spots", levels: "10-12", rate: "20%" }
         ]
     },
-    // 12. Cueva Conexa
+    // 11. Ruta 7
     {
-        locationName: "Cueva Conexa (Connecting Cave)",
+        locationName: "Ruta 7 (Paseo Rivière)",
         verified: true,
         encounters: [
+            { id: 664, inX: true, inY: true, location: "Berries", levels: "14-15", rate: "Árboles rosas" },
+            { id: 165, inX: true, inY: true, location: "Berries", levels: "14-15", rate: "Árboles rojos" },
+            { id: 313, inX: true, inY: true, location: "Berries", levels: "14-15", rate: "Árboles azules" },
+            { id: 314, inX: true, inY: true, location: "Berries", levels: "14-15", rate: "Árboles morados" },
+            { id: 412, inX: true, inY: true, location: "Berries", levels: "14-15", rate: "Árboles verdes" },
+            { id: 415, inX: true, inY: true, location: "Berries", levels: "14-15", rate: "Árboles amarillos" },
+            { id: 453, inX: true, inY: true, location: "Grass", levels: "12-14", rate: "35%" },
+            { id: 313, inX: true, inY: true, location: "Grass", levels: "13", rate: "10%" },
+            { id: 314, inX: true, inY: true, location: "Grass", levels: "13", rate: "10%" },
+            { id: 684, inX: true, inY: false, location: "Grass", levels: "14", rate: "10%" },
+            { id: 682, inX: false, inY: true, location: "Grass", levels: "14", rate: "10%" },
+            { id: 235, inX: true, inY: true, location: "Grass", levels: "14", rate: "10%" },
+            { id: 315, inX: true, inY: true, location: "Grass", levels: "14", rate: "10%" },
+            { id: 580, inX: true, inY: true, location: "Grass", levels: "14", rate: "10%" },
+            { id: 669, inX: true, inY: true, location: "Grass", levels: "13", rate: "4%" },
+            { id: 669, inX: true, inY: true, location: "Grass", levels: "14", rate: "1%" },
+            { id: 669, inX: true, inY: true, location: "Purple Flowers", levels: "12-14", rate: "30%" },
+            { id: 313, inX: true, inY: true, location: "Purple Flowers", levels: "13", rate: "10%" },
+            { id: 314, inX: true, inY: true, location: "Purple Flowers", levels: "13", rate: "10%" },
+            { id: 684, inX: true, inY: false, location: "Purple Flowers", levels: "14", rate: "10%" },
+            { id: 682, inX: false, inY: true, location: "Purple Flowers", levels: "14", rate: "10%" },
+            { id: 235, inX: true, inY: true, location: "Purple Flowers", levels: "14", rate: "10%" },
+            { id: 315, inX: true, inY: true, location: "Purple Flowers", levels: "14", rate: "10%" },
+            { id: 580, inX: true, inY: true, location: "Purple Flowers", levels: "14", rate: "10%" },
+            { id: 453, inX: true, inY: true, location: "Purple Flowers", levels: "14", rate: "5%" },
+            { id: 669, inX: true, inY: true, location: "Purple Flowers", levels: "13", rate: "4%" },
+            { id: 669, inX: true, inY: true, location: "Purple Flowers", levels: "14", rate: "1%" },
+            { id: 669, inX: true, inY: true, location: "Yellow Flowers", levels: "12-14", rate: "30%" },
+            { id: 313, inX: true, inY: true, location: "Yellow Flowers", levels: "13", rate: "10%" },
+            { id: 314, inX: true, inY: true, location: "Yellow Flowers", levels: "13", rate: "10%" },
+            { id: 684, inX: true, inY: false, location: "Yellow Flowers", levels: "14", rate: "10%" },
+            { id: 682, inX: false, inY: true, location: "Yellow Flowers", levels: "14", rate: "10%" },
+            { id: 235, inX: true, inY: true, location: "Yellow Flowers", levels: "14", rate: "10%" },
+            { id: 315, inX: true, inY: true, location: "Yellow Flowers", levels: "14", rate: "10%" },
+            { id: 580, inX: true, inY: true, location: "Yellow Flowers", levels: "14", rate: "10%" },
+            { id: 453, inX: true, inY: true, location: "Yellow Flowers", levels: "14", rate: "5%" },
+            { id: 669, inX: true, inY: true, location: "Yellow Flowers", levels: "13", rate: "4%" },
+            { id: 669, inX: true, inY: true, location: "Yellow Flowers", levels: "14", rate: "1%" },
+            { id: 187, inX: true, inY: true, location: "Horde Encounter", levels: "7", rate: "60%" },
+            { id: 54, inX: false, inY: true, location: "Horde Encounter", levels: "7", rate: "35%" },
+            { id: 54, inX: true, inY: false, location: "Horde Encounter", levels: "8", rate: "35%" },
+            { id: 315, inX: false, inY: true, location: "Horde Encounter", levels: "8", rate: "5%" },
+            { id: 315, inX: true, inY: false, location: "Horde Encounter", levels: "7", rate: "5%" },
+            { id: 143, inX: true, inY: true, location: "Special (Poké Flute)", levels: "15", rate: "Único" }
+        ]
+    },
+    // 12. Cueva Conexión
+    {
+        locationName: "Cueva Conexión (Connecting Cave)",
+        verified: true,
+        encounters: [
+            { id: 41, inX: true, inY: true, location: "Cave Floor", levels: "13-15", rate: "40%" },
             { id: 293, inX: true, inY: true, location: "Cave Floor", levels: "13-15", rate: "30%" },
-            { id: 307, inX: true, inY: true, location: "Cave Floor", levels: "13-15", rate: "30%" },
-            { id: 41, inX: true, inY: true, location: "Cave Floor", levels: "13-15", rate: "30%" },
+            { id: 307, inX: true, inY: true, location: "Cave Floor", levels: "13-15", rate: "20%" },
             { id: 610, inX: true, inY: true, location: "Cave Floor", levels: "13-15", rate: "10%" },
             { id: 41, inX: true, inY: true, location: "Horde Encounter", levels: "8", rate: "60%" },
-            { id: 293, inX: true, inY: true, location: "Horde Encounter", levels: "7", rate: "35%" },
-            { id: 610, inX: true, inY: true, location: "Horde Encounter", levels: "7-8", rate: "5%" }
+            { id: 293, inX: true, inY: true, location: "Horde Encounter", levels: "8", rate: "35%" },
+            { id: 610, inX: true, inY: true, location: "Horde Encounter", levels: "8", rate: "5%" }
         ]
     },
-    // 13. Ruta 8 (Agua)
+    // 13. Ruta 8
     {
-        locationName: "Ruta 8 (Muraille Coast) - Agua",
+        locationName: "Ruta 8 (Costa Mural)",
         verified: true,
         encounters: [
-            { id: 72, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "60%" },
-            { id: 320, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "35%" },
+            { id: 425, inX: true, inY: true, location: "Grass", levels: "13-15", rate: "30%" },
+            { id: 325, inX: true, inY: true, location: "Grass", levels: "13-15", rate: "20%" },
+            { id: 686, inX: true, inY: true, location: "Grass", levels: "14-15", rate: "15%" },
+            { id: 619, inX: true, inY: true, location: "Grass", levels: "15", rate: "10%" },
+            { id: 359, inX: true, inY: true, location: "Grass", levels: "15", rate: "10%" },
+            { id: 335, inX: true, inY: false, location: "Grass", levels: "14", rate: "10%" },
+            { id: 336, inX: false, inY: true, location: "Grass", levels: "14", rate: "10%" },
+            { id: 371, inX: true, inY: true, location: "Grass", levels: "14-15", rate: "5%" },
+            { id: 619, inX: true, inY: true, location: "Yellow Flowers", levels: "13-15", rate: "30%" },
+            { id: 359, inX: true, inY: true, location: "Yellow Flowers", levels: "13-15", rate: "20%" },
+            { id: 686, inX: true, inY: true, location: "Yellow Flowers", levels: "14-15", rate: "15%" },
+            { id: 325, inX: true, inY: true, location: "Yellow Flowers", levels: "15", rate: "10%" },
+            { id: 425, inX: true, inY: true, location: "Yellow Flowers", levels: "15", rate: "10%" },
+            { id: 335, inX: true, inY: false, location: "Yellow Flowers", levels: "14", rate: "10%" },
+            { id: 336, inX: false, inY: true, location: "Yellow Flowers", levels: "14", rate: "10%" },
+            { id: 371, inX: true, inY: true, location: "Yellow Flowers", levels: "14-15", rate: "5%" },
+            { id: 278, inX: true, inY: true, location: "Horde Encounter", levels: "7", rate: "60%" },
+            { id: 335, inX: true, inY: false, location: "Horde Encounter", levels: "8", rate: "35%" },
+            { id: 336, inX: false, inY: true, location: "Horde Encounter", levels: "8", rate: "35%" },
+            { id: 276, inX: true, inY: true, location: "Horde Encounter", levels: "7", rate: "5%" },
+            { id: 557, inX: true, inY: true, location: "Rock Smash", levels: "13-20", rate: "65%" },
+            { id: 688, inX: true, inY: true, location: "Rock Smash", levels: "13-20", rate: "35%" },
+            { id: 72, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "70%" },
+            { id: 320, inX: true, inY: true, location: "Surfing", levels: "25", rate: "30%" },
             { id: 370, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
-            { id: 557, inX: true, inY: true, location: "Rock Smash", levels: "13-15", rate: "65%" },
-            { id: 688, inX: true, inY: true, location: "Rock Smash", levels: "13-15", rate: "35%" }
+            { id: 692, inX: true, inY: false, location: "Fishing Good Rod", levels: "25", rate: "65%" },
+            { id: 690, inX: false, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" },
+            { id: 120, inX: true, inY: false, location: "Fishing Good Rod", levels: "25", rate: "35%" },
+            { id: 90, inX: false, inY: true, location: "Fishing Good Rod", levels: "25", rate: "35%" },
+            { id: 211, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "60%" },
+            { id: 693, inX: true, inY: false, location: "Fishing Super Rod", levels: "35", rate: "35%" },
+            { id: 691, inX: false, inY: true, location: "Fishing Super Rod", levels: "35", rate: "35%" },
+            { id: 121, inX: true, inY: false, location: "Fishing Super Rod", levels: "35", rate: "5%" },
+            { id: 91, inX: false, inY: true, location: "Fishing Super Rod", levels: "35", rate: "5%" }
         ]
     },
-    // 14. Pueblo Relieve (Intercambios en Hotel)
+    // 14. Pueblo Ambrette (Intercambios en Hotel)
     {
-        locationName: "Pueblo Relieve (Ambrette Town) - Hotel",
+        locationName: "Pueblo Ambrette (Ambrette Town) - Hotel",
         verified: true,
         encounters: [
             { id: 129, inX: true, inY: true, location: "Trade (Gyarados)", levels: "5", rate: "Único" },
@@ -720,12 +798,12 @@
     },
     // 15. Ruta 9
     {
-        locationName: "Ruta 9 (Spikes Passage)",
+        locationName: "Ruta 9 (Paso Spikes)",
         verified: true,
         encounters: [
-            { id: 111, inX: true, inY: true, location: "Rhyhorn Ride", levels: "18-20", rate: "60%" },
-            { id: 688, inX: true, inY: true, location: "Rhyhorn Ride", levels: "19-20", rate: "20%" },
-            { id: 451, inX: true, inY: true, location: "Rhyhorn Ride", levels: "18, 20", rate: "20%" }
+            { id: 449, inX: true, inY: true, location: "Rhyhorn Ride", levels: "15-17", rate: "40%" },
+            { id: 551, inX: true, inY: true, location: "Rhyhorn Ride", levels: "15-17", rate: "40%" },
+            { id: 694, inX: true, inY: true, location: "Rhyhorn Ride", levels: "15-17", rate: "20%" }
         ]
     },
     // 16. Cueva Brillante
@@ -734,22 +812,24 @@
         verified: true,
         encounters: [
             { id: 66, inX: true, inY: true, location: "Cave Floor", levels: "15-17", rate: "30%" },
-            { id: 95, inX: true, inY: true, location: "Cave Floor", levels: "17", rate: "10%" },
             { id: 104, inX: true, inY: true, location: "Cave Floor", levels: "15-16", rate: "20%" },
+            { id: 338, inX: true, inY: true, location: "Cave Floor", levels: "17", rate: "10%" },
+            { id: 337, inX: true, inY: true, location: "Cave Floor", levels: "17", rate: "10%" },
             { id: 111, inX: true, inY: true, location: "Cave Floor", levels: "17", rate: "10%" },
+            { id: 95, inX: true, inY: true, location: "Cave Floor", levels: "17", rate: "10%" },
             { id: 115, inX: true, inY: true, location: "Cave Floor", levels: "17", rate: "5%" },
             { id: 303, inX: true, inY: true, location: "Cave Floor", levels: "15-16", rate: "5%" },
-            { id: 337, inX: true, inY: true, location: "Cave Floor", levels: "17", rate: "10%" },
-            { id: 338, inX: true, inY: true, location: "Cave Floor", levels: "17", rate: "10%" },
-            { id: 95, inX: true, inY: true, location: "Rock Smash", levels: "15-17", rate: "35%" },
+            { id: 527, inX: true, inY: true, location: "Cave Ceiling (Piso 1)", levels: "15-17", rate: "85%" },
+            { id: 597, inX: true, inY: true, location: "Cave Ceiling (Piso 1)", levels: "15-16", rate: "15%" },
             { id: 557, inX: true, inY: true, location: "Rock Smash", levels: "15-17", rate: "65%" },
+            { id: 95, inX: true, inY: true, location: "Rock Smash", levels: "15-16", rate: "35%" },
             { id: 696, inX: true, inY: true, location: "Fossil (Gift)", levels: "20", rate: "Único" },
             { id: 698, inX: true, inY: true, location: "Fossil (Gift)", levels: "20", rate: "Único" }
         ]
     },
-    // 17. Ciudad Relieve (Intercambio)
+    // 17. Ciudad Cyllage (Intercambio)
     {
-        locationName: "Ciudad Relieve (Cyllage City) - Intercambio",
+        locationName: "Ciudad Cyllage (Cyllage City) - Intercambio",
         verified: true,
         encounters: [
             { id: 208, inX: true, inY: true, location: "Trade (Luvdisc)", levels: "20", rate: "Único" }
@@ -757,40 +837,70 @@
     },
     // 18. Ruta 10
     {
-        locationName: "Ruta 10 (Menhir Trail)",
+        locationName: "Ruta 10 (Senda Menhir)",
         verified: true,
         encounters: [
-            { id: 701, inX: true, inY: true, location: "Yellow Flowers", levels: "19-21", rate: "20%" },
-            { id: 359, inX: true, inY: true, location: "Yellow Flowers", levels: "20-21", rate: "15%" },
-            { id: 559, inX: true, inY: true, location: "Yellow Flowers", levels: "19-20", rate: "15%" },
-            { id: 228, inX: true, inY: false, location: "Yellow Flowers", levels: "19-21", rate: "10%" },
-            { id: 309, inX: false, inY: true, location: "Yellow Flowers", levels: "19-21", rate: "10%" }
+            { id: 622, inX: true, inY: true, location: "Grass", levels: "19-21", rate: "30%" },
+            { id: 561, inX: true, inY: true, location: "Grass", levels: "19-21", rate: "20%" },
+            { id: 701, inX: true, inY: true, location: "Grass", levels: "19-21", rate: "20%" },
+            { id: 228, inX: true, inY: false, location: "Grass", levels: "19-21", rate: "10%" },
+            { id: 309, inX: false, inY: true, location: "Grass", levels: "19-21", rate: "10%" },
+            { id: 209, inX: true, inY: true, location: "Grass", levels: "19-21", rate: "10%" },
+            { id: 133, inX: true, inY: true, location: "Grass", levels: "19-21", rate: "5%" },
+            { id: 587, inX: true, inY: true, location: "Grass", levels: "19-20", rate: "5%" },
+            { id: 209, inX: true, inY: true, location: "Yellow Flowers", levels: "19-21", rate: "30%" },
+            { id: 228, inX: true, inY: false, location: "Yellow Flowers", levels: "19-21", rate: "20%" },
+            { id: 309, inX: false, inY: true, location: "Yellow Flowers", levels: "19-21", rate: "20%" },
+            { id: 133, inX: true, inY: true, location: "Yellow Flowers", levels: "19-21", rate: "20%" },
+            { id: 622, inX: true, inY: true, location: "Yellow Flowers", levels: "19-21", rate: "10%" },
+            { id: 561, inX: true, inY: true, location: "Yellow Flowers", levels: "19-21", rate: "10%" },
+            { id: 701, inX: true, inY: true, location: "Yellow Flowers", levels: "19-21", rate: "5%" },
+            { id: 587, inX: true, inY: true, location: "Yellow Flowers", levels: "20", rate: "5%" },
+            { id: 299, inX: true, inY: true, location: "Horde Encounter", levels: "10", rate: "60%" },
+            { id: 193, inX: true, inY: true, location: "Horde Encounter", levels: "10", rate: "35%" },
+            { id: 228, inX: true, inY: false, location: "Horde Encounter", levels: "11", rate: "5%" },
+            { id: 309, inX: false, inY: true, location: "Horde Encounter", levels: "11", rate: "5%" }
         ]
     },
     // 19. Ruta 11
     {
-        locationName: "Ruta 11 (Miroir Way)",
+        locationName: "Ruta 11 (Camino Miroir)",
         verified: true,
         encounters: [
-            { id: 702, inX: true, inY: true, location: "Grass", levels: "21-23", rate: "20%" },
-            { id: 694, inX: true, inY: true, location: "Grass", levels: "21-23", rate: "20%" },
-            { id: 434, inX: true, inY: false, location: "Grass", levels: "22-23", rate: "10%" },
-            { id: 509, inX: false, inY: true, location: "Grass", levels: "22-23", rate: "10%" },
-            { id: 568, inX: true, inY: true, location: "Grass", levels: "21-22", rate: "15%" }
+            { id: 539, inX: true, inY: false, location: "Grass", levels: "22-23", rate: "20%" },
+            { id: 538, inX: false, inY: true, location: "Grass", levels: "22-23", rate: "20%" },
+            { id: 397, inX: true, inY: true, location: "Grass", levels: "22-23", rate: "20%" },
+            { id: 297, inX: true, inY: true, location: "Grass", levels: "22-23", rate: "20%" },
+            { id: 434, inX: true, inY: false, location: "Grass", levels: "21", rate: "10%" },
+            { id: 358, inX: true, inY: true, location: "Grass", levels: "21", rate: "10%" },
+            { id: 33, inX: true, inY: false, location: "Grass", levels: "21", rate: "10%" },
+            { id: 30, inX: true, inY: false, location: "Grass", levels: "21", rate: "5%" },
+            { id: 33, inX: false, inY: true, location: "Grass", levels: "21", rate: "5%" },
+            { id: 30, inX: false, inY: true, location: "Grass", levels: "21", rate: "10%" },
+            { id: 702, inX: true, inY: true, location: "Grass", levels: "21-22", rate: "5%" },
+            { id: 32, inX: false, inY: true, location: "Horde Encounter", levels: "11", rate: "60%" },
+            { id: 29, inX: true, inY: false, location: "Horde Encounter", levels: "11", rate: "60%" },
+            { id: 434, inX: true, inY: true, location: "Horde Encounter", levels: "11-12", rate: "35%" },
+            { id: 396, inX: true, inY: true, location: "Horde Encounter", levels: "11-12", rate: "5%" }
         ]
     },
-    // 20. Cueva Reflejos
+    // 20. Cueva de los Espejos
     {
-        locationName: "Cueva Reflejos (Reflection Cave)",
+        locationName: "Cueva de los Espejos (Reflection Cave)",
         verified: true,
         encounters: [
+            { id: 524, inX: true, inY: true, location: "Cave Floor", levels: "21-22", rate: "20%" },
             { id: 122, inX: true, inY: true, location: "Cave Floor", levels: "22-23", rate: "20%" },
+            { id: 577, inX: true, inY: true, location: "Cave Floor", levels: "22-23", rate: "20%" },
+            { id: 433, inX: true, inY: true, location: "Cave Floor", levels: "21-22", rate: "15%" },
+            { id: 703, inX: true, inY: true, location: "Cave Floor", levels: "23", rate: "10%" },
             { id: 202, inX: true, inY: true, location: "Cave Floor", levels: "22", rate: "10%" },
             { id: 302, inX: true, inY: true, location: "Cave Floor", levels: "22-23", rate: "5%" },
-            { id: 433, inX: true, inY: true, location: "Cave Floor", levels: "21-22", rate: "15%" },
-            { id: 524, inX: true, inY: true, location: "Cave Floor", levels: "21-22", rate: "20%" },
-            { id: 577, inX: true, inY: true, location: "Cave Floor", levels: "22-23", rate: "20%" },
-            { id: 703, inX: true, inY: true, location: "Cave Floor", levels: "23", rate: "10%" }
+            { id: 527, inX: true, inY: true, location: "Cave Ceiling", levels: "21-23", rate: "Común" },
+            { id: 597, inX: true, inY: true, location: "Cave Ceiling", levels: "21-23", rate: "Raro" },
+            { id: 439, inX: true, inY: true, location: "Horde Encounter", levels: "11", rate: "60%" },
+            { id: 524, inX: true, inY: true, location: "Horde Encounter", levels: "11", rate: "35%" },
+            { id: 703, inX: true, inY: true, location: "Horde Encounter", levels: "11", rate: "5%" }
         ]
     },
     // 21. Ciudad Yantra (Agua)
@@ -815,20 +925,41 @@
     },
     // 23. Ruta 12
     {
-        locationName: "Ruta 12 (Fourrage Road)",
+        locationName: "Ruta 12 (Camino Fourrage)",
         verified: true,
         encounters: [
-            { id: 672, inX: true, inY: true, location: "Grass", levels: "25-27", rate: "20%" },
-            { id: 214, inX: false, inY: true, location: "Grass", levels: "27", rate: "10%" },
-            { id: 127, inX: true, inY: false, location: "Grass", levels: "27", rate: "10%" },
-            { id: 72, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "60%" },
-            { id: 131, inX: true, inY: true, location: "Surfing", levels: "27", rate: "1%" },
+            { id: 79, inX: true, inY: true, location: "Grass", levels: "23-25", rate: "30%" },
+            { id: 441, inX: true, inY: true, location: "Grass", levels: "23-25", rate: "30%" },
+            { id: 241, inX: true, inY: true, location: "Grass", levels: "25-27", rate: "10%" },
+            { id: 128, inX: true, inY: true, location: "Grass", levels: "25-27", rate: "10%" },
+            { id: 102, inX: true, inY: true, location: "Grass", levels: "24-26", rate: "10%" },
+            { id: 417, inX: true, inY: true, location: "Grass", levels: "23-25", rate: "5%" },
+            { id: 127, inX: true, inY: false, location: "Grass", levels: "25", rate: "5%" },
+            { id: 214, inX: false, inY: true, location: "Grass", levels: "25-27", rate: "5%" },
+            { id: 128, inX: true, inY: true, location: "Yellow Flowers", levels: "25-27", rate: "30%" },
+            { id: 241, inX: true, inY: true, location: "Yellow Flowers", levels: "25-27", rate: "30%" },
+            { id: 102, inX: true, inY: true, location: "Yellow Flowers", levels: "24-26", rate: "10%" },
+            { id: 127, inX: true, inY: false, location: "Yellow Flowers", levels: "25", rate: "5%" },
+            { id: 214, inX: false, inY: true, location: "Yellow Flowers", levels: "25-27", rate: "5%" },
+            { id: 79, inX: true, inY: true, location: "Yellow Flowers", levels: "23-25", rate: "10%" },
+            { id: 441, inX: true, inY: true, location: "Yellow Flowers", levels: "23-25", rate: "10%" },
+            { id: 417, inX: true, inY: true, location: "Yellow Flowers", levels: "23-25", rate: "5%" },
+            { id: 557, inX: true, inY: true, location: "Rock Smash", levels: "23-25", rate: "65%" },
+            { id: 688, inX: true, inY: true, location: "Rock Smash", levels: "23-25", rate: "35%" },
+            { id: 278, inX: true, inY: true, location: "Horde Encounter", levels: "13", rate: "60%" },
+            { id: 179, inX: true, inY: true, location: "Horde Encounter", levels: "13", rate: "35%" },
+            { id: 128, inX: true, inY: false, location: "Horde Encounter", levels: "14", rate: "5%" },
+            { id: 241, inX: true, inY: false, location: "Horde Encounter", levels: "14", rate: "5%" },
+            { id: 72, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "84%" },
             { id: 458, inX: true, inY: true, location: "Surfing", levels: "27", rate: "15%" },
+            { id: 131, inX: true, inY: true, location: "Surfing", levels: "27", rate: "1%" },
             { id: 370, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
             { id: 223, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" },
             { id: 366, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "35%" },
-            { id: 557, inX: true, inY: true, location: "Rock Smash", levels: "23-25", rate: "66%" },
-            { id: 688, inX: true, inY: true, location: "Rock Smash", levels: "23-25", rate: "34%" },
+            { id: 222, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "60%" },
+            { id: 224, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "35%" },
+            { id: 367, inX: true, inY: false, location: "Fishing Super Rod", levels: "35", rate: "5%" },
+            { id: 368, inX: false, inY: true, location: "Fishing Super Rod", levels: "35", rate: "5%" },
             { id: 131, inX: true, inY: true, location: "Gift", levels: "30", rate: "Único" }
         ]
     },
@@ -838,12 +969,12 @@
         verified: true,
         encounters: [
             { id: 79, inX: true, inY: true, location: "Grass", levels: "25-27", rate: "40%" },
-            { id: 102, inX: true, inY: true, location: "Grass", levels: "26", rate: "10%" },
             { id: 441, inX: true, inY: true, location: "Grass", levels: "25-27", rate: "35%" },
             { id: 686, inX: true, inY: true, location: "Grass", levels: "26-27", rate: "15%" },
+            { id: 102, inX: true, inY: true, location: "Grass", levels: "26", rate: "10%" },
             { id: 72, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "84%" },
-            { id: 131, inX: true, inY: true, location: "Surfing", levels: "27", rate: "1%" },
             { id: 458, inX: true, inY: true, location: "Surfing", levels: "27", rate: "15%" },
+            { id: 131, inX: true, inY: true, location: "Surfing", levels: "27", rate: "1%" },
             { id: 370, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
             { id: 170, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "35%" },
             { id: 223, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" },
@@ -856,37 +987,80 @@
     },
     // 25. Ruta 13
     {
-        locationName: "Ruta 13 (Lumiose Badlands)",
+        locationName: "Ruta 13 (Páramo de Lumiose)",
         verified: true,
         encounters: [
             { id: 51, inX: true, inY: true, location: "Dirt", levels: "26-28", rate: "40%" },
             { id: 328, inX: true, inY: true, location: "Dirt", levels: "26-28", rate: "40%" },
             { id: 443, inX: true, inY: true, location: "Dirt", levels: "26-28", rate: "20%" },
-            { id: 75, inX: true, inY: true, location: "Rock Smash", levels: "26-28", rate: "66%" },
-            { id: 218, inX: true, inY: true, location: "Rock Smash", levels: "26, 28", rate: "34%" }
+            { id: 75, inX: true, inY: true, location: "Rock Smash", levels: "26-28", rate: "65%" },
+            { id: 218, inX: true, inY: true, location: "Rock Smash", levels: "26-28", rate: "35%" }
         ]
     },
     // 26. Ruta 14
     {
-        locationName: "Ruta 14 (Laverre Nature Trail)",
+        locationName: "Ruta 14 (Senda Natural Laverre)",
         verified: true,
         encounters: [
-            { id: 704, inX: true, inY: true, location: "Swamp", levels: "30-32", rate: "15%" },
-            { id: 195, inX: true, inY: true, location: "Swamp", levels: "30-32", rate: "15%" },
-            { id: 616, inX: true, inY: true, location: "Swamp", levels: "30-32", rate: "15%" },
-            { id: 318, inX: true, inY: true, location: "Surfing", levels: "30-35", rate: "60%" },
-            { id: 129, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
-            { id: 339, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" }
+            { id: 451, inX: true, inY: true, location: "Grass", levels: "30-31", rate: "20%" },
+            { id: 70, inX: true, inY: true, location: "Grass", levels: "31-32", rate: "20%" },
+            { id: 455, inX: true, inY: true, location: "Grass", levels: "30-32", rate: "15%" },
+            { id: 704, inX: true, inY: true, location: "Grass", levels: "30-32", rate: "10%" },
+            { id: 195, inX: true, inY: true, location: "Grass", levels: "30-32", rate: "10%" },
+            { id: 588, inX: true, inY: true, location: "Grass", levels: "30", rate: "10%" },
+            { id: 616, inX: true, inY: true, location: "Grass", levels: "30", rate: "10%" },
+            { id: 93, inX: true, inY: true, location: "Grass", levels: "31", rate: "5%" },
+            { id: 69, inX: true, inY: true, location: "Horde Encounter", levels: "16", rate: "60%" },
+            { id: 451, inX: true, inY: true, location: "Horde Encounter", levels: "16", rate: "35%" },
+            { id: 23, inX: true, inY: true, location: "Horde Encounter", levels: "17", rate: "5%" },
+            { id: 195, inX: true, inY: true, location: "Swamp", levels: "30-32", rate: "30%" },
+            { id: 704, inX: true, inY: true, location: "Swamp", levels: "30-32", rate: "20%" },
+            { id: 618, inX: true, inY: true, location: "Swamp", levels: "30-32", rate: "20%" },
+            { id: 588, inX: true, inY: true, location: "Swamp", levels: "30", rate: "10%" },
+            { id: 616, inX: true, inY: true, location: "Swamp", levels: "30", rate: "10%" },
+            { id: 455, inX: true, inY: true, location: "Swamp", levels: "31-32", rate: "5%" },
+            { id: 93, inX: true, inY: true, location: "Swamp", levels: "31", rate: "5%" },
+            { id: 195, inX: true, inY: true, location: "Surfing", levels: "30-32", rate: "50%" },
+            { id: 618, inX: true, inY: true, location: "Surfing", levels: "30-32", rate: "35%" },
+            { id: 704, inX: true, inY: true, location: "Surfing", levels: "30-32", rate: "15%" },
+            { id: 60, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
+            { id: 339, inX: true, inY: true, location: "Fishing Good Rod", levels: "25, 35", rate: "65%" },
+            { id: 61, inX: true, inY: true, location: "Fishing Good Rod", levels: "35", rate: "35%" },
+            { id: 61, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "65%" },
+            { id: 340, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "35%" }
         ]
     },
     // 27. Ruta 15
     {
-        locationName: "Ruta 15 (Brun Way)",
+        locationName: "Ruta 15 (Camino Brun)",
         verified: true,
         encounters: [
-            { id: 708, inX: true, inY: true, location: "Red Flowers", levels: "34-36", rate: "20%" },
-            { id: 710, inX: true, inY: true, location: "Red Flowers", levels: "34-36", rate: "20%" },
-            { id: 453, inX: true, inY: true, location: "Red Flowers", levels: "34-35", rate: "15%" }
+            { id: 262, inX: true, inY: false, location: "Grass", levels: "34-35", rate: "30%" },
+            { id: 510, inX: false, inY: true, location: "Grass", levels: "34-36", rate: "30%" },
+            { id: 590, inX: true, inY: true, location: "Grass", levels: "34-35", rate: "20%" },
+            { id: 451, inX: true, inY: true, location: "Grass", levels: "34-36", rate: "20%" },
+            { id: 707, inX: true, inY: true, location: "Grass", levels: "34-36", rate: "10%" },
+            { id: 505, inX: true, inY: true, location: "Grass", levels: "34-36", rate: "10%" },
+            { id: 624, inX: true, inY: true, location: "Grass", levels: "34-36", rate: "10%" },
+            { id: 505, inX: true, inY: true, location: "Red Flowers", levels: "34-36", rate: "30%" },
+            { id: 590, inX: true, inY: true, location: "Red Flowers", levels: "34-35", rate: "20%" },
+            { id: 624, inX: true, inY: true, location: "Red Flowers", levels: "34-36", rate: "20%" },
+            { id: 262, inX: true, inY: false, location: "Red Flowers", levels: "34-35", rate: "10%" },
+            { id: 510, inX: false, inY: true, location: "Red Flowers", levels: "34-36", rate: "10%" },
+            { id: 451, inX: true, inY: true, location: "Red Flowers", levels: "34-36", rate: "10%" },
+            { id: 707, inX: true, inY: true, location: "Red Flowers", levels: "34-36", rate: "10%" },
+            { id: 198, inX: true, inY: true, location: "Horde Encounter", levels: "18", rate: "60%" },
+            { id: 590, inX: true, inY: true, location: "Horde Encounter", levels: "18", rate: "35%" },
+            { id: 707, inX: true, inY: true, location: "Horde Encounter", levels: "19", rate: "5%" },
+            { id: 271, inX: true, inY: true, location: "Surfing", levels: "34-36", rate: "65%" },
+            { id: 419, inX: true, inY: true, location: "Surfing", levels: "35-36", rate: "35%" },
+            { id: 60, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
+            { id: 550, inX: true, inY: false, location: "Fishing Good Rod", levels: "25", rate: "65%" },
+            { id: 550, inX: false, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" },
+            { id: 61, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "35%" },
+            { id: 61, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "65%" },
+            { id: 550, inX: true, inY: false, location: "Fishing Super Rod", levels: "35", rate: "35%" },
+            { id: 550, inX: false, inY: true, location: "Fishing Super Rod", levels: "35", rate: "35%" }
         ]
     },
     // 28. Hotel Desolación
@@ -905,12 +1079,34 @@
     },
     // 29. Ruta 16
     {
-        locationName: "Ruta 16 (Mélancolie Path)",
+        locationName: "Ruta 16 (Senda Mélancolie)",
         verified: true,
         encounters: [
-            { id: 305, inX: true, inY: false, location: "Yellow Flowers", levels: "35-36", rate: "10%" },
-            { id: 247, inX: false, inY: true, location: "Yellow Flowers", levels: "35-36", rate: "10%" },
-            { id: 707, inX: true, inY: true, location: "Grass", levels: "35-37", rate: "20%" }
+            { id: 70, inX: true, inY: true, location: "Yellow Flowers", levels: "35-36", rate: "20%" },
+            { id: 419, inX: true, inY: true, location: "Yellow Flowers", levels: "35-36", rate: "20%" },
+            { id: 451, inX: true, inY: true, location: "Yellow Flowers", levels: "34-35", rate: "20%" },
+            { id: 590, inX: true, inY: true, location: "Yellow Flowers", levels: "34-36", rate: "20%" },
+            { id: 707, inX: true, inY: true, location: "Yellow Flowers", levels: "34-36", rate: "10%" },
+            { id: 708, inX: true, inY: true, location: "Yellow Flowers", levels: "35", rate: "10%" },
+            { id: 710, inX: true, inY: true, location: "Tall Grass", levels: "34-35", rate: "30%" },
+            { id: 710, inX: true, inY: true, location: "Tall Grass", levels: "35-36", rate: "20%" },
+            { id: 590, inX: true, inY: true, location: "Tall Grass", levels: "34-36", rate: "20%" },
+            { id: 708, inX: true, inY: true, location: "Tall Grass", levels: "35", rate: "10%" },
+            { id: 710, inX: true, inY: true, location: "Tall Grass", levels: "36", rate: "10%" },
+            { id: 707, inX: true, inY: true, location: "Tall Grass", levels: "34-35", rate: "9%" },
+            { id: 710, inX: true, inY: true, location: "Tall Grass", levels: "36", rate: "1%" },
+            { id: 198, inX: true, inY: true, location: "Horde Encounter", levels: "18", rate: "60%" },
+            { id: 590, inX: true, inY: true, location: "Horde Encounter", levels: "18", rate: "35%" },
+            { id: 707, inX: true, inY: true, location: "Horde Encounter", levels: "19", rate: "5%" },
+            { id: 271, inX: true, inY: true, location: "Surfing", levels: "34-59", rate: "65%" },
+            { id: 419, inX: true, inY: true, location: "Surfing", levels: "34-59", rate: "35%" },
+            { id: 60, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
+            { id: 550, inX: true, inY: false, location: "Fishing Good Rod", levels: "25", rate: "65%" },
+            { id: 550, inX: false, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" },
+            { id: 61, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "35%" },
+            { id: 61, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "65%" },
+            { id: 550, inX: true, inY: false, location: "Fishing Super Rod", levels: "35", rate: "35%" },
+            { id: 550, inX: false, inY: true, location: "Fishing Super Rod", levels: "35", rate: "35%" }
         ]
     },
     // 30. Gruta Helada
@@ -918,76 +1114,129 @@
         locationName: "Gruta Helada (Frost Cavern)",
         verified: true,
         encounters: [
-            { id: 93, inX: true, inY: true, location: "Ice Floor", levels: "38-40", rate: "16%" },
-            { id: 124, inX: true, inY: true, location: "Ice Floor", levels: "39-40", rate: "20%" },
             { id: 221, inX: true, inY: true, location: "Ice Floor", levels: "38-39", rate: "20%" },
             { id: 614, inX: true, inY: true, location: "Ice Floor", levels: "39-40", rate: "20%" },
-            { id: 615, inX: true, inY: true, location: "Ice Floor", levels: "40", rate: "4%" },
             { id: 712, inX: true, inY: true, location: "Ice Floor", levels: "39-40", rate: "20%" },
-            { id: 61, inX: true, inY: true, location: "Surfing", levels: "38-40", rate: "66%" },
-            { id: 419, inX: true, inY: true, location: "Surfing", levels: "38-40", rate: "34%" },
+            { id: 124, inX: true, inY: true, location: "Ice Floor", levels: "39-40", rate: "20%" },
+            { id: 93, inX: true, inY: true, location: "Ice Floor", levels: "38-40", rate: "15%" },
+            { id: 615, inX: true, inY: true, location: "Ice Floor", levels: "40", rate: "5%" },
+            { id: 582, inX: true, inY: true, location: "Horde Encounter", levels: "20", rate: "60%" },
+            { id: 613, inX: true, inY: true, location: "Horde Encounter", levels: "20", rate: "35%" },
+            { id: 238, inX: true, inY: true, location: "Horde Encounter", levels: "21", rate: "5%" },
+            { id: 61, inX: true, inY: true, location: "Surfing", levels: "38-40", rate: "65%" },
+            { id: 419, inX: true, inY: true, location: "Surfing", levels: "38-40", rate: "35%" },
             { id: 60, inX: true, inY: true, location: "Fishing Old Rod", levels: "20", rate: "100%" },
+            { id: 550, inX: true, inY: false, location: "Fishing Good Rod", levels: "30", rate: "65%" },
+            { id: 550, inX: false, inY: true, location: "Fishing Good Rod", levels: "30", rate: "65%" },
             { id: 61, inX: true, inY: true, location: "Fishing Good Rod", levels: "30", rate: "35%" },
-            { id: 550, inX: true, inY: true, location: "Fishing Good Rod", levels: "30", rate: "65%" },
             { id: 61, inX: true, inY: true, location: "Fishing Super Rod", levels: "40", rate: "65%" },
-            { id: 550, inX: true, inY: true, location: "Fishing Super Rod", levels: "40", rate: "35%" }
+            { id: 550, inX: true, inY: false, location: "Fishing Super Rod", levels: "40", rate: "35%" },
+            { id: 550, inX: false, inY: true, location: "Fishing Super Rod", levels: "40", rate: "35%" }
         ]
     },
     // 31. Ruta 17
     {
-        locationName: "Ruta 17 (Mamoswine Road)",
+        locationName: "Ruta 17 (Camino Mamoswine)",
         verified: true,
         encounters: [
-            { id: 460, inX: true, inY: true, location: "Snow Area", levels: "38-40", rate: "30%" },
-            { id: 225, inX: true, inY: true, location: "Snow Area", levels: "38-39", rate: "30%" },
-            { id: 582, inX: true, inY: true, location: "Snow Area", levels: "38-39", rate: "20%" }
+            { id: 225, inX: true, inY: true, location: "Snow Area", levels: "38-40", rate: "40%" },
+            { id: 459, inX: true, inY: true, location: "Snow Area", levels: "38-39", rate: "30%" },
+            { id: 215, inX: true, inY: true, location: "Snow Area", levels: "38-40", rate: "29%" },
+            { id: 460, inX: true, inY: true, location: "Snow Area", levels: "40", rate: "1%" }
         ]
     },
     // 32. Ruta 18
     {
-        locationName: "Ruta 18 (Vallée Étroite Way)",
+        locationName: "Ruta 18 (Camino Vallée Étroite)",
         verified: true,
         encounters: [
-            { id: 625, inX: true, inY: true, location: "Grass", levels: "46-48", rate: "20%" },
-            { id: 632, inX: true, inY: true, location: "Grass", levels: "46-48", rate: "20%" },
-            { id: 452, inX: true, inY: true, location: "Grass", levels: "46-47", rate: "15%" }
-        ]
-    },
-    // 33. Cueva Términus
-    {
-        locationName: "Cueva Términus (Terminus Cave)",
-        verified: true,
-        encounters: [
-            { id: 28, inX: true, inY: true, location: "Cave Floor", levels: "45-46", rate: "20%" },
-            { id: 75, inX: true, inY: true, location: "Cave Floor", levels: "44-46", rate: "20%" },
-            { id: 247, inX: false, inY: true, location: "Cave Floor", levels: "45-46", rate: "20%" },
-            { id: 305, inX: true, inY: false, location: "Cave Floor", levels: "45-46", rate: "20%" },
-            { id: 632, inX: true, inY: true, location: "Cave Floor", levels: "44-46", rate: "40%" },
+            { id: 533, inX: true, inY: true, location: "Grass", levels: "44-46", rate: "30%" },
+            { id: 324, inX: true, inY: true, location: "Grass", levels: "44-45", rate: "20%" },
+            { id: 28, inX: true, inY: true, location: "Grass", levels: "46", rate: "10%" },
+            { id: 75, inX: true, inY: true, location: "Grass", levels: "45-46", rate: "15%" },
+            { id: 305, inX: true, inY: false, location: "Grass", levels: "46", rate: "10%" },
+            { id: 247, inX: false, inY: true, location: "Grass", levels: "46", rate: "10%" },
+            { id: 632, inX: true, inY: true, location: "Grass", levels: "44", rate: "10%" },
+            { id: 631, inX: true, inY: true, location: "Grass", levels: "45-46", rate: "5%" },
+            { id: 305, inX: true, inY: false, location: "Red Flowers", levels: "44-46", rate: "30%" },
+            { id: 247, inX: false, inY: true, location: "Red Flowers", levels: "44-46", rate: "30%" },
+            { id: 28, inX: true, inY: true, location: "Red Flowers", levels: "44-45", rate: "20%" },
+            { id: 75, inX: true, inY: true, location: "Red Flowers", levels: "45-46", rate: "15%" },
+            { id: 324, inX: true, inY: true, location: "Red Flowers", levels: "46", rate: "10%" },
+            { id: 533, inX: true, inY: true, location: "Red Flowers", levels: "46", rate: "10%" },
+            { id: 632, inX: true, inY: true, location: "Red Flowers", levels: "44", rate: "10%" },
+            { id: 631, inX: true, inY: true, location: "Red Flowers", levels: "45-46", rate: "5%" },
+            { id: 632, inX: true, inY: true, location: "Shaking/Bubbling spots", levels: "44-46", rate: "90%" },
+            { id: 631, inX: true, inY: true, location: "Shaking/Bubbling spots", levels: "44-46", rate: "10%" },
             { id: 75, inX: true, inY: true, location: "Rock Smash", levels: "44-46", rate: "95%" },
             { id: 213, inX: true, inY: true, location: "Rock Smash", levels: "44-46", rate: "5%" },
+            { id: 74, inX: true, inY: true, location: "Horde Encounter", levels: "23", rate: "60%" },
+            { id: 632, inX: true, inY: true, location: "Horde Encounter", levels: "23", rate: "35%" },
+            { id: 632, inX: false, inY: true, location: "Horde Encounter", levels: "24", rate: "5%" },
+            { id: 631, inX: false, inY: true, location: "Horde Encounter", levels: "24", rate: "5%" }
+        ]
+    },
+    // 33. Cueva Desenlace (Cueva Términus)
+    {
+        locationName: "Cueva Desenlace (Terminus Cave)",
+        verified: true,
+        encounters: [
+            { id: 632, inX: true, inY: true, location: "Cave Floor", levels: "44-46", rate: "40%" },
+            { id: 28, inX: true, inY: true, location: "Cave Floor", levels: "45-46", rate: "20%" },
+            { id: 305, inX: true, inY: false, location: "Cave Floor", levels: "45-46", rate: "20%" },
+            { id: 247, inX: false, inY: true, location: "Cave Floor", levels: "45-46", rate: "20%" },
+            { id: 75, inX: true, inY: true, location: "Cave Floor", levels: "44-46", rate: "20%" },
+            { id: 168, inX: true, inY: true, location: "Cave Ceiling", levels: "44-46", rate: "80%" },
+            { id: 714, inX: true, inY: true, location: "Cave Ceiling", levels: "44-46", rate: "20%" },
+            { id: 75, inX: true, inY: true, location: "Rock Smash", levels: "44-46", rate: "95%" },
+            { id: 213, inX: true, inY: true, location: "Rock Smash", levels: "44-46", rate: "5%" },
+            { id: 632, inX: true, inY: true, location: "Horde Encounter", levels: "23", rate: "60%" },
+            { id: 74, inX: true, inY: true, location: "Horde Encounter", levels: "23", rate: "35%" },
+            { id: 304, inX: true, inY: false, location: "Horde Encounter", levels: "24", rate: "5%" },
+            { id: 246, inX: false, inY: true, location: "Horde Encounter", levels: "24", rate: "5%" },
             { id: 718, inX: true, inY: true, location: "Deep Cave", levels: "70", rate: "Único" }
         ]
     },
     // 34. Ruta 19
     {
-        locationName: "Ruta 19 (Grande Vallée Way)",
+        locationName: "Ruta 19 (Camino Grande Vallée)",
         verified: true,
         encounters: [
-            { id: 705, inX: true, inY: true, location: "Yellow Flowers", levels: "46-47", rate: "20%" },
-            { id: 24, inX: true, inY: true, location: "Yellow Flowers", levels: "48", rate: "10%" },
             { id: 195, inX: true, inY: true, location: "Yellow Flowers", levels: "46-48", rate: "30%" },
-            { id: 452, inX: true, inY: true, location: "Yellow Flowers", levels: "48", rate: "10%" },
-            { id: 455, inX: true, inY: true, location: "Yellow Flowers", levels: "46, 48", rate: "5%" },
+            { id: 705, inX: true, inY: true, location: "Yellow Flowers", levels: "46-47", rate: "20%" },
             { id: 588, inX: true, inY: true, location: "Yellow Flowers", levels: "47", rate: "10%" },
             { id: 616, inX: true, inY: true, location: "Yellow Flowers", levels: "47", rate: "10%" },
-            { id: 618, inX: true, inY: true, location: "Surfing", levels: "46, 48", rate: "34%" },
-            { id: 60, inX: true, inY: true, location: "Fishing Old Rod", levels: "25", rate: "100%" },
+            { id: 70, inX: true, inY: true, location: "Yellow Flowers", levels: "48", rate: "10%" },
+            { id: 452, inX: true, inY: true, location: "Yellow Flowers", levels: "48", rate: "10%" },
+            { id: 93, inX: true, inY: true, location: "Yellow Flowers", levels: "47", rate: "5%" },
+            { id: 455, inX: true, inY: true, location: "Yellow Flowers", levels: "46", rate: "5%" },
+            { id: 452, inX: true, inY: true, location: "Purple Flowers", levels: "46-48", rate: "30%" },
+            { id: 70, inX: true, inY: true, location: "Purple Flowers", levels: "46-47", rate: "20%" },
+            { id: 588, inX: true, inY: true, location: "Purple Flowers", levels: "47", rate: "10%" },
+            { id: 616, inX: true, inY: true, location: "Purple Flowers", levels: "47", rate: "10%" },
+            { id: 195, inX: true, inY: true, location: "Purple Flowers", levels: "48", rate: "10%" },
+            { id: 705, inX: true, inY: true, location: "Purple Flowers", levels: "48", rate: "10%" },
+            { id: 93, inX: true, inY: true, location: "Purple Flowers", levels: "47", rate: "5%" },
+            { id: 455, inX: true, inY: true, location: "Purple Flowers", levels: "46-48", rate: "5%" },
+            { id: 70, inX: true, inY: true, location: "Horde Encounter", levels: "24", rate: "65%" },
+            { id: 207, inX: true, inY: true, location: "Horde Encounter", levels: "24", rate: "30%" },
+            { id: 24, inX: true, inY: true, location: "Horde Encounter", levels: "25", rate: "5%" },
+            { id: 195, inX: true, inY: true, location: "Swamp", levels: "46-48", rate: "30%" },
+            { id: 618, inX: true, inY: true, location: "Swamp", levels: "47-48", rate: "20%" },
+            { id: 705, inX: true, inY: true, location: "Swamp", levels: "47-48", rate: "20%" },
+            { id: 588, inX: true, inY: true, location: "Swamp", levels: "47", rate: "10%" },
+            { id: 616, inX: true, inY: true, location: "Swamp", levels: "47", rate: "10%" },
+            { id: 93, inX: true, inY: true, location: "Swamp", levels: "47", rate: "5%" },
+            { id: 455, inX: true, inY: true, location: "Swamp", levels: "46-48", rate: "5%" },
+            { id: 195, inX: true, inY: true, location: "Surfing", levels: "46", rate: "50%" },
+            { id: 618, inX: true, inY: true, location: "Surfing", levels: "46-48", rate: "34%" },
+            { id: 705, inX: true, inY: true, location: "Surfing", levels: "47-48", rate: "16%" },
+            { id: 60, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
             { id: 339, inX: true, inY: true, location: "Fishing Good Rod", levels: "35", rate: "65%" },
-            { id: 186, inX: true, inY: true, location: "Fishing Super Rod", levels: "50", rate: "5%" },
+            { id: 61, inX: true, inY: true, location: "Fishing Good Rod", levels: "35", rate: "35%" },
+            { id: 61, inX: true, inY: true, location: "Fishing Super Rod", levels: "45", rate: "60%" },
             { id: 340, inX: true, inY: true, location: "Fishing Super Rod", levels: "45", rate: "35%" },
-            { id: 23, inX: true, inY: true, location: "Horde Encounter", levels: "25", rate: "5%" },
-            { id: 70, inX: true, inY: true, location: "Horde Encounter", levels: "24", rate: "60%" },
-            { id: 207, inX: true, inY: true, location: "Horde Encounter", levels: "24", rate: "35%" }
+            { id: 186, inX: true, inY: true, location: "Fishing Super Rod", levels: "50", rate: "5%" }
         ]
     },
     // 35. Ciudad Fractal (Intercambio)
@@ -1000,12 +1249,25 @@
     },
     // 36. Ruta 20
     {
-        locationName: "Ruta 20 (Winding Woods)",
+        locationName: "Ruta 20 (Bosque Serpenteante)",
         verified: true,
         encounters: [
-            { id: 709, inX: true, inY: true, location: "Forest Grass", levels: "50-52", rate: "20%" },
-            { id: 127, inX: true, inY: false, location: "Forest Grass", levels: "51-52", rate: "10%" },
-            { id: 214, inX: false, inY: true, location: "Forest Grass", levels: "51-52", rate: "10%" }
+            { id: 164, inX: true, inY: true, location: "Grass", levels: "48-50", rate: "30%" },
+            { id: 591, inX: true, inY: true, location: "Grass", levels: "48-50", rate: "25%" },
+            { id: 39, inX: true, inY: true, location: "Grass", levels: "48-49", rate: "20%" },
+            { id: 709, inX: true, inY: true, location: "Grass", levels: "50", rate: "10%" },
+            { id: 575, inX: true, inY: true, location: "Grass", levels: "50", rate: "10%" },
+            { id: 571, inX: true, inY: true, location: "Grass", levels: "48-50", rate: "5%" },
+            { id: 575, inX: true, inY: true, location: "Red Flowers", levels: "48-50", rate: "30%" },
+            { id: 709, inX: true, inY: true, location: "Red Flowers", levels: "48-49", rate: "20%" },
+            { id: 591, inX: true, inY: true, location: "Red Flowers", levels: "48-50", rate: "25%" },
+            { id: 39, inX: true, inY: true, location: "Red Flowers", levels: "50", rate: "10%" },
+            { id: 164, inX: true, inY: true, location: "Red Flowers", levels: "50", rate: "10%" },
+            { id: 571, inX: true, inY: true, location: "Red Flowers", levels: "48-50", rate: "5%" },
+            { id: 590, inX: true, inY: true, location: "Horde Encounter", levels: "25", rate: "60%" },
+            { id: 709, inX: true, inY: true, location: "Horde Encounter", levels: "25", rate: "35%" },
+            { id: 709, inX: true, inY: false, location: "Horde Encounter", levels: "25", rate: "5%" },
+            { id: 185, inX: true, inY: false, location: "Horde Encounter", levels: "25", rate: "5%" }
         ]
     },
     // 37. Villa Pokémon
@@ -1031,38 +1293,63 @@
     },
     // 38. Ruta 21
     {
-        locationName: "Ruta 21 (Dernière Way)",
+        locationName: "Ruta 21 (Camino Dernière)",
         verified: true,
         encounters: [
-            { id: 334, inX: true, inY: true, location: "Grass", levels: "48-50", rate: "20%" },
-            { id: 217, inX: true, inY: true, location: "Grass", levels: "48-50", rate: "20%" },
-            { id: 319, inX: true, inY: true, location: "Surfing", levels: "45-50", rate: "60%" },
-            { id: 129, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" }
+            { id: 217, inX: true, inY: true, location: "Red Flowers", levels: "50-52", rate: "40%" },
+            { id: 327, inX: true, inY: true, location: "Red Flowers", levels: "50-52", rate: "20%" },
+            { id: 334, inX: true, inY: true, location: "Red Flowers", levels: "50-51", rate: "20%" },
+            { id: 419, inX: true, inY: true, location: "Red Flowers", levels: "52", rate: "10%" },
+            { id: 123, inX: true, inY: true, location: "Red Flowers", levels: "50-52", rate: "10%" },
+            { id: 419, inX: true, inY: true, location: "Purple Flowers", levels: "50-52", rate: "40%" },
+            { id: 327, inX: true, inY: true, location: "Purple Flowers", levels: "50-52", rate: "20%" },
+            { id: 334, inX: true, inY: true, location: "Purple Flowers", levels: "50-51", rate: "20%" },
+            { id: 123, inX: true, inY: true, location: "Purple Flowers", levels: "50-52", rate: "10%" },
+            { id: 217, inX: true, inY: true, location: "Purple Flowers", levels: "52", rate: "10%" },
+            { id: 327, inX: true, inY: true, location: "Horde Encounter", levels: "26", rate: "60%" },
+            { id: 333, inX: true, inY: true, location: "Horde Encounter", levels: "26", rate: "35%" },
+            { id: 123, inX: true, inY: true, location: "Horde Encounter", levels: "27", rate: "5%" },
+            { id: 271, inX: true, inY: true, location: "Surfing", levels: "50-52", rate: "50%" },
+            { id: 419, inX: true, inY: true, location: "Surfing", levels: "50-52", rate: "50%" },
+            { id: 60, inX: true, inY: true, location: "Fishing Old Rod", levels: "30", rate: "100%" },
+            { id: 550, inX: true, inY: false, location: "Fishing Good Rod", levels: "40", rate: "80%" },
+            { id: 550, inX: false, inY: true, location: "Fishing Good Rod", levels: "40", rate: "80%" },
+            { id: 61, inX: true, inY: true, location: "Fishing Good Rod", levels: "40", rate: "15%" },
+            { id: 147, inX: true, inY: true, location: "Fishing Good Rod", levels: "40", rate: "5%" },
+            { id: 61, inX: true, inY: true, location: "Fishing Super Rod", levels: "50", rate: "80%" },
+            { id: 550, inX: true, inY: false, location: "Fishing Super Rod", levels: "50", rate: "15%" },
+            { id: 550, inX: false, inY: true, location: "Fishing Super Rod", levels: "50", rate: "15%" },
+            { id: 148, inX: true, inY: true, location: "Fishing Super Rod", levels: "50", rate: "5%" }
         ]
     },
     // 39. Ruta 22
     {
-        locationName: "Ruta 22 (Détourner Way)",
+        locationName: "Ruta 22 (Camino Détourner)",
         verified: true,
         encounters: [
             { id: 659, inX: true, inY: true, location: "Grass", levels: "5-6", rate: "20%" },
-            { id: 667, inX: true, inY: true, location: "Grass", levels: "5-6", rate: "20%" },
             { id: 298, inX: true, inY: true, location: "Grass", levels: "6-7", rate: "20%" },
-            { id: 54, inX: true, inY: true, location: "Grass", levels: "6", rate: "10%" },
-            { id: 83, inX: true, inY: true, location: "Grass", levels: "7", rate: "10%" },
+            { id: 667, inX: true, inY: true, location: "Grass", levels: "5-6", rate: "20%" },
             { id: 399, inX: true, inY: true, location: "Grass", levels: "6", rate: "10%" },
+            { id: 83, inX: true, inY: true, location: "Grass", levels: "6-7", rate: "10%" },
+            { id: 54, inX: true, inY: true, location: "Grass", levels: "6", rate: "10%" },
             { id: 206, inX: true, inY: true, location: "Grass", levels: "7", rate: "5%" },
             { id: 447, inX: true, inY: true, location: "Grass", levels: "6-7", rate: "5%" },
-            { id: 660, inX: true, inY: true, location: "Yellow Flowers", levels: "27", rate: "10%" },
-            { id: 184, inX: true, inY: true, location: "Yellow Flowers", levels: "25-26", rate: "20%" },
+            { id: 54, inX: true, inY: true, location: "Yellow Flowers", levels: "25-27", rate: "20%" },
             { id: 400, inX: true, inY: true, location: "Yellow Flowers", levels: "26-27", rate: "20%" },
-            { id: 55, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "95%" },
-            { id: 184, inX: true, inY: true, location: "Surfing", levels: "25, 27", rate: "5%" },
+            { id: 184, inX: true, inY: true, location: "Yellow Flowers", levels: "26", rate: "20%" },
+            { id: 83, inX: true, inY: true, location: "Yellow Flowers", levels: "25-26", rate: "10%" },
+            { id: 660, inX: true, inY: true, location: "Yellow Flowers", levels: "27", rate: "10%" },
+            { id: 667, inX: true, inY: true, location: "Yellow Flowers", levels: "25", rate: "10%" },
+            { id: 206, inX: true, inY: true, location: "Yellow Flowers", levels: "26", rate: "5%" },
+            { id: 447, inX: true, inY: true, location: "Yellow Flowers", levels: "25-26", rate: "5%" },
+            { id: 54, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "95%" },
+            { id: 184, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "5%" },
             { id: 129, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
             { id: 118, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" },
             { id: 318, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "35%" },
-            { id: 119, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "35%" },
             { id: 130, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "60%" },
+            { id: 119, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "35%" },
             { id: 319, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "5%" }
         ]
     },
@@ -1071,9 +1358,35 @@
         locationName: "Calle Victoria (Victory Road)",
         verified: true,
         encounters: [
-            { id: 625, inX: true, inY: true, location: "Cave Floor", levels: "57-59", rate: "20%" },
-            { id: 620, inX: true, inY: true, location: "Cave Floor", levels: "57-59", rate: "20%" },
-            { id: 445, inX: true, inY: true, location: "Cave Floor", levels: "59-60", rate: "10%" }
+            { id: 533, inX: true, inY: true, location: "Cave Floor", levels: "57-59", rate: "30%" },
+            { id: 621, inX: true, inY: true, location: "Cave Floor", levels: "58-59", rate: "20%" },
+            { id: 75, inX: true, inY: true, location: "Cave Floor", levels: "57-58", rate: "20%" },
+            { id: 108, inX: true, inY: true, location: "Cave Floor", levels: "58-59", rate: "15%" },
+            { id: 93, inX: true, inY: true, location: "Cave Floor", levels: "58", rate: "10%" },
+            { id: 634, inX: true, inY: true, location: "Cave Floor", levels: "59", rate: "5%" },
+            { id: 74, inX: true, inY: true, location: "Horde Encounter", levels: "28", rate: "60%" },
+            { id: 419, inX: true, inY: true, location: "Horde Encounter", levels: "29", rate: "35%" },
+            { id: 75, inX: true, inY: true, location: "Horde Encounter", levels: "29", rate: "35%" },
+            { id: 108, inX: true, inY: true, location: "Horde Encounter", levels: "30", rate: "5%" },
+            { id: 75, inX: true, inY: true, location: "Rock Smash", levels: "57-59", rate: "95%" },
+            { id: 213, inX: true, inY: true, location: "Rock Smash", levels: "57-59", rate: "5%" },
+            { id: 75, inX: true, inY: true, location: "Cave Ceiling", levels: "59", rate: "45%" },
+            { id: 168, inX: true, inY: true, location: "Cave Ceiling", levels: "59", rate: "35%" },
+            { id: 714, inX: true, inY: true, location: "Cave Ceiling", levels: "59", rate: "20%" },
+            { id: 22, inX: true, inY: true, location: "Flying", levels: "57-59", rate: "75%" },
+            { id: 227, inX: true, inY: true, location: "Flying", levels: "57-59", rate: "20%" },
+            { id: 635, inX: true, inY: true, location: "Flying", levels: "57-59", rate: "5%" },
+            { id: 271, inX: true, inY: true, location: "Surfing", levels: "57-59", rate: "65%" },
+            { id: 61, inX: true, inY: true, location: "Surfing", levels: "57-59", rate: "65%" },
+            { id: 419, inX: true, inY: true, location: "Surfing", levels: "57-59", rate: "35%" },
+            { id: 60, inX: true, inY: true, location: "Fishing Old Rod", levels: "35", rate: "100%" },
+            { id: 61, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" },
+            { id: 550, inX: true, inY: false, location: "Fishing Good Rod", levels: "45", rate: "32.5%" },
+            { id: 550, inX: false, inY: true, location: "Fishing Good Rod", levels: "25", rate: "32.5%" },
+            { id: 61, inX: true, inY: true, location: "Fishing Super Rod", levels: "55", rate: "65%" },
+            { id: 550, inX: true, inY: false, location: "Fishing Super Rod", levels: "55", rate: "17.5%" },
+            { id: 550, inX: false, inY: true, location: "Fishing Super Rod", levels: "55", rate: "17.5%" },
+            { id: 62, inX: true, inY: true, location: "Fishing Super Rod", levels: "60", rate: "5%" }
         ]
     }
 ];
