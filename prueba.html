@@ -21,7 +21,6 @@
         .checkbox-anim { transition: all 0.2s ease-in-out; }
         .checkbox-anim:checked { transform: scale(1.1); }
         
-        /* Estilos Bulbapedia para insignias de versión */
         .game-badge-x-active { background-color: #1d64b4; color: #ffffff; border: 1px solid #1d64b4; }
         .game-badge-x-inactive { background-color: #ffffff; color: #1d64b4; border: 1px solid #1d64b4; }
         .game-badge-y-active { background-color: #e2182b; color: #ffffff; border: 1px solid #e2182b; }
@@ -56,56 +55,52 @@
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const pokedexNames = {
-            1: "Bulbasaur", 2: "Ivysaur", 3: "Venusaur", 4: "Charmander", 5: "Charmeleon", 6: "Charizard",
-            7: "Squirtle", 8: "Wartortle", 9: "Blastoise", 10: "Caterpie", 11: "Metapod", 12: "Butterfree",
-            13: "Weedle", 14: "Kakuna", 15: "Beedrill", 16: "Pidgey", 17: "Pidgeotto", 18: "Pidgeot",
-            23: "Ekans", 24: "Arbok", 25: "Pikachu", 26: "Raichu", 27: "Sandshrew", 28: "Sandslash",
-            41: "Zubat", 42: "Golbat", 50: "Diglett", 51: "Dugtrio", 54: "Psyduck", 55: "Golduck",
-            63: "Abra", 64: "Kadabra", 65: "Alakazam", 69: "Bellsprout", 70: "Weepinbell", 71: "Victreebel",
-            72: "Tentacool", 73: "Tentacruel", 74: "Geodude", 75: "Graveler", 76: "Golem", 79: "Slowpoke",
-            80: "Slowbro", 81: "Magnemite", 82: "Magneton", 83: "Farfetch'd", 84: "Doduo", 85: "Dodrio",
-            92: "Gastly", 93: "Haunter", 94: "Gengar", 95: "Onix", 100: "Voltorb", 101: "Electrode",
-            104: "Cubone", 105: "Marowak", 108: "Lickitung", 111: "Rhyhorn", 112: "Rhydon", 118: "Goldeen",
-            119: "Seaking", 128: "Tauros", 129: "Magikarp", 130: "Gyarados", 131: "Lapras", 133: "Eevee",
-            143: "Snorlax", 147: "Dratini", 148: "Dragonair", 149: "Dragonite", 150: "Mewtwo", 163: "Hoothoot",
-            165: "Ledyba", 166: "Ledian", 167: "Spinarak", 168: "Ariados", 169: "Crobat", 170: "Chinchou",
-            171: "Lanturn", 172: "Pichu", 175: "Togepi", 179: "Mareep", 180: "Flaaffy", 181: "Ampharos",
-            183: "Marill", 184: "Azumarill", 187: "Hoppip", 188: "Skiploom", 189: "Jumpluff", 194: "Wooper",
-            195: "Quagsire", 198: "Murkrow", 206: "Dunsparce", 209: "Snubbull", 213: "Shuckle", 214: "Heracross",
-            215: "Sneasel", 218: "Slugma", 219: "Magcargo", 220: "Swinub", 221: "Piloswine", 222: "Corsola",
-            225: "Delibird", 226: "Mantine", 228: "Houndour", 229: "Houndoom", 235: "Smeargle", 238: "Smoochum",
-            241: "Miltank", 246: "Larvitar", 247: "Pupitar", 261: "Poochyena", 262: "Mightyena", 263: "Zigzagoon",
-            264: "Linoone", 270: "Lotad", 273: "Seedot", 276: "Taillow", 277: "Swellow", 278: "Wingull",
-            279: "Pelipper", 280: "Ralts", 281: "Kirlia", 282: "Gardevoir", 283: "Surskit", 284: "Masquerain",
-            293: "Whismur", 294: "Loudred", 298: "Azurill", 300: "Skitty", 304: "Aron", 305: "Lairon",
-            309: "Electrike", 310: "Manectric", 311: "Plusle", 312: "Minun", 313: "Volbeat", 314: "Illumise",
-            315: "Roselia", 316: "Gulpin", 318: "Carvanha", 319: "Sharpedo", 322: "Numel", 325: "Spoink",
-            327: "Spinda", 328: "Trapinch", 329: "Vibrava", 330: "Flygon", 333: "Swablu", 334: "Altaria",
-            335: "Zangoose", 336: "Seviper", 337: "Lunatone", 338: "Solrock", 339: "Barboach", 340: "Whiscash",
-            341: "Corphish", 342: "Crawdaunt", 353: "Shuppet", 354: "Banette", 359: "Absol", 361: "Snorunt",
-            366: "Clamperl", 371: "Bagon", 372: "Shelgon", 396: "Starly", 397: "Staravia", 399: "Bidoof",
-            400: "Bibarel", 406: "Budew", 412: "Burmy", 415: "Combee", 417: "Pachirisu", 418: "Buizel",
-            419: "Floatzel", 425: "Drifloon", 426: "Drifblim", 430: "Honchkrow", 434: "Stunky", 435: "Skuntank",
-            441: "Chatot", 443: "Gible", 444: "Gabite", 447: "Riolu", 448: "Lucario", 451: "Skorupi",
-            452: "Drapion", 453: "Croagunk", 454: "Toxicroak", 455: "Carnivine", 458: "Mantyke", 459: "Snover",
-            460: "Abomasnow", 461: "Weavile", 468: "Togekiss", 470: "Leafeon", 471: "Glaceon", 473: "Mamoswine",
-            475: "Gallade", 478: "Froslass", 504: "Patrat", 505: "Watchog", 509: "Purrloin", 510: "Liepard",
-            511: "Pansage", 513: "Pansear", 515: "Panpour", 524: "Roggenrola", 525: "Boldore", 527: "Woobat",
-            528: "Swoobat", 531: "Audino", 538: "Throh", 539: "Sawk", 540: "Sewaddle", 543: "Venipede",
-            544: "Whirlipede", 545: "Scolipede", 550: "Basculin", 557: "Dwebble", 558: "Crustle", 559: "Scraggy",
-            562: "Yamask", 568: "Trubbish", 569: "Garbodor", 574: "Gothita", 577: "Solosis", 580: "Ducklett",
-            582: "Vanillite", 583: "Vanillish", 588: "Karrablast", 590: "Foongus", 591: "Amoonguss", 594: "Alomomola",
-            597: "Ferroseed", 607: "Litwick", 610: "Axew", 613: "Cubchoo", 616: "Shelmet", 618: "Stunfisk",
-            619: "Mienfoo", 620: "Mienshao", 624: "Pawniard", 625: "Bisharp", 631: "Heatmor", 632: "Durant",
-            633: "Deino", 634: "Zweilous", 650: "Chespin", 653: "Fennekin", 656: "Froakie", 659: "Bunnelby",
-            660: "Diggersby", 661: "Fletchling", 662: "Fletchinder", 664: "Scatterbug", 667: "Litleo", 669: "Flabébé",
-            672: "Skiddo", 674: "Pancham", 676: "Furfrou", 677: "Espurr", 679: "Honedge", 682: "Spritzee",
-            684: "Swirlix", 686: "Inkay", 688: "Binacle", 690: "Skrelp", 692: "Clauncher", 694: "Helioptile",
-            696: "Tyrunt", 698: "Amaura", 701: "Hawlucha", 702: "Dedenne", 703: "Carbink", 704: "Goomy",
-            705: "Sliggoo", 707: "Klefki", 708: "Phantump", 710: "Pumpkaboo", 712: "Bergmite", 714: "Noibat",
-            716: "Xerneas", 717: "Yveltal", 718: "Zygarde"
-        };
+        const pokedex = [
+            { regionalId: 1, natId: 650, name: "Chespin", evo: "Nv. 16", zone: "Centro" },
+            { regionalId: 2, natId: 651, name: "Quilladin", evo: "Nv. 36", zone: "Centro" },
+            { regionalId: 3, natId: 652, name: "Chesnaught", evo: "Final", zone: "Centro" },
+            { regionalId: 4, natId: 653, name: "Fennekin", evo: "Nv. 16", zone: "Centro" },
+            { regionalId: 5, natId: 654, name: "Braixen", evo: "Nv. 36", zone: "Centro" },
+            { regionalId: 6, natId: 655, name: "Delphox", evo: "Final", zone: "Centro" },
+            { regionalId: 7, natId: 656, name: "Froakie", evo: "Nv. 16", zone: "Centro" },
+            { regionalId: 8, natId: 657, name: "Frogadier", evo: "Nv. 36", zone: "Centro" },
+            { regionalId: 9, natId: 658, name: "Greninja", evo: "Final", zone: "Centro" },
+            { regionalId: 10, natId: 659, name: "Bunnelby", evo: "Nv. 20", zone: "Centro" },
+            { regionalId: 11, natId: 660, name: "Diggersby", evo: "Final", zone: "Centro" },
+            { regionalId: 12, natId: 263, name: "Zigzagoon", evo: "Nv. 20", zone: "Centro" },
+            { regionalId: 13, natId: 264, name: "Linoone", evo: "Final", zone: "Centro" },
+            { regionalId: 14, natId: 661, name: "Fletchling", evo: "Nv. 17", zone: "Centro" },
+            { regionalId: 15, natId: 662, name: "Fletchinder", evo: "Nv. 35", zone: "Centro" },
+            { regionalId: 16, natId: 663, name: "Talonflame", evo: "Final", zone: "Centro" },
+            { regionalId: 17, natId: 16, name: "Pidgey", evo: "Nv. 18", zone: "Centro" },
+            { regionalId: 18, natId: 17, name: "Pidgeotto", evo: "Nv. 36", zone: "Centro" },
+            { regionalId: 19, natId: 18, name: "Pidgeot", evo: "Final", zone: "Centro" },
+            { regionalId: 20, natId: 664, name: "Scatterbug", evo: "Nv. 9", zone: "Centro" },
+            { regionalId: 21, natId: 665, name: "Spewpa", evo: "Nv. 12", zone: "Centro" },
+            { regionalId: 22, natId: 666, name: "Vivillon", evo: "Final", zone: "Centro" },
+            { regionalId: 23, natId: 10, name: "Caterpie", evo: "Nv. 7", zone: "Centro" },
+            { regionalId: 24, natId: 11, name: "Metapod", evo: "Nv. 10", zone: "Centro" },
+            { regionalId: 25, natId: 12, name: "Butterfree", evo: "Final", zone: "Centro" },
+            { regionalId: 26, natId: 13, name: "Weedle", evo: "Nv. 7", zone: "Centro" },
+            { regionalId: 27, natId: 14, name: "Kakuna", evo: "Nv. 10", zone: "Centro" },
+            { regionalId: 28, natId: 15, name: "Beedrill", evo: "Final", zone: "Centro" },
+            { regionalId: 29, natId: 511, name: "Pansage", evo: "Piedra Hoja", zone: "Centro" },
+            { regionalId: 30, natId: 512, name: "Simisage", evo: "Final", zone: "Centro" },
+            { regionalId: 31, natId: 513, name: "Pansear", evo: "Piedra Fuego", zone: "Centro" },
+            { regionalId: 32, natId: 514, name: "Simisear", evo: "Final", zone: "Centro" },
+            { regionalId: 33, natId: 515, name: "Panpour", evo: "Piedra Agua", zone: "Centro" },
+            { regionalId: 34, natId: 516, name: "Simipour", evo: "Final", zone: "Centro" },
+            { regionalId: 35, natId: 172, name: "Pichu", evo: "Amistad", zone: "Centro" },
+            { regionalId: 36, natId: 25, name: "Pikachu", evo: "Piedra Trueno", zone: "Centro" },
+            { regionalId: 37, natId: 26, name: "Raichu", evo: "Final", zone: "Centro" },
+            { regionalId: 38, natId: 399, name: "Bidoof", evo: "Nv. 15", zone: "Centro" },
+            { regionalId: 39, natId: 400, name: "Bibarel", evo: "Final", zone: "Centro" },
+            { regionalId: 40, natId: 206, name: "Dunsparce", evo: "Final", zone: "Centro" },
+            { regionalId: 41, natId: 298, name: "Azurill", evo: "Amistad", zone: "Centro" },
+            { regionalId: 42, natId: 183, name: "Marill", evo: "Nv. 18", zone: "Centro" },
+            { regionalId: 43, natId: 184, name: "Azumarill", evo: "Final", zone: "Centro" },
+            { regionalId: 44, natId: 412, name: "Burmy", evo: "Nv. 20", zone: "Centro" }
+        ];
 
         const allLocationsEncounters = [
             {
@@ -203,6 +198,8 @@
         let caughtState = {}; 
         let currentView = 'pokedex';
         let searchQuery = '';
+        let filterState = 'all';
+        let zoneFilter = 'all';
         
         let db, auth, userId;
         const appId = 'kalos-tracker'; 
@@ -213,7 +210,8 @@
         }
 
         function getPokemonName(id) {
-            return pokedexNames[id] || `Pokémon #${id}`;
+            const p = pokedex.find(p => p.natId === id);
+            return p ? p.name : `Pokémon #${id}`;
         }
 
         window.toggleCaught = async function(natId) {
@@ -240,6 +238,8 @@
         }
 
         window.updateSearch = function(value) { searchQuery = value.toLowerCase(); renderCurrentView(); }
+        window.updateFilter = function(value) { filterState = value; renderCurrentView(); }
+        window.updateZoneFilter = function(value) { zoneFilter = value; renderCurrentView(); }
 
         function renderCurrentView() {
             const container = document.getElementById('app-content');
@@ -252,13 +252,91 @@
             }
         }
 
+        function generatePokedexHTML() {
+            const totalCaught = Object.values(caughtState).filter(v => v).length;
+            const progressPercent = Math.round((totalCaught / pokedex.length) * 100);
+
+            let html = `
+                <div class="bg-slate-800 rounded-xl shadow-xl overflow-hidden border border-slate-700">
+                    <div class="p-6 bg-slate-900 text-white border-b border-slate-700">
+                        <h1 class="text-3xl font-extrabold flex flex-wrap items-center gap-3">
+                            Pokédex Regional Kalos
+                            <span class="text-sm font-normal bg-sky-600 px-3 py-1 rounded-full text-sky-100">
+                                ${totalCaught} / ${pokedex.length} Registrados
+                            </span>
+                        </h1>
+                        <div class="w-full bg-slate-700 rounded-full h-2.5 mt-4">
+                            <div class="bg-sky-500 h-2.5 rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
+                        </div>
+                        <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <input type="text" placeholder="Buscar Pokémon..." class="px-4 py-2 rounded-lg bg-slate-950 text-white w-full border border-slate-700 focus:ring-2 focus:ring-sky-500 outline-none" value="${searchQuery}" onkeyup="updateSearch(this.value)">
+                            <select class="px-4 py-2 rounded-lg bg-slate-950 text-white border border-slate-700 focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer" onchange="updateZoneFilter(this.value)">
+                                <option value="all" ${zoneFilter === 'all' ? 'selected' : ''}>Todas las Zonas</option>
+                                <option value="Centro" ${zoneFilter === 'Centro' ? 'selected' : ''}>Kalos Centro</option>
+                                <option value="Costa" ${zoneFilter === 'Costa' ? 'selected' : ''}>Kalos Costa</option>
+                                <option value="Montaña" ${zoneFilter === 'Montaña' ? 'selected' : ''}>Kalos Montaña</option>
+                            </select>
+                            <select class="px-4 py-2 rounded-lg bg-slate-950 text-white border border-slate-700 focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer" onchange="updateFilter(this.value)">
+                                <option value="all" ${filterState === 'all' ? 'selected' : ''}>Todos</option>
+                                <option value="caught" ${filterState === 'caught' ? 'selected' : ''}>Atrapados</option>
+                                <option value="missing" ${filterState === 'missing' ? 'selected' : ''}>Faltantes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="uppercase tracking-wider border-b border-slate-700 bg-slate-900 text-slate-400 font-bold">
+                                <tr>
+                                    <th class="px-6 py-4 text-center">Atrapado</th>
+                                    <th class="px-6 py-4 text-center">Nº Reg.</th>
+                                    <th class="px-6 py-4 text-center">Nº Nac.</th>
+                                    <th class="px-6 py-4">Zona</th>
+                                    <th class="px-6 py-4">Sprite</th>
+                                    <th class="px-6 py-4">Pokémon</th>
+                                    <th class="px-6 py-4">Evolución</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-700">
+            `;
+
+            const filteredPokedex = pokedex.filter(poke => {
+                const isCaught = caughtState[poke.natId] || false;
+                const matchesSearch = poke.name.toLowerCase().includes(searchQuery) || String(poke.natId).includes(searchQuery);
+                const matchesZone = (zoneFilter === 'all' || poke.zone === zoneFilter);
+                let matchesFilter = true;
+                if (filterState === 'caught') matchesFilter = isCaught;
+                if (filterState === 'missing') matchesFilter = !isCaught;
+                return matchesSearch && matchesZone && matchesFilter;
+            });
+
+            filteredPokedex.forEach((poke) => {
+                const isCaught = caughtState[poke.natId] || false;
+                html += `
+                    <tr class="hover:bg-slate-700/50 transition ${isCaught ? 'bg-sky-950/30' : ''}">
+                        <td class="px-6 py-4 text-center">
+                            <input type="checkbox" class="w-6 h-6 text-sky-500 rounded border-slate-600 cursor-pointer checkbox-anim" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${poke.natId})">
+                        </td>
+                        <td class="px-6 py-4 text-center font-mono font-bold text-sky-400">#${String(poke.regionalId).padStart(3, '0')}</td>
+                        <td class="px-6 py-4 text-center font-mono text-slate-400">#${String(poke.natId).padStart(3, '0')}</td>
+                        <td class="px-6 py-4"><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-700 text-slate-200">${poke.zone}</span></td>
+                        <td class="px-6 py-2"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.natId}.png" alt="${poke.name}" class="w-12 h-12 inline-block object-contain" onerror="this.style.display='none'"></td>
+                        <td class="px-6 py-4 font-bold text-base"><a href="${getWikidexUrl(poke.name)}" target="_blank" class="text-sky-400 hover:underline">${poke.name}</a></td>
+                        <td class="px-6 py-4 text-sm font-medium text-sky-300">${poke.evo}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table></div></div>`;
+            return html;
+        }
+
         function generateEncountersHTML() {
             let html = `
                 <div class="space-y-8">
                     <div class="rounded-xl shadow-lg border border-slate-700 bg-slate-800 p-6 sm:p-8">
                         <h1 class="text-3xl font-extrabold text-white mb-2">Guía Única de Encuentros (Estilo Bulbapedia)</h1>
-                        <p class="text-slate-300 mb-4">Verificación de apariciones con colores oficiales según disponibilidad por juego (X / Y).</p>
-                        <input type="text" placeholder="Buscar por lugar o Pokémon..." class="px-4 py-2.5 rounded-lg bg-slate-900 text-white w-full border border-slate-700 focus:ring-2 focus:ring-sky-500 outline-none" value="${searchQuery}" onkeyup="updateSearch(this.value)">
+                        <p class="text-slate-300 mb-4">Verificación de apariciones con colores oficiales según disponibilidad por versión (X / Y).</p>
+                        <input type="text" placeholder="Buscar por lugar o Pokémon..." class="px-4 py-2.5 rounded-lg bg-slate-950 text-white w-full border border-slate-700 focus:ring-2 focus:ring-sky-500 outline-none" value="${searchQuery}" onkeyup="updateSearch(this.value)">
                     </div>
             `;
 
@@ -322,56 +400,6 @@
             });
 
             html += `</div>`;
-            return html;
-        }
-
-        function generatePokedexHTML() {
-            const allIds = Object.keys(pokedexNames).map(Number);
-            const totalCaught = Object.values(caughtState).filter(v => v).length;
-            const progressPercent = Math.round((totalCaught / allIds.length) * 100);
-
-            let html = `
-                <div class="bg-slate-800 rounded-xl shadow-xl overflow-hidden border border-slate-700">
-                    <div class="p-6 bg-slate-900 text-white border-b border-slate-700">
-                        <h1 class="text-3xl font-extrabold flex flex-wrap items-center gap-3">
-                            Pokédex Regional de Kalos
-                            <span class="text-sm font-normal bg-sky-600 px-3 py-1 rounded-full text-sky-100">
-                                ${totalCaught} / ${allIds.length} Registrados
-                            </span>
-                        </h1>
-                        <div class="w-full bg-slate-700 rounded-full h-2.5 mt-4">
-                            <div class="bg-sky-500 h-2.5 rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
-                        </div>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm whitespace-nowrap">
-                            <thead class="uppercase tracking-wider border-b border-slate-700 bg-slate-900 text-slate-400 font-bold">
-                                <tr>
-                                    <th class="px-6 py-4 text-center">Atrapado</th>
-                                    <th class="px-6 py-4 text-center">Nº Nac.</th>
-                                    <th class="px-6 py-4">Sprite</th>
-                                    <th class="px-6 py-4">Pokémon</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-700">
-            `;
-
-            allIds.forEach((id) => {
-                const pokeName = getPokemonName(id);
-                const isCaught = caughtState[id] || false;
-                html += `
-                    <tr class="hover:bg-slate-700/50 transition ${isCaught ? 'bg-sky-950/30' : ''}">
-                        <td class="px-6 py-4 text-center">
-                            <input type="checkbox" class="w-6 h-6 text-sky-500 rounded border-slate-600 cursor-pointer checkbox-anim" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${id})">
-                        </td>
-                        <td class="px-6 py-4 text-center font-mono font-bold text-sky-400">#${String(id).padStart(3, '0')}</td>
-                        <td class="px-6 py-2"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png" alt="${pokeName}" class="w-12 h-12 inline-block object-contain" onerror="this.style.display='none'"></td>
-                        <td class="px-6 py-4 font-bold text-base"><a href="${getWikidexUrl(pokeName)}" target="_blank" class="text-sky-400 hover:underline">${pokeName}</a></td>
-                    </tr>
-                `;
-            });
-
-            html += `</tbody></table></div></div>`;
             return html;
         }
 
