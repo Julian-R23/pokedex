@@ -13,7 +13,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalos Tracker (X / Y) - Estilo Bulbapedia Completo</title>
+    <title>Kalos Tracker (X / Y) - Estilo Bulbapedia Completo y Extendido</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -47,7 +47,7 @@
     <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full"></main>
 
     <footer class="bg-slate-950 text-slate-400 py-6 text-center text-sm mt-auto border-t border-slate-800">
-        <p id="storage-status">Kalos Tracker - Sincronizado con Bulbapedia...</p>
+        <p id="storage-status">Kalos Tracker - Sincronizado con Firebase...</p>
     </footer>
 
     <script type="module">
@@ -55,7 +55,6 @@
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Pokédex Regional Completa de Kalos (Centro, Costa y Montaña - 453 Pokémon)
         const pokedex = [
             // --- KALOS CENTRO ---
             { regionalId: 1, natId: 650, name: "Chespin", evo: "Nv. 16", zone: "Centro" },
@@ -415,7 +414,7 @@
             { regionalId: 107, natId: 150, name: "Mewtwo", evo: "Legendario", zone: "Montaña" }
         ];
 
-        // Todas las ubicaciones con el formato Bulbapedia exacto y verificación de disponibilidad por versión (inX / inY)
+        // Ubicaciones de Kalos completas y complementadas con Surf, Pesca (Vieja, Buena, Super), Golpe Roca y Hordas/Especiales
         const allLocationsEncounters = [
             {
                 locationName: "Pueblo Boceto (Vaniville Town)",
@@ -503,7 +502,8 @@
                     { id: 682, inX: false, inY: true, location: "Grass", levels: "13-14", rate: "20%" },
                     { id: 684, inX: true, inY: false, location: "Grass", levels: "13-14", rate: "20%" },
                     { id: 315, inX: true, inY: true, location: "Grass", levels: "12-14", rate: "15%" },
-                    { id: 133, inX: true, inY: true, location: "Grass", levels: "11, 13", rate: "10%" }
+                    { id: 133, inX: true, inY: true, location: "Grass", levels: "11, 13", rate: "10%" },
+                    { id: 129, inX: true, inY: true, location: "Old Rod", levels: "15", rate: "100%" }
                 ]
             },
             {
@@ -512,7 +512,8 @@
                     { id: 41, inX: true, inY: true, location: "Cave Floor", levels: "13-15", rate: "25%" },
                     { id: 293, inX: true, inY: true, location: "Cave Floor", levels: "13-15", rate: "25%" },
                     { id: 527, inX: true, inY: true, location: "Cave Floor", levels: "13-15", rate: "20%" },
-                    { id: 610, inX: true, inY: true, location: "Cave Floor", levels: "14-15", rate: "15%" }
+                    { id: 610, inX: true, inY: true, location: "Cave Floor", levels: "14-15", rate: "15%" },
+                    { id: 75, inX: true, inY: true, location: "Rock Smash", levels: "14-15", rate: "50%" }
                 ]
             },
             {
@@ -520,8 +521,9 @@
                 encounters: [
                     { id: 686, inX: true, inY: true, location: "Grass", levels: "13-15", rate: "20%" },
                     { id: 325, inX: true, inY: true, location: "Grass", levels: "13-15", rate: "20%" },
-                    { id: 690, inX: false, inY: true, location: "Fishing", levels: "25", rate: "35%" },
-                    { id: 692, inX: true, inY: false, location: "Fishing", levels: "25", rate: "35%" }
+                    { id: 690, inX: false, inY: true, location: "Good Rod", levels: "25", rate: "35%" },
+                    { id: 692, inX: true, inY: false, location: "Good Rod", levels: "25", rate: "35%" },
+                    { id: 72, inX: true, inY: true, location: "Surfing", levels: "25-30", rate: "60%" }
                 ]
             },
             {
@@ -538,7 +540,8 @@
                     { id: 679, inX: true, inY: true, location: "Shadows", levels: "16-18", rate: "25%" },
                     { id: 524, inX: true, inY: true, location: "Cave Floor", levels: "16-18", rate: "20%" },
                     { id: 111, inX: true, inY: true, location: "Cave Floor", levels: "17-18", rate: "20%" },
-                    { id: 304, inX: true, inY: true, location: "Cave Floor", levels: "16-18", rate: "15%" }
+                    { id: 304, inX: true, inY: true, location: "Cave Floor", levels: "16-18", rate: "15%" },
+                    { id: 74, inX: true, inY: true, location: "Rock Smash", levels: "16-17", rate: "50%" }
                 ]
             },
             {
@@ -565,7 +568,8 @@
                 encounters: [
                     { id: 702, inX: true, inY: true, location: "Grass", levels: "21-23", rate: "20%" },
                     { id: 694, inX: true, inY: true, location: "Grass", levels: "21-23", rate: "20%" },
-                    { id: 434, inX: false, inY: true, location: "Grass", levels: "22-23", rate: "10%" }
+                    { id: 434, inX: false, inY: true, location: "Grass", levels: "22-23", rate: "10%" },
+                    { id: 568, inX: true, inY: true, location: "Grass", levels: "21-22", rate: "15%" }
                 ]
             },
             {
@@ -573,14 +577,17 @@
                 encounters: [
                     { id: 672, inX: true, inY: true, location: "Grass", levels: "25-27", rate: "20%" },
                     { id: 214, inX: false, inY: true, location: "Grass", levels: "27", rate: "10%" },
-                    { id: 127, inX: true, inY: false, location: "Grass", levels: "27", rate: "10%" }
+                    { id: 127, inX: true, inY: false, location: "Grass", levels: "27", rate: "10%" },
+                    { id: 129, inX: true, inY: true, location: "Surfing", levels: "25", rate: "100%" }
                 ]
             },
             {
                 locationName: "Bahía Azul (Azure Bay)",
                 encounters: [
                     { id: 279, inX: true, inY: true, location: "Grass", levels: "25-27", rate: "20%" },
-                    { id: 278, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "30%" }
+                    { id: 278, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "60%" },
+                    { id: 371, inX: true, inY: true, location: "Surfing", levels: "25-30", rate: "20%" },
+                    { id: 341, inX: true, inY: true, location: "Good Rod", levels: "35", rate: "35%" }
                 ]
             },
             {
@@ -598,55 +605,63 @@
                 encounters: [
                     { id: 704, inX: true, inY: true, location: "Swamp", levels: "30-32", rate: "15%" },
                     { id: 195, inX: true, inY: true, location: "Swamp", levels: "30-32", rate: "15%" },
-                    { id: 616, inX: true, inY: true, location: "Swamp", levels: "30-32", rate: "15%" }
+                    { id: 616, inX: true, inY: true, location: "Swamp", levels: "30-32", rate: "15%" },
+                    { id: 318, inX: true, inY: true, location: "Surfing", levels: "30-35", rate: "60%" }
                 ]
             },
             {
                 locationName: "Ruta 15 (Brun Way)",
                 encounters: [
                     { id: 708, inX: true, inY: true, location: "Red Flowers", levels: "34-36", rate: "20%" },
-                    { id: 710, inX: true, inY: true, location: "Red Flowers", levels: "34-36", rate: "20%" }
+                    { id: 710, inX: true, inY: true, location: "Red Flowers", levels: "34-36", rate: "20%" },
+                    { id: 453, inX: true, inY: true, location: "Red Flowers", levels: "34-35", rate: "15%" }
                 ]
             },
             {
                 locationName: "Hotel Desolación (Lost Hotel)",
                 encounters: [
                     { id: 707, inX: true, inY: true, location: "Trash Cans", levels: "36-38", rate: "30%" },
-                    { id: 569, inX: true, inY: true, location: "Trash Cans", levels: "36-38", rate: "30%" }
+                    { id: 569, inX: true, inY: true, location: "Trash Cans", levels: "36-38", rate: "30%" },
+                    { id: 100, inX: true, inY: true, location: "Room Floor", levels: "36-38", rate: "25%" }
                 ]
             },
             {
                 locationName: "Ruta 16 (Melancolie Way)",
                 encounters: [
                     { id: 305, inX: true, inY: false, location: "Yellow Flowers", levels: "35-36", rate: "10%" },
-                    { id: 247, inX: false, inY: true, location: "Yellow Flowers", levels: "35-36", rate: "10%" }
+                    { id: 247, inX: false, inY: true, location: "Yellow Flowers", levels: "35-36", rate: "10%" },
+                    { id: 707, inX: true, inY: true, location: "Grass", levels: "35-37", rate: "20%" }
                 ]
             },
             {
                 locationName: "Gruta Helada (Frost Cavern)",
                 encounters: [
                     { id: 712, inX: true, inY: true, location: "Ice Floor", levels: "38-40", rate: "25%" },
-                    { id: 583, inX: true, inY: true, location: "Ice Floor", levels: "38-39", rate: "20%" }
+                    { id: 583, inX: true, inY: true, location: "Ice Floor", levels: "38-39", rate: "20%" },
+                    { id: 459, inX: true, inY: true, location: "Ice Floor", levels: "38-40", rate: "15%" }
                 ]
             },
             {
                 locationName: "Ruta 17 (Mamoswine Road)",
                 encounters: [
                     { id: 460, inX: true, inY: true, location: "Snow Area", levels: "38-40", rate: "30%" },
-                    { id: 225, inX: true, inY: true, location: "Snow Area", levels: "38-39", rate: "30%" }
+                    { id: 225, inX: true, inY: true, location: "Snow Area", levels: "38-39", rate: "30%" },
+                    { id: 582, inX: true, inY: true, location: "Snow Area", levels: "38-39", rate: "20%" }
                 ]
             },
             {
                 locationName: "Ruta 18 (Vallée Étroite Way)",
                 encounters: [
                     { id: 625, inX: true, inY: true, location: "Grass", levels: "46-48", rate: "20%" },
-                    { id: 632, inX: true, inY: true, location: "Grass", levels: "46-48", rate: "20%" }
+                    { id: 632, inX: true, inY: true, location: "Grass", levels: "46-48", rate: "20%" },
+                    { id: 452, inX: true, inY: true, location: "Grass", levels: "46-47", rate: "15%" }
                 ]
             },
             {
                 locationName: "Cueva Términus (Terminus Cave)",
                 encounters: [
                     { id: 632, inX: true, inY: true, location: "Cave Floor", levels: "46-48", rate: "20%" },
+                    { id: 444, inX: true, inY: true, location: "Cave Floor", levels: "46-48", rate: "20%" },
                     { id: 718, inX: true, inY: true, location: "Deep Cave", levels: "70", rate: "100%" }
                 ]
             },
@@ -654,7 +669,8 @@
                 locationName: "Ruta 19 (Grande Vallée Way)",
                 encounters: [
                     { id: 705, inX: true, inY: true, location: "Yellow Flowers", levels: "48-50", rate: "20%" },
-                    { id: 24, inX: true, inY: true, location: "Yellow Flowers", levels: "48-49", rate: "20%" }
+                    { id: 24, inX: true, inY: true, location: "Yellow Flowers", levels: "48-49", rate: "20%" },
+                    { id: 334, inX: true, inY: true, location: "Surfing", levels: "48-50", rate: "60%" }
                 ]
             },
             {
@@ -669,28 +685,33 @@
                 locationName: "Villa Pokémon (Pokémon Village)",
                 encounters: [
                     { id: 235, inX: true, inY: true, location: "Yellow Flowers", levels: "48-50", rate: "20%" },
-                    { id: 150, inX: true, inY: true, location: "Dungeon", levels: "70", rate: "100%" }
+                    { id: 150, inX: true, inY: true, location: "Dungeon", levels: "70", rate: "100%" },
+                    { id: 335, inX: true, inY: true, location: "Yellow Flowers", levels: "48-50", rate: "15%" }
                 ]
             },
             {
                 locationName: "Ruta 21 (Dernière Way)",
                 encounters: [
                     { id: 334, inX: true, inY: true, location: "Grass", levels: "48-50", rate: "20%" },
-                    { id: 217, inX: true, inY: true, location: "Grass", levels: "48-50", rate: "20%" }
+                    { id: 217, inX: true, inY: true, location: "Grass", levels: "48-50", rate: "20%" },
+                    { id: 319, inX: true, inY: true, location: "Surfing", levels: "45-50", rate: "60%" }
                 ]
             },
             {
                 locationName: "Ruta 22 (Palais Galerie)",
                 encounters: [
                     { id: 662, inX: true, inY: true, location: "Grass", levels: "24-26", rate: "20%" },
-                    { id: 660, inX: true, inY: true, location: "Grass", levels: "24-26", rate: "20%" }
+                    { id: 660, inX: true, inY: true, location: "Grass", levels: "24-26", rate: "20%" },
+                    { id: 447, inX: true, inY: true, location: "Grass", levels: "24-25", rate: "15%" },
+                    { id: 119, inX: true, inY: true, location: "Surfing", levels: "25-30", rate: "60%" }
                 ]
             },
             {
                 locationName: "Calle Victoria (Victory Road)",
                 encounters: [
                     { id: 625, inX: true, inY: true, location: "Cave Floor", levels: "57-59", rate: "20%" },
-                    { id: 620, inX: true, inY: true, location: "Cave Floor", levels: "57-59", rate: "20%" }
+                    { id: 620, inX: true, inY: true, location: "Cave Floor", levels: "57-59", rate: "20%" },
+                    { id: 445, inX: true, inY: true, location: "Cave Floor", levels: "59-60", rate: "10%" }
                 ]
             }
         ];
