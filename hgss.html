@@ -1,25 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyBnM2viNQwdBMwn-esGR0XYmFfw0X7pi2Y",
-    authDomain: "pokedex-1-4.firebaseapp.com",
-    projectId: "pokedex-1-4",
-    storageBucket: "pokedex-1-4.firebasestorage.app",
-    messagingSenderId: "264689854822",
-    appId: "1:264689854822:web:98081e14809e368668c0a7"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-</script>
+    <!-- Configuración Global de Firebase CORREGIDA -->
+    <script>
+        window.__firebase_config = JSON.stringify({
+            apiKey: "AIzaSyBnM2viNQwdBMwn-esGR0XYmFfw0X7pi2Y",
+            authDomain: "pokedex-1-4.firebaseapp.com",
+            projectId: "pokedex-1-4",
+            storageBucket: "pokedex-1-4.firebasestorage.app",
+            messagingSenderId: "264689854822",
+            appId: "1:264689854822:web:98081e14809e368668c0a7"
+        });
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HeartGold & SoulSilver Tracker</title>
@@ -355,7 +347,7 @@
                 
                 // Los primeros elementos en la variable rawPokedex (antes del id 1 Bulbasaur) son los Regionales
                 const originalIndex = pokedex.findIndex(p => p.id === poke.id);
-                if (originalIndex < 100 && !regionalPrinted) { // Kinda hacky pero sirve visualmente
+                if (originalIndex < 100 && !regionalPrinted) { 
                     html += `<tr><td colspan="6" class="px-6 py-3 bg-yellow-100 text-yellow-800 font-bold text-center uppercase tracking-widest text-xs border-y border-yellow-300">⬇ Pokédex Regional Johto (1-256) ⬇</td></tr>`;
                     regionalPrinted = true;
                 } else if (poke.id === 1 && !nationalPrinted) {
@@ -483,21 +475,22 @@
                 if (typeof __initial_auth_token !== 'undefined') {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
-                   // REEMPLÁZALO POR ESTO:
-await signInAnonymously(auth);
+                    await signInAnonymously(auth);
 
-// Sistema de sincronización por código
-let mySyncCode = localStorage.getItem('pokemonSyncCode');
-if (!mySyncCode) {
-    mySyncCode = prompt("Ingresa una palabra secreta para sincronizar tu progreso entre dispositivos (ej. JulianDex2026):");
-    if (mySyncCode) {
-        localStorage.setItem('pokemonSyncCode', mySyncCode);
-    }
-}
+                    // Sistema de sincronización por código
+                    let mySyncCode = localStorage.getItem('pokemonSyncCode');
+                    if (!mySyncCode) {
+                        mySyncCode = prompt("Ingresa una palabra secreta para sincronizar tu progreso entre dispositivos (ej. JulianDex2026):");
+                        if (mySyncCode) {
+                            localStorage.setItem('pokemonSyncCode', mySyncCode.trim());
+                        }
+                    }
 
-// Usamos tu palabra secreta como ID principal, o el anónimo si cancelas
-userId = mySyncCode || auth.currentUser?.uid;
-if (!userId) return;
+                    // Usamos tu palabra secreta como ID principal, o el anónimo si cancelas
+                    userId = mySyncCode ? mySyncCode.trim() : auth.currentUser?.uid;
+                    if (!userId) return;
+                }
+                
                 document.getElementById('storage-status').textContent = "HG/SS Tracker - Conectado al PC de Bill (Nube activa).";
                 const docRef = doc(db, 'artifacts', appId, 'users', userId, 'trackerData', 'caughtState');
                 
