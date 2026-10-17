@@ -13,7 +13,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalos Tracker (X / Y) - Estilo Bulbapedia Completo y Extendido</title>
+    <title>Kalos Tracker (X / Y) - Actualizado desde Bulbapedia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -47,7 +47,7 @@
     <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full"></main>
 
     <footer class="bg-slate-950 text-slate-400 py-6 text-center text-sm mt-auto border-t border-slate-800">
-        <p id="storage-status">Kalos Tracker - Sincronizado con Firebase...</p>
+        <p id="storage-status">Kalos Tracker - Sincronizado con Bulbapedia...</p>
     </footer>
 
     <script type="module">
@@ -414,7 +414,6 @@
             { regionalId: 107, natId: 150, name: "Mewtwo", evo: "Legendario", zone: "Montaña" }
         ];
 
-        // Ubicaciones de Kalos completas y complementadas con Surf, Pesca (Vieja, Buena, Super), Golpe Roca y Hordas/Especiales
         const allLocationsEncounters = [
             {
                 locationName: "Pueblo Boceto (Vaniville Town)",
@@ -461,18 +460,26 @@
                     { id: 661, inX: true, inY: true, location: "Grass", levels: "3, 5", rate: "20%" },
                     { id: 298, inX: true, inY: true, location: "Grass", levels: "3-5", rate: "10%" },
                     { id: 412, inX: true, inY: true, location: "Grass", levels: "5", rate: "10%" },
-                    { id: 206, inX: true, inY: true, location: "Grass", levels: "5", rate: "5%" }
+                    { id: 206, inX: true, inY: true, location: "Grass", levels: "5", rate: "5%" },
+                    { id: 183, inX: true, inY: true, location: "Surfing", levels: "25, 27", rate: "34%" },
+                    { id: 284, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "66%" },
+                    { id: 129, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
+                    { id: 118, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" },
+                    { id: 341, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "35%" },
+                    { id: 119, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "35%" },
+                    { id: 130, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "60%" },
+                    { id: 342, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "5%" }
                 ]
             },
             {
                 locationName: "Ruta 4 (Parterre Way)",
                 encounters: [
-                    { id: 669, inX: true, inY: true, location: "Yellow Flowers", levels: "4-5", rate: "20%" },
-                    { id: 172, inX: true, inY: true, location: "Yellow Flowers", levels: "4-5", rate: "15%" },
-                    { id: 406, inX: true, inY: true, location: "Yellow Flowers", levels: "4-5", rate: "15%" },
-                    { id: 280, inX: true, inY: true, location: "Yellow Flowers", levels: "4", rate: "10%" },
-                    { id: 165, inX: true, inY: true, location: "Yellow Flowers", levels: "4-5", rate: "10%" },
-                    { id: 300, inX: true, inY: true, location: "Yellow Flowers", levels: "8", rate: "5%" }
+                    { id: 669, inX: true, inY: true, location: "Yellow Flowers", levels: "6-8", rate: "30%" },
+                    { id: 415, inX: true, inY: true, location: "Yellow Flowers", levels: "6-8", rate: "30%" },
+                    { id: 165, inX: true, inY: true, location: "Yellow Flowers", levels: "8", rate: "10%" },
+                    { id: 406, inX: true, inY: true, location: "Yellow Flowers", levels: "8", rate: "10%" },
+                    { id: 300, inX: true, inY: true, location: "Yellow Flowers", levels: "8", rate: "10%" },
+                    { id: 280, inX: true, inY: true, location: "Yellow Flowers", levels: "8", rate: "5%" }
                 ]
             },
             {
@@ -501,9 +508,12 @@
                 encounters: [
                     { id: 682, inX: false, inY: true, location: "Grass", levels: "13-14", rate: "20%" },
                     { id: 684, inX: true, inY: false, location: "Grass", levels: "13-14", rate: "20%" },
-                    { id: 315, inX: true, inY: true, location: "Grass", levels: "12-14", rate: "15%" },
+                    { id: 315, inX: true, inY: true, location: "Grass", levels: "12-14", rate: "10%" },
+                    { id: 235, inX: true, inY: true, location: "Grass", levels: "14", rate: "10%" },
                     { id: 133, inX: true, inY: true, location: "Grass", levels: "11, 13", rate: "10%" },
-                    { id: 129, inX: true, inY: true, location: "Old Rod", levels: "15", rate: "100%" }
+                    { id: 143, inX: true, inY: true, location: "Special (Poké Flute)", levels: "15", rate: "100%" },
+                    { id: 54, inX: true, inY: true, location: "Horde Encounter", levels: "7-8", rate: "35%" },
+                    { id: 187, inX: true, inY: true, location: "Horde Encounter", levels: "7", rate: "60%" }
                 ]
             },
             {
@@ -521,9 +531,13 @@
                 encounters: [
                     { id: 686, inX: true, inY: true, location: "Grass", levels: "13-15", rate: "20%" },
                     { id: 325, inX: true, inY: true, location: "Grass", levels: "13-15", rate: "20%" },
-                    { id: 690, inX: false, inY: true, location: "Good Rod", levels: "25", rate: "35%" },
-                    { id: 692, inX: true, inY: false, location: "Good Rod", levels: "25", rate: "35%" },
-                    { id: 72, inX: true, inY: true, location: "Surfing", levels: "25-30", rate: "60%" }
+                    { id: 72, inX: true, inY: true, location: "Surfing", levels: "25-30", rate: "60%" },
+                    { id: 278, inX: true, inY: true, location: "Surfing", levels: "25, 30", rate: "35%" },
+                    { id: 371, inX: true, inY: true, location: "Surfing", levels: "25-30", rate: "5%" },
+                    { id: 370, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
+                    { id: 690, inX: false, inY: true, location: "Fishing Good Rod", levels: "25", rate: "35%" },
+                    { id: 692, inX: true, inY: false, location: "Fishing Good Rod", levels: "25", rate: "35%" },
+                    { id: 222, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "35%" }
                 ]
             },
             {
@@ -541,7 +555,8 @@
                     { id: 524, inX: true, inY: true, location: "Cave Floor", levels: "16-18", rate: "20%" },
                     { id: 111, inX: true, inY: true, location: "Cave Floor", levels: "17-18", rate: "20%" },
                     { id: 304, inX: true, inY: true, location: "Cave Floor", levels: "16-18", rate: "15%" },
-                    { id: 74, inX: true, inY: true, location: "Rock Smash", levels: "16-17", rate: "50%" }
+                    { id: 74, inX: true, inY: true, location: "Rock Smash", levels: "16-17", rate: "50%" },
+                    { id: 557, inX: true, inY: true, location: "Rock Smash", levels: "16-17", rate: "50%" }
                 ]
             },
             {
@@ -578,16 +593,26 @@
                     { id: 672, inX: true, inY: true, location: "Grass", levels: "25-27", rate: "20%" },
                     { id: 214, inX: false, inY: true, location: "Grass", levels: "27", rate: "10%" },
                     { id: 127, inX: true, inY: false, location: "Grass", levels: "27", rate: "10%" },
-                    { id: 129, inX: true, inY: true, location: "Surfing", levels: "25", rate: "100%" }
+                    { id: 72, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "60%" },
+                    { id: 129, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
+                    { id: 222, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "35%" }
                 ]
             },
             {
                 locationName: "Bahía Azul (Azure Bay)",
                 encounters: [
-                    { id: 279, inX: true, inY: true, location: "Grass", levels: "25-27", rate: "20%" },
+                    { id: 441, inX: true, inY: true, location: "Grass", levels: "25-27", rate: "20%" },
+                    { id: 79, inX: true, inY: true, location: "Grass", levels: "25-27", rate: "20%" },
                     { id: 278, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "60%" },
-                    { id: 371, inX: true, inY: true, location: "Surfing", levels: "25-30", rate: "20%" },
-                    { id: 341, inX: true, inY: true, location: "Good Rod", levels: "35", rate: "35%" }
+                    { id: 131, inX: true, inY: true, location: "Surfing", levels: "27", rate: "5%" },
+                    { id: 458, inX: true, inY: true, location: "Surfing", levels: "27", rate: "5%" },
+                    { id: 370, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
+                    { id: 223, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" },
+                    { id: 170, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "35%" },
+                    { id: 594, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "60%" },
+                    { id: 171, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "5%" },
+                    { id: 688, inX: true, inY: true, location: "Rock Smash", levels: "23-25", rate: "50%" },
+                    { id: 557, inX: true, inY: true, location: "Rock Smash", levels: "23-25", rate: "50%" }
                 ]
             },
             {
@@ -606,7 +631,9 @@
                     { id: 704, inX: true, inY: true, location: "Swamp", levels: "30-32", rate: "15%" },
                     { id: 195, inX: true, inY: true, location: "Swamp", levels: "30-32", rate: "15%" },
                     { id: 616, inX: true, inY: true, location: "Swamp", levels: "30-32", rate: "15%" },
-                    { id: 318, inX: true, inY: true, location: "Surfing", levels: "30-35", rate: "60%" }
+                    { id: 318, inX: true, inY: true, location: "Surfing", levels: "30-35", rate: "60%" },
+                    { id: 129, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
+                    { id: 339, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" }
                 ]
             },
             {
@@ -622,7 +649,7 @@
                 encounters: [
                     { id: 707, inX: true, inY: true, location: "Trash Cans", levels: "36-38", rate: "30%" },
                     { id: 569, inX: true, inY: true, location: "Trash Cans", levels: "36-38", rate: "30%" },
-                    { id: 100, inX: true, inY: true, location: "Room Floor", levels: "36-38", rate: "25%" }
+                    { id: 479, inX: true, inY: true, location: "Trash Cans (Tuesdays)", levels: "38", rate: "20%" }
                 ]
             },
             {
@@ -636,9 +663,20 @@
             {
                 locationName: "Gruta Helada (Frost Cavern)",
                 encounters: [
-                    { id: 712, inX: true, inY: true, location: "Ice Floor", levels: "38-40", rate: "25%" },
+                    { id: 712, inX: true, inY: true, location: "Ice Floor", levels: "39-40", rate: "20%" },
                     { id: 583, inX: true, inY: true, location: "Ice Floor", levels: "38-39", rate: "20%" },
-                    { id: 459, inX: true, inY: true, location: "Ice Floor", levels: "38-40", rate: "15%" }
+                    { id: 615, inX: true, inY: true, location: "Ice Floor", levels: "39-40", rate: "20%" },
+                    { id: 221, inX: true, inY: true, location: "Ice Floor", levels: "38-39", rate: "20%" },
+                    { id: 93, inX: true, inY: true, location: "Ice Floor", levels: "38-40", rate: "16%" },
+                    { id: 124, inX: true, inY: true, location: "Ice Floor", levels: "39-40", rate: "20%" },
+                    { id: 614, inX: true, inY: true, location: "Ice Floor", levels: "40", rate: "4%" },
+                    { id: 618, inX: true, inY: true, location: "Surfing", levels: "38-40", rate: "34%" },
+                    { id: 61, inX: true, inY: true, location: "Surfing", levels: "38-40", rate: "66%" },
+                    { id: 60, inX: true, inY: true, location: "Fishing Old Rod", levels: "20", rate: "100%" },
+                    { id: 550, inX: true, inY: true, location: "Fishing Good Rod", levels: "30", rate: "65%" },
+                    { id: 238, inX: true, inY: true, location: "Horde Encounter", levels: "21", rate: "5%" },
+                    { id: 582, inX: true, inY: true, location: "Horde Encounter", levels: "20", rate: "60%" },
+                    { id: 613, inX: true, inY: true, location: "Horde Encounter", levels: "20", rate: "35%" }
                 ]
             },
             {
@@ -668,9 +706,21 @@
             {
                 locationName: "Ruta 19 (Grande Vallée Way)",
                 encounters: [
-                    { id: 705, inX: true, inY: true, location: "Yellow Flowers", levels: "48-50", rate: "20%" },
-                    { id: 24, inX: true, inY: true, location: "Yellow Flowers", levels: "48-49", rate: "20%" },
-                    { id: 334, inX: true, inY: true, location: "Surfing", levels: "48-50", rate: "60%" }
+                    { id: 705, inX: true, inY: true, location: "Yellow Flowers", levels: "46-47", rate: "20%" },
+                    { id: 24, inX: true, inY: true, location: "Yellow Flowers", levels: "48", rate: "10%" },
+                    { id: 195, inX: true, inY: true, location: "Yellow Flowers", levels: "46-48", rate: "30%" },
+                    { id: 452, inX: true, inY: true, location: "Yellow Flowers", levels: "48", rate: "10%" },
+                    { id: 455, inX: true, inY: true, location: "Yellow Flowers", levels: "46, 48", rate: "5%" },
+                    { id: 588, inX: true, inY: true, location: "Yellow Flowers", levels: "47", rate: "10%" },
+                    { id: 616, inX: true, inY: true, location: "Yellow Flowers", levels: "47", rate: "10%" },
+                    { id: 618, inX: true, inY: true, location: "Surfing", levels: "46, 48", rate: "34%" },
+                    { id: 60, inX: true, inY: true, location: "Fishing Old Rod", levels: "25", rate: "100%" },
+                    { id: 339, inX: true, inY: true, location: "Fishing Good Rod", levels: "35", rate: "65%" },
+                    { id: 186, inX: true, inY: true, location: "Fishing Super Rod", levels: "50", rate: "5%" },
+                    { id: 340, inX: true, inY: true, location: "Fishing Super Rod", levels: "45", rate: "35%" },
+                    { id: 23, inX: true, inY: true, location: "Horde Encounter", levels: "25", rate: "5%" },
+                    { id: 70, inX: true, inY: true, location: "Horde Encounter", levels: "24", rate: "60%" },
+                    { id: 207, inX: true, inY: true, location: "Horde Encounter", levels: "24", rate: "35%" }
                 ]
             },
             {
@@ -694,16 +744,32 @@
                 encounters: [
                     { id: 334, inX: true, inY: true, location: "Grass", levels: "48-50", rate: "20%" },
                     { id: 217, inX: true, inY: true, location: "Grass", levels: "48-50", rate: "20%" },
-                    { id: 319, inX: true, inY: true, location: "Surfing", levels: "45-50", rate: "60%" }
+                    { id: 319, inX: true, inY: true, location: "Surfing", levels: "45-50", rate: "60%" },
+                    { id: 129, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" }
                 ]
             },
             {
                 locationName: "Ruta 22 (Palais Galerie)",
                 encounters: [
-                    { id: 662, inX: true, inY: true, location: "Grass", levels: "24-26", rate: "20%" },
-                    { id: 660, inX: true, inY: true, location: "Grass", levels: "24-26", rate: "20%" },
-                    { id: 447, inX: true, inY: true, location: "Grass", levels: "24-25", rate: "15%" },
-                    { id: 119, inX: true, inY: true, location: "Surfing", levels: "25-30", rate: "60%" }
+                    { id: 659, inX: true, inY: true, location: "Grass", levels: "5-6", rate: "20%" },
+                    { id: 667, inX: true, inY: true, location: "Grass", levels: "5-6", rate: "20%" },
+                    { id: 298, inX: true, inY: true, location: "Grass", levels: "6-7", rate: "20%" },
+                    { id: 54, inX: true, inY: true, location: "Grass", levels: "6", rate: "10%" },
+                    { id: 83, inX: true, inY: true, location: "Grass", levels: "7", rate: "10%" },
+                    { id: 399, inX: true, inY: true, location: "Grass", levels: "6", rate: "10%" },
+                    { id: 206, inX: true, inY: true, location: "Grass", levels: "7", rate: "5%" },
+                    { id: 447, inX: true, inY: true, location: "Grass", levels: "6-7", rate: "5%" },
+                    { id: 660, inX: true, inY: true, location: "Yellow Flowers", levels: "27", rate: "10%" },
+                    { id: 184, inX: true, inY: true, location: "Yellow Flowers", levels: "25-26", rate: "20%" },
+                    { id: 400, inX: true, inY: true, location: "Yellow Flowers", levels: "26-27", rate: "20%" },
+                    { id: 55, inX: true, inY: true, location: "Surfing", levels: "25-27", rate: "95%" },
+                    { id: 184, inX: true, inY: true, location: "Surfing", levels: "25, 27", rate: "5%" },
+                    { id: 129, inX: true, inY: true, location: "Fishing Old Rod", levels: "15", rate: "100%" },
+                    { id: 118, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "65%" },
+                    { id: 318, inX: true, inY: true, location: "Fishing Good Rod", levels: "25", rate: "35%" },
+                    { id: 119, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "35%" },
+                    { id: 130, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "60%" },
+                    { id: 319, inX: true, inY: true, location: "Fishing Super Rod", levels: "35", rate: "5%" }
                 ]
             },
             {
