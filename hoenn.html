@@ -1,25 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyBnM2viNQwdBMwn-esGR0XYmFfw0X7pi2Y",
-    authDomain: "pokedex-1-4.firebaseapp.com",
-    projectId: "pokedex-1-4",
-    storageBucket: "pokedex-1-4.firebasestorage.app",
-    messagingSenderId: "264689854822",
-    appId: "1:264689854822:web:98081e14809e368668c0a7"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-</script>
+    <!-- Configuración Global de Firebase CORREGIDA -->
+    <script>
+        window.__firebase_config = JSON.stringify({
+            apiKey: "AIzaSyBnM2viNQwdBMwn-esGR0XYmFfw0X7pi2Y",
+            authDomain: "pokedex-1-4.firebaseapp.com",
+            projectId: "pokedex-1-4",
+            storageBucket: "pokedex-1-4.firebasestorage.app",
+            messagingSenderId: "264689854822",
+            appId: "1:264689854822:web:98081e14809e368668c0a7"
+        });
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hoenn Pokémon Tracker</title>
@@ -33,12 +25,8 @@
         .game-bg-pokedex { background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); }
         
         /* Animación suave para los checkboxes */
-        .checkbox-anim {
-            transition: all 0.2s ease-in-out;
-        }
-        .checkbox-anim:checked {
-            transform: scale(1.1);
-        }
+        .checkbox-anim { transition: all 0.2s ease-in-out; }
+        .checkbox-anim:checked { transform: scale(1.1); }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
@@ -63,9 +51,7 @@
         </div>
     </nav>
 
-    <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-        <!-- El contenido se inyectará aquí mediante JavaScript -->
-    </main>
+    <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full"></main>
 
     <footer class="bg-slate-900 text-slate-400 py-6 text-center text-sm mt-auto">
         <p id="storage-status">Hoenn Tracker - Conectando con los servidores de Devon S.A...</p>
@@ -172,7 +158,6 @@
             { hoenn_id: 201, id: 385, name: "Jirachi", evo: "Sin evolución" }, { hoenn_id: 202, id: 386, name: "Deoxys", evo: "Sin evolución" }
         ];
 
-        // Datos ampliados de rutas (Agregando intercambios y regalos)
         const routeData = {
             "Rubí": [
                 { name: "Pueblo Littleroot", encounters: [{ id: 252, rate: "Elegir", method: "Inicial" }, { id: 255, rate: "Elegir", method: "Inicial" }, { id: 258, rate: "Elegir", method: "Inicial" }] },
@@ -248,11 +233,10 @@
             ]
         };
 
-        // Estado en memoria y variables de los filtros
         let caughtState = {}; 
         let currentView = 'pokedex';
         let searchQuery = '';
-        let filterState = 'all'; // 'all', 'caught', 'missing'
+        let filterState = 'all';
         
         let db, auth, userId;
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'hoenn-tracker';
@@ -263,7 +247,6 @@
         }
 
         function getWikidexUrl(name) {
-            // Reemplaza espacios por guiones bajos para que la URL de Wikidex funcione (ej. "Mr. Mime" -> "Mr._Mime")
             const safeName = name.replace(/ /g, '_');
             return `https://www.wikidex.net/wiki/${safeName}`;
         }
@@ -280,7 +263,6 @@
             caughtState[pokemonId] = !caughtState[pokemonId];
             renderCurrentView(); 
             
-            // Backup local en caso de que Firebase falle
             localStorage.setItem('hoennTrackerData', JSON.stringify(caughtState));
             
             if (db && userId) {
@@ -345,12 +327,10 @@
                             </span>
                         </h1>
                         
-                        <!-- Barra de Progreso -->
                         <div class="w-full bg-slate-700 rounded-full h-2.5 mt-4">
                             <div class="bg-emerald-500 h-2.5 rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
                         </div>
 
-                        <!-- Controles de Búsqueda y Filtro -->
                         <div class="mt-6 flex flex-col sm:flex-row gap-4">
                             <input type="text" 
                                    placeholder="Buscar por nombre o número..." 
@@ -542,7 +522,6 @@
 
         async function setupCloudStorage() {
             try {
-                // Intenta recuperar los datos locales primero
                 const localData = localStorage.getItem('hoennTrackerData');
                 if (localData) {
                     caughtState = JSON.parse(localData);
@@ -559,21 +538,19 @@
                 if (typeof __initial_auth_token !== 'undefined') {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
-                    // REEMPLÁZALO POR ESTO:
-await signInAnonymously(auth);
+                    await signInAnonymously(auth);
 
-// Sistema de sincronización por código
-let mySyncCode = localStorage.getItem('pokemonSyncCode');
-if (!mySyncCode) {
-    mySyncCode = prompt("Ingresa una palabra secreta para sincronizar tu progreso entre dispositivos (ej. JulianDex2026):");
-    if (mySyncCode) {
-        localStorage.setItem('pokemonSyncCode', mySyncCode);
-    }
-}
+                    let mySyncCode = localStorage.getItem('pokemonSyncCode');
+                    if (!mySyncCode) {
+                        mySyncCode = prompt("Ingresa una palabra secreta para sincronizar tu progreso entre dispositivos (ej. JulianDex2026):");
+                        if (mySyncCode) {
+                            localStorage.setItem('pokemonSyncCode', mySyncCode.trim());
+                        }
+                    }
 
-// Usamos tu palabra secreta como ID principal, o el anónimo si cancelas
-userId = mySyncCode || auth.currentUser?.uid;
-if (!userId) return;
+                    userId = mySyncCode ? mySyncCode.trim() : auth.currentUser?.uid;
+                    if (!userId) return;
+                } // ¡ESTA ES LA LLAVE DE CIERRE QUE FALTABA!
 
                 document.getElementById('storage-status').textContent = "Hoenn Tracker - Conectado. Tu progreso se guarda automáticamente en la nube.";
 
