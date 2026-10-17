@@ -209,26 +209,50 @@
 
     <!-- Footer -->
     <footer class="bg-white border-t border-slate-200 py-8 text-center mt-auto">
-        <div class="flex justify-center gap-4 mb-4">
-            <button onclick="exportarPartida()" class="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition text-sm font-semibold">
+        <div class="flex flex-wrap justify-center gap-4 mb-8">
+            <button onclick="exportarPartida()" class="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition text-sm font-semibold shadow-sm">
                 ⬇️ Descargar Backup JSON
             </button>
-            <label class="px-4 py-2 bg-emerald-700 text-white rounded-lg hover:bg-emerald-600 transition cursor-pointer text-sm font-semibold">
+            <label class="px-4 py-2 bg-emerald-700 text-white rounded-lg hover:bg-emerald-600 transition cursor-pointer text-sm font-semibold shadow-sm">
                 ⬆️ Cargar Backup JSON
                 <input type="file" id="import-file" class="hidden" accept=".json" onchange="importarPartida(event)">
             </label>
-            <button onclick="cambiarClaveSincronizacion()" class="px-4 py-2 bg-cyan-700 text-white rounded-lg hover:bg-cyan-600 transition text-sm font-semibold">
+            <button onclick="cambiarClaveSincronizacion()" class="px-4 py-2 bg-cyan-700 text-white rounded-lg hover:bg-cyan-600 transition text-sm font-semibold shadow-sm">
                 🔑 Cambiar Clave de Nube
             </button>
         </div>
+
+        <!-- Zona de Peligro: Reinicio de Dex -->
+        <div class="flex justify-center mb-6">
+            <div class="flex flex-col sm:flex-row items-center gap-3 bg-red-50 p-4 rounded-xl border border-red-200 shadow-sm max-w-2xl w-full">
+                <span class="text-sm font-bold text-red-600">Zona de Peligro:</span>
+                <select id="reset-select" class="text-sm bg-white text-slate-700 rounded-md px-3 py-2 outline-none border border-red-300 focus:border-red-500 focus:ring-1 focus:ring-red-500 flex-grow">
+                    <option value="">-- Selecciona una Pokédex para borrar --</option>
+                    <option value="kantoTrackerData|kanto-tracker">1ra Gen: Kanto (R/A/A)</option>
+                    <option value="johtoTrackerData|johto-tracker">2da Gen: Johto (O/P/C)</option>
+                    <option value="hoennTrackerData|hoenn-tracker">3ra Gen: Hoenn (R/Z/E)</option>
+                    <option value="kantoRemakesTrackerData|rfvh-tracker">Remake: Kanto (RF/VH)</option>
+                    <option value="sinnohTrackerData|sinnoh-tracker">4ta Gen: Sinnoh (D/P/Pt)</option>
+                    <option value="hgssTrackerData|hgss-tracker">Remake: Johto (HG/SS)</option>
+                    <option value="unovaTrackerData|unova-tracker">5ta Gen: Teselia (N/B)</option>
+                    <option value="b2w2TrackerData|b2w2-tracker">Secuela: Teselia (N2/B2)</option>
+                    <option value="ALL">Borrar Absolutamente TODO</option>
+                </select>
+                <button onclick="executeReset()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-bold transition flex items-center gap-2 whitespace-nowrap">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    Borrar Datos
+                </button>
+            </div>
+        </div>
+
         <p class="text-slate-500 text-sm font-medium">Sistema de Rastreo Sincronizado en Tiempo Real.</p>
     </footer>
 
-    <!-- Lógica de Barras de Progreso y Sincronización -->
+    <!-- Lógica de Barras de Progreso, Sincronización y Reinicio -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const trackers = [
             { id: 'kanto', key: 'kantoTrackerData', appId: 'kanto-tracker', max: 151 },
@@ -240,6 +264,10 @@
             { id: 'teselia', key: 'unovaTrackerData', appId: 'unova-tracker', max: 175 },
             { id: 'teselia2', key: 'b2w2TrackerData', appId: 'b2w2-tracker', max: 320 }
         ];
+
+        // Exportamos db y el syncCode para que executeReset pueda usarlos
+        window.db = null;
+        window.currentSyncCode = null;
 
         function renderBars() {
             trackers.forEach(tracker => {
@@ -274,12 +302,15 @@
                 }
             }
 
+            const cleanSyncCode = syncCode ? syncCode.trim() : null;
+            window.currentSyncCode = cleanSyncCode;
+
             const codeDisplay = document.getElementById('sync-code-display');
             if (codeDisplay) {
-                codeDisplay.textContent = `Clave de Nube Activa: ${syncCode || 'Ninguna (Modo Local)'}`;
+                codeDisplay.textContent = `Clave de Nube Activa: ${cleanSyncCode || 'Ninguna (Modo Local)'}`;
             }
 
-            if (!syncCode || typeof window.__firebase_config === 'undefined') {
+            if (!cleanSyncCode || typeof window.__firebase_config === 'undefined') {
                 renderBars();
                 return;
             }
@@ -288,13 +319,13 @@
                 const config = JSON.parse(window.__firebase_config);
                 const app = initializeApp(config);
                 const auth = getAuth(app);
-                const db = getFirestore(app);
+                window.db = getFirestore(app);
 
                 await signInAnonymously(auth);
 
                 // Escuchar cambios de todas las regiones en la nube en tiempo real
                 trackers.forEach(tracker => {
-                    const docRef = doc(db, 'artifacts', tracker.appId, 'users', syncCode.trim(), 'trackerData', 'caughtState');
+                    const docRef = doc(window.db, 'artifacts', tracker.appId, 'users', cleanSyncCode, 'trackerData', 'caughtState');
                     onSnapshot(docRef, (snapshot) => {
                         if (snapshot.exists()) {
                             localStorage.setItem(tracker.key, JSON.stringify(snapshot.data()));
@@ -357,6 +388,54 @@
                 }
             };
             reader.readAsText(file);
+        };
+
+        // Función de reseteo (Borra localStorage y documento en Firebase)
+        window.executeReset = async function() {
+            const select = document.getElementById('reset-select');
+            const selectedValue = select.value;
+            
+            if (!selectedValue) {
+                alert("Por favor, selecciona una Pokédex de la lista para borrar.");
+                return;
+            }
+
+            const confirmText = selectedValue === 'ALL' 
+                ? "¡PELIGRO! Vas a borrar permanentemente el progreso de TODAS las Pokédex tanto localmente como en la nube. Esta acción es destructiva e irreversible. ¿Estás absolutamente seguro?" 
+                : "¿Estás seguro de que deseas borrar todo el progreso de esta Pokédex? Esta acción no se puede deshacer.";
+
+            if (!confirm(confirmText)) return;
+
+            let targetsToReset = [];
+            
+            if (selectedValue === 'ALL') {
+                targetsToReset = trackers.map(t => ({ local: t.key, cloud: t.appId }));
+            } else {
+                const [localKey, cloudId] = selectedValue.split('|');
+                targetsToReset.push({ local: localKey, cloud: cloudId });
+            }
+
+            try {
+                for (let target of targetsToReset) {
+                    // Borrado Local
+                    localStorage.removeItem(target.local);
+                    
+                    // Borrado Nube (Firestore)
+                    if (window.db && window.currentSyncCode) {
+                        const docRef = doc(window.db, 'artifacts', target.cloud, 'users', window.currentSyncCode, 'trackerData', 'caughtState');
+                        await deleteDoc(docRef);
+                    }
+                }
+                
+                renderBars();
+                alert("El progreso ha sido borrado con éxito.");
+                select.value = "";
+                
+            } catch (error) {
+                console.error("Error durante el borrado:", error);
+                alert("Se borró el progreso local, pero hubo un error conectando con la nube. Revisa tu conexión.");
+                renderBars();
+            }
         };
 
         document.addEventListener('DOMContentLoaded', initCloudSync);
