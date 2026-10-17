@@ -13,7 +13,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalos Tracker (X / Y) - 100% Completo y Regional</title>
+    <title>Kalos Tracker (X / Y) - Rutas Expandidas y Regional</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -417,41 +417,146 @@
             { regionalId: 108, natId: 150, name: "Mewtwo", evo: "Villa Pokémon", zone: "Montaña" }
         ];
 
+        // Rutas y encuentros con ratios detallados y métodos especiales
         const routeData = {
             "Pokémon X": [
-                { name: "Pueblo Boceto y Rutas Iniciales (Rutas 2-3)", encounters: [{ id: 650, rate: "Inicial", method: "Elección con el Profesor Ciprés" }, { id: 653, rate: "Inicial", method: "Elección con el Profesor Ciprés" }, { id: 656, rate: "Inicial", method: "Elección con el Profesor Ciprés" }, { id: 659, rate: "Común", method: "Ruta 2 y Ruta 3 (Hierba alta)" }, { id: 661, rate: "Común", method: "Ruta 2 y Ruta 3 (Hierba alta)" }] },
-                { name: "Bosque Novarte y Ruta 4", encounters: [{ id: 664, rate: "Común", method: "Bosque Novarte" }, { id: 25, rate: "Raro", method: "Bosque Novarte" }, { id: 669, rate: "Común", method: "Ruta 4 (Flores)" }, { id: 667, rate: "Común", method: "Ruta 22" }] },
-                { name: "Ciudad Lumalia y Rutas 5-7", encounters: [{ id: 1, rate: "Regalo", method: "Bulbasaur (Laboratorio del Profesor Ciprés)" }, { id: 4, rate: "Regalo", method: "Charmander (Laboratorio del Profesor Ciprés)" }, { id: 7, rate: "Regalo", method: "Squirtle (Laboratorio del Profesor Ciprés)" }, { id: 672, rate: "Común", method: "Ruta 5" }, { id: 684, rate: "Exclusivo X", method: "Ruta 7 (Hierba alta)" }] },
-                { name: "Cueva Conectividad y Rutas 8-10", encounters: [{ id: 686, rate: "Común", method: "Ruta 8" }, { id: 692, rate: "Exclusivo X", method: "Pesca con Caña Buena en Ruta 8" }, { id: 696, rate: "Fósil", method: "Recibir Fósil Garra en Pueblo Petroglifo" }, { id: 701, rate: "Común", method: "Ruta 10" }] },
-                { name: "Cueva Reflejos y Rutas 12-16", encounters: [{ id: 304, rate: "Exclusivo X", method: "Cueva Reflejos" }, { id: 704, rate: "Raro", method: "Ruta 14 (Pantano)" }, { id: 708, rate: "Común", method: "Ruta 16" }] },
-                { name: "Post-game y Legendarios", encounters: [{ id: 716, rate: "Historia", method: "Guarida Team Flare (Nivel 50)" }, { id: 718, rate: "Único", method: "Cueva Desenlace (Final del juego)" }, { id: 150, rate: "Único", method: "Villa Pokémon (Cueva Desconocida)" }] }
+                {
+                    name: "Ruta 2 y Ruta 3 (Pueblo Boceto)",
+                    encounters: [
+                        { id: 659, rate: "Común (30%)", method: "Caminar por la hierba alta" },
+                        { id: 661, rate: "Común (30%)", method: "Caminar por la hierba alta" },
+                        { id: 16, rate: "Frecuente (20%)", method: "Caminar por la hierba alta" },
+                        { id: 664, rate: "Frecuente (20%)", method: "Caminar por la hierba alta / Flores" }
+                    ]
+                },
+                {
+                    name: "Bosque Novarte y Ruta 4",
+                    encounters: [
+                        { id: 664, rate: "Muy Común (40%)", method: "Caminar en hierba del Bosque Novarte" },
+                        { id: 10, rate: "Común (20%)", method: "Caminar en el Bosque Novarte" },
+                        { id: 13, rate: "Común (20%)", method: "Caminar en el Bosque Novarte" },
+                        { id: 25, rate: "Raro (5%)", method: "Caminar en hierba de Bosque Novarte" },
+                        { id: 669, rate: "Común (30%)", method: "Caminar en parterres de flores (Ruta 4)" },
+                        { id: 165, rate: "Frecuente (20%)", method: "Caminar en flores (Ruta 4)" }
+                    ]
+                },
+                {
+                    name: "Ruta 5, Ruta 6 y Ruta 7",
+                    encounters: [
+                        { id: 672, rate: "Común (30%)", method: "Caminar por la hierba (Ruta 5)" },
+                        { id: 674, rate: "Frecuente (20%)", method: "Caminar por la hierba (Ruta 5)" },
+                        { id: 684, rate: "Exclusivo X (20%)", method: "Caminar por la hierba alta (Ruta 7)" },
+                        { id: 143, rate: "Único (100%)", method: "Despertar al Snorlax con la Poké Flauta (Ruta 7)" },
+                        { id: 280, rate: "Raro (10%)", method: "Caminar por la hierba (Ruta 7)" }
+                    ]
+                },
+                {
+                    name: "Ruta 8, Cueva Conectividad y Ruta 9-10",
+                    encounters: [
+                        { id: 686, rate: "Común (30%)", method: "Caminar por la hierba (Ruta 8)" },
+                        { id: 692, rate: "Exclusivo X (15%)", method: "Pesca con Caña Buena (Ruta 8 / Costa)" },
+                        { id: 694, rate: "Común (30%)", method: "Caminar por zonas áridas (Ruta 9)" },
+                        { id: 701, rate: "Frecuente (20%)", method: "Caminar por la hierba (Ruta 10)" },
+                        { id: 133, rate: "Raro (10%)", method: "Caminar por la hierba (Ruta 10)" }
+                    ]
+                },
+                {
+                    name: "Cueva Reflejos, Ruta 12, 14, 15 y 16",
+                    encounters: [
+                        { id: 304, rate: "Exclusivo X (15%)", method: "Caminar por el interior de Cueva Reflejos" },
+                        { id: 704, rate: "Raro (10%)", method: "Caminar por el agua/pantano (Ruta 14)" },
+                        { id: 708, rate: "Común (25%)", method: "Caminar por la hierba o flores (Ruta 16)" },
+                        { id: 679, rate: "Frecuente (20%)", method: "Caminar por la hierba (Ruta 15)" }
+                    ]
+                },
+                {
+                    name: "Post-game, Cueva Desenlace y Legendarios",
+                    encounters: [
+                        { id: 716, rate: "Historia (100%)", method: "Guarida del Team Flare (Nivel 50)" },
+                        { id: 718, rate: "Único (100%)", method: "Cueva Desenlace (Al fondo en el Post-game)" },
+                        { id: 150, rate: "Único (100%)", method: "Villa Pokémon (Cueva Desconocida)" },
+                        { id: 144, rate: "Errante (100%)", method: "Aparece tras huir 10 veces si elegiste a Chespin" }
+                    ]
+                }
             ],
             "Pokémon Y": [
-                { name: "Pueblo Boceto y Rutas Iniciales (Rutas 2-3)", encounters: [{ id: 650, rate: "Inicial", method: "Elección con el Profesor Ciprés" }, { id: 653, rate: "Inicial", method: "Elección con el Profesor Ciprés" }, { id: 656, rate: "Inicial", method: "Elección con el Profesor Ciprés" }, { id: 659, rate: "Común", method: "Ruta 2 y Ruta 3 (Hierba alta)" }, { id: 661, rate: "Común", method: "Ruta 2 y Ruta 3 (Hierba alta)" }] },
-                { name: "Bosque Novarte y Ruta 4", encounters: [{ id: 664, rate: "Común", method: "Bosque Novarte" }, { id: 25, rate: "Raro", method: "Bosque Novarte" }, { id: 669, rate: "Común", method: "Ruta 4 (Flores)" }, { id: 667, rate: "Común", method: "Ruta 22" }] },
-                { name: "Ciudad Lumalia y Rutas 5-7", encounters: [{ id: 1, rate: "Regalo", method: "Bulbasaur (Laboratorio del Profesor Ciprés)" }, { id: 4, rate: "Regalo", method: "Charmander (Laboratorio del Profesor Ciprés)" }, { id: 7, rate: "Regalo", method: "Squirtle (Laboratorio del Profesor Ciprés)" }, { id: 672, rate: "Común", method: "Ruta 5" }, { id: 682, rate: "Exclusivo Y", method: "Ruta 7 (Hierba alta)" }] },
-                { name: "Cueva Conectividad y Rutas 8-10", encounters: [{ id: 686, rate: "Común", method: "Ruta 8" }, { id: 690, rate: "Exclusivo Y", method: "Pesca con Caña Buena en Ruta 8" }, { id: 698, rate: "Fósil", method: "Recibir Fósil Aleta en Pueblo Petroglifo" }, { id: 701, rate: "Común", method: "Ruta 10" }] },
-                { name: "Cueva Reflejos y Rutas 12-16", encounters: [{ id: 246, rate: "Exclusivo Y", method: "Cueva Reflejos" }, { id: 704, rate: "Raro", method: "Ruta 14 (Pantano)" }, { id: 708, rate: "Común", method: "Ruta 16" }] },
-                { name: "Post-game y Legendarios", encounters: [{ id: 717, rate: "Historia", method: "Guarida Team Flare (Nivel 50)" }, { id: 718, rate: "Único", method: "Cueva Desenlace (Final del juego)" }, { id: 150, rate: "Único", method: "Villa Pokémon (Cueva Desconocida)" }] }
+                {
+                    name: "Ruta 2 y Ruta 3 (Pueblo Boceto)",
+                    encounters: [
+                        { id: 659, rate: "Común (30%)", method: "Caminar por la hierba alta" },
+                        { id: 661, rate: "Común (30%)", method: "Caminar por la hierba alta" },
+                        { id: 16, rate: "Frecuente (20%)", method: "Caminar por la hierba alta" },
+                        { id: 664, rate: "Frecuente (20%)", method: "Caminar por la hierba alta / Flores" }
+                    ]
+                },
+                {
+                    name: "Bosque Novarte y Ruta 4",
+                    encounters: [
+                        { id: 664, rate: "Muy Común (40%)", method: "Caminar en hierba del Bosque Novarte" },
+                        { id: 10, rate: "Común (20%)", method: "Caminar en el Bosque Novarte" },
+                        { id: 13, rate: "Común (20%)", method: "Caminar en el Bosque Novarte" },
+                        { id: 25, rate: "Raro (5%)", method: "Caminar en hierba de Bosque Novarte" },
+                        { id: 669, rate: "Común (30%)", method: "Caminar en parterres de flores (Ruta 4)" },
+                        { id: 165, rate: "Frecuente (20%)", method: "Caminar en flores (Ruta 4)" }
+                    ]
+                },
+                {
+                    name: "Ruta 5, Ruta 6 y Ruta 7",
+                    encounters: [
+                        { id: 672, rate: "Común (30%)", method: "Caminar por la hierba (Ruta 5)" },
+                        { id: 674, rate: "Frecuente (20%)", method: "Caminar por la hierba (Ruta 5)" },
+                        { id: 682, rate: "Exclusivo Y (20%)", method: "Caminar por la hierba alta (Ruta 7)" },
+                        { id: 143, rate: "Único (100%)", method: "Despertar al Snorlax con la Poké Flauta (Ruta 7)" },
+                        { id: 280, rate: "Raro (10%)", method: "Caminar por la hierba (Ruta 7)" }
+                    ]
+                },
+                {
+                    name: "Ruta 8, Cueva Conectividad y Ruta 9-10",
+                    encounters: [
+                        { id: 686, rate: "Común (30%)", method: "Caminar por la hierba (Ruta 8)" },
+                        { id: 690, rate: "Exclusivo Y (15%)", method: "Pesca con Caña Buena (Ruta 8 / Costa)" },
+                        { id: 694, rate: "Común (30%)", method: "Caminar por zonas áridas (Ruta 9)" },
+                        { id: 701, rate: "Frecuente (20%)", method: "Caminar por la hierba (Ruta 10)" },
+                        { id: 133, rate: "Raro (10%)", method: "Caminar por la hierba (Ruta 10)" }
+                    ]
+                },
+                {
+                    name: "Cueva Reflejos, Ruta 12, 14, 15 y 16",
+                    encounters: [
+                        { id: 246, rate: "Exclusivo Y (10%)", method: "Caminar por el interior de Cueva Reflejos" },
+                        { id: 704, rate: "Raro (10%)", method: "Caminar por el agua/pantano (Ruta 14)" },
+                        { id: 708, rate: "Común (25%)", method: "Caminar por la hierba o flores (Ruta 16)" },
+                        { id: 679, rate: "Frecuente (20%)", method: "Caminar por la hierba (Ruta 15)" }
+                    ]
+                },
+                {
+                    name: "Post-game, Cueva Desenlace y Legendarios",
+                    encounters: [
+                        { id: 717, rate: "Historia (100%)", method: "Guarida del Team Flare (Nivel 50)" },
+                        { id: 718, rate: "Único (100%)", method: "Cueva Desenlace (Al fondo en el Post-game)" },
+                        { id: 150, rate: "Único (100%)", method: "Villa Pokémon (Cueva Desconocida)" },
+                        { id: 145, rate: "Errante (100%)", method: "Aparece tras huir 10 veces si elegiste a Fennekin" }
+                    ]
+                }
             ]
         };
 
         const versionExclusives = {
             "Pokémon X": [
-                { name: "Swirlix", note: "Ruta 7" },
-                { name: "Slurpuff", note: "Evoluciona de Swirlix intercambiándolo con Dulce Nata" },
-                { name: "Clauncher", note: "Pesca en Ruta 8" },
-                { name: "Clawitzer", note: "Evoluciona de Clauncher al Nv. 37" },
-                { name: "Aron / Lairon / Aggron", note: "Cueva Reflejos" },
-                { name: "Xerneas", note: "Legendario principal (Guarida Team Flare)" }
+                { name: "Swirlix", note: "Ruta 7 (Hierba alta) - Ratio 20%" },
+                { name: "Slurpuff", note: "Evoluciona al intercambiar a Swirlix equipado con Dulce Nata" },
+                { name: "Clauncher", note: "Ruta 8 / Bahía Azul (Pesca con Caña Buena)" },
+                { name: "Clawitzer", note: "Evoluciona de Clauncher al alcanzar el Nivel 37" },
+                { name: "Aron / Lairon / Aggron", note: "Cueva Reflejos (Caminar por zonas rocosas)" },
+                { name: "Xerneas", note: "Legendario principal en la Guarida del Team Flare (Nivel 50)" }
             ],
             "Pokémon Y": [
-                { name: "Spritzee", note: "Ruta 7" },
-                { name: "Aromatisse", note: "Evoluciona de Spritzee intercambiándolo con Saquito Fragante" },
-                { name: "Skrelp", note: "Pesca en Ruta 8" },
-                { name: "Dragalge", note: "Evoluciona de Skrelp al Nv. 48" },
-                { name: "Larvitar / Pupitar / Tyranitar", note: "Cueva Reflejos" },
-                { name: "Yveltal", note: "Legendario principal (Guarida Team Flare)" }
+                { name: "Spritzee", note: "Ruta 7 (Hierba alta) - Ratio 20%" },
+                { name: "Aromatisse", note: "Evoluciona al intercambiar a Spritzee equipado con Saquito Fragante" },
+                { name: "Skrelp", note: "Ruta 8 / Bahía Azul (Pesca con Caña Buena)" },
+                { name: "Dragalge", note: "Evoluciona de Skrelp al alcanzar el Nivel 48" },
+                { name: "Larvitar / Pupitar / Tyranitar", note: "Cueva Reflejos (Caminar por zonas rocosas)" },
+                { name: "Yveltal", note: "Legendario principal en la Guarida del Team Flare (Nivel 50)" }
             ]
         };
 
@@ -563,7 +668,7 @@
                                 ${totalCaught} / ${pokedex.length} Registrados
                             </span>
                         </h1>
-                        <p class="text-slate-400 mt-2 text-sm">Registro Regional completo con las 3 zonas oficiales de Kalos.</p>
+                        <p class="text-slate-400 mt-2 text-sm">Registro Regional oficial con las 457 entradas de las 3 zonas de Kalos.</p>
                         <div class="w-full bg-slate-700 rounded-full h-2.5 mt-4">
                             <div class="bg-sky-500 h-2.5 rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
                         </div>
@@ -648,7 +753,7 @@
                     <div class="rounded-xl shadow-lg overflow-hidden border border-white/20 mb-8">
                         <div class="p-8 ${headerStyles}">
                             <h1 class="text-4xl font-extrabold mb-2">Edición ${gameName}</h1>
-                            <p class="text-lg opacity-90">Detalle completo de rutas y lugares de encuentro específicos.</p>
+                            <p class="text-lg opacity-90">Rutas detalladas con ratios de aparición exactos y métodos especiales de captura.</p>
                         </div>
                     </div>
                     <div class="space-y-8">
@@ -666,8 +771,8 @@
                                     <tr>
                                         <th class="px-6 py-3 w-16 text-center">Atrapado</th>
                                         <th class="px-6 py-3">Pokémon</th>
-                                        <th class="px-6 py-3">Ratio</th>
-                                        <th class="px-6 py-3">Método / Ubicación Exacta</th>
+                                        <th class="px-6 py-3">Ratio / Frecuencia</th>
+                                        <th class="px-6 py-3">Método y Ubicación Exacta</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-100">
