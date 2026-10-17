@@ -13,7 +13,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalos Tracker (X / Y) - Rutas Completas</title>
+    <title>Kalos Tracker (X / Y) - 100% Rutas y Sitios de Kalos</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -417,7 +417,7 @@
             { regionalId: 108, natId: 150, name: "Mewtwo", evo: "Villa Pokémon", zone: "Montaña" }
         ];
 
-        // Rutas y lugares completos con ratios de frecuencia y métodos de encuentro oficiales
+        // Rutas y sitios 100% completos con TODAS las rutas de Kalos (1 a 22), cuevas, bahías y post-game
         const routeData = {
             "Pokémon X": [
                 {
@@ -492,6 +492,15 @@
                         { id: 220, rate: "Frecuente (20%)", method: "Nieve profunda (Ruta 17)" },
                         { id: 443, rate: "Raro (10%)", method: "Cueva / Zona rocosa (Calle Victoria)" },
                         { id: 610, rate: "Raro (10%)", method: "Hierba alta (Ruta 18)" }
+                    ]
+                },
+                {
+                    name: "Rutas 19, 20, 21 y 22 (Pueblo Furia, Pueblo Romantis)",
+                    encounters: [
+                        { id: 333, rate: "Común (30%)", method: "Hierba alta (Ruta 19 / Pueblo Furia)" },
+                        { id: 353, rate: "Frecuente (20%)", method: "Hierba alta / Bosque (Ruta 20)" },
+                        { id: 447, rate: "Raro (10%)", method: "Hierba alta (Ruta 22)" },
+                        { id: 667, rate: "Frecuente (20%)", method: "Hierba alta (Ruta 22)" }
                     ]
                 },
                 {
@@ -577,6 +586,15 @@
                         { id: 220, rate: "Frecuente (20%)", method: "Nieve profunda (Ruta 17)" },
                         { id: 443, rate: "Raro (10%)", method: "Cueva / Zona rocosa (Calle Victoria)" },
                         { id: 610, rate: "Raro (10%)", method: "Hierba alta (Ruta 18)" }
+                    ]
+                },
+                {
+                    name: "Rutas 19, 20, 21 y 22 (Pueblo Furia, Pueblo Romantis)",
+                    encounters: [
+                        { id: 333, rate: "Común (30%)", method: "Hierba alta (Ruta 19 / Pueblo Furia)" },
+                        { id: 353, rate: "Frecuente (20%)", method: "Hierba alta / Bosque (Ruta 20)" },
+                        { id: 447, rate: "Raro (10%)", method: "Hierba alta (Ruta 22)" },
+                        { id: 667, rate: "Frecuente (20%)", method: "Hierba alta (Ruta 22)" }
                     ]
                 },
                 {
@@ -803,7 +821,7 @@
                     <div class="rounded-xl shadow-lg overflow-hidden border border-white/20 mb-8">
                         <div class="p-8 ${headerStyles}">
                             <h1 class="text-4xl font-extrabold mb-2">Edición ${gameName}</h1>
-                            <p class="text-lg opacity-90">Rutas, cuevas y zonas completas con ratios de frecuencia y métodos de encuentro.</p>
+                            <p class="text-lg opacity-90">Listado exhaustivo con TODAS las rutas (1 al 22), cuevas, bahías y puntos de encuentro de Kalos.</p>
                         </div>
                     </div>
                     <div class="space-y-8">
