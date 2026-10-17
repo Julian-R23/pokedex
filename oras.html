@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Configuración Global de Firebase -->
+    <script>
+        window.__firebase_config = JSON.stringify({
+            apiKey: "AIzaSyBnM2viNQwdBMwn-esGR0XYmFfw0X7pi2Y",
+            authDomain: "pokedex-1-4.firebaseapp.com",
+            projectId: "pokedex-1-4",
+            storageBucket: "pokedex-1-4.firebasestorage.app",
+            messagingSenderId: "264689854822",
+            appId: "1:264689854822:web:98081e14809e368668c0a7"
+        });
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORAS Tracker (Rubí Omega / Zafiro Alfa)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .game-bg-omega { background: linear-gradient(135deg, #f87171 0%, #dc2626 50%, #7f1d1d 100%); }
+        .game-bg-alpha { background: linear-gradient(135deg, #60a5fa 0%, #2563eb 50%, #1e3a8a 100%); }
+        .game-bg-pokedex { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
+        
+        .checkbox-anim { transition: all 0.2s ease-in-out; }
+        .checkbox-anim:checked { transform: scale(1.1); }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+
+    <nav class="bg-slate-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <a href="index.html" class="p-2 bg-slate-800 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition" title="Volver al Hub">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    </a>
+                    <span class="text-xl font-bold tracking-wider cursor-pointer text-red-400" onclick="navigate('pokedex')">Hoenn Remakes (OR/AS)</span>
+                </div>
+                <div class="flex items-center space-x-1 md:space-x-4 overflow-x-auto">
+                    <button onclick="navigate('pokedex')" id="nav-pokedex" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition whitespace-nowrap">Pokédex Completa</button>
+                    <button onclick="navigate('Rubí Omega')" id="nav-Rubí Omega" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-red-400 hover:bg-red-900 hover:text-white transition whitespace-nowrap">Rubí Omega</button>
+                    <button onclick="navigate('Zafiro Alfa')" id="nav-Zafiro Alfa" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-blue-400 hover:bg-blue-900 hover:text-white transition whitespace-nowrap">Zafiro Alfa</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full"></main>
+
+    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-sm mt-auto">
+        <p id="storage-status">ORAS Tracker - Conectando con el Sistema de Almacenamiento de Aredia...</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Pokédex de Hoenn (Actualizada a Gen 6: 211 Pokémon incluyendo evoluciones extra como Gallade, Froslass, etc.)
+        const rawPokedex = [
+            "252|Treecko|Nv. 16", "253|Grovyle|Nv. 36", "254|Sceptile|Final",
+            "255|Torchic|Nv. 16", "256|Combusken|Nv. 36", "257|Blaziken|Final",
+            "258|Mudkip|Nv. 16", "259|Marshtomp|Nv. 36", "260|Swampert|Final",
+            "261|Poochyena|Nv. 18", "262|Mightyena|Final",
+            "263|Zigzagoon|Nv. 20", "264|Linoone|Final",
+            "265|Wurmple|Nv. 7", "266|Silcoon|Nv. 10", "267|Beautifly|Final",
+            "268|Cascoon|Nv. 10", "269|Dustox|Final",
+            "270|Lotad|Nv. 14", "271|Lombre|Piedra Agua", "272|Ludicolo|Final",
+            "273|Seedot|Nv. 14", "274|Nuzleaf|Piedra Hoja", "275|Shiftry|Final",
+            "276|Taillow|Nv. 22", "277|Swellow|Final",
+            "278|Wingull|Nv. 25", "279|Pelipper|Final",
+            "280|Ralts|Nv. 20", "281|Kirlia|Nv. 30 / Piedra Alba", "282|Gardevoir|Final", "475|Gallade|Final (Piedra Alba)",
+            "283|Surskit|Nv. 22", "284|Masquerain|Final",
+            "285|Shroomish|Nv. 23", "286|Breloom|Final",
+            "287|Slakoth|Nv. 18", "288|Vigoroth|Nv. 36", "289|Slaking|Final",
+            "290|Nincada|Nv. 20", "291|Ninjask|Final", "292|Shedinja|Hueco en equipo + Pokéball",
+            "293|Whismur|Nv. 20", "294|Loudred|Nv. 40", "295|Exploud|Final",
+            "296|Makuhita|Nv. 24", "297|Hariyama|Final",
+            "299|Nosepass|Subir de Nivel en Nuevo Mauville", "476|Probopass|Final",
+            "300|Skitty|Piedra Lunar", "301|Delcatty|Final",
+            "302|Sableye|Final",
+            "303|Mawile|Final",
+            "304|Aron|Nv. 32", "305|Lairon|Nv. 42", "306|Aggron|Final",
+            "307|Meditite|Nv. 37", "308|Medicham|Final",
+            "309|Electrike|Nv. 26", "310|Manectric|Final",
+            "311|Plusle|Final",
+            "312|Minun|Final",
+            "315|Roselia|Piedra Día", "407|Roserade|Final",
+            "316|Gulpin|Nv. 26", "317|Swalot|Final",
+            "318|Carvanha|Nv. 30", "319|Sharpedo|Final",
+            "320|Wailmer|Nv. 40", "321|Wailord|Final",
+            "322|Numel|Nv. 33", "323|Camerupt|Final",
+            "324|Torkoal|Final",
+            "328|Trapinch|Nv. 35", "329|Vibrava|Nv. 45", "330|Flygon|Final",
+            "331|Cacnea|Nv. 32", "332|Cacturne|Final",
+            "333|Swablu|Nv. 35", "334|Altaria|Final",
+            "335|Zangoose|Final",
+            "336|Seviper|Final",
+            "337|Lunatone|Final",
+            "338|Solrock|Final",
+            "343|Baltoy|Nv. 36", "344|Claydol|Final",
+            "345|Lileep|Nv. 40", "346|Cradily|Final",
+            "347|Anorith|Nv. 40", "348|Armaldo|Final",
+            "349|Feebas|Belleza Alta / Escama Bella", "350|Milotic|Final",
+            "351|Castform|Final",
+            "352|Kecleon|Final",
+            "353|Shuppet|Nv. 37", "354|Banette|Final",
+            "355|Duskull|Nv. 37", "356|Dusclops|Intercambio c/Tela Terrible", "477|Dusknoir|Final",
+            "357|Tropius|Final",
+            "359|Absol|Final",
+            "361|Snorunt|Nv. 42 / Piedra Alba (Hembra)", "362|Glalie|Final", "478|Froslass|Final",
+            "363|Spheal|Nv. 32", "364|Sealeo|Nv. 44", "365|Walrein|Final",
+            "369|Relicanth|Final",
+            "371|Bagon|Nv. 30", "372|Shelgon|Nv. 50", "373|Salamence|Final",
+            "374|Beldum|Nv. 20", "375|Metang|Nv. 45", "376|Metagross|Final",
+            
+            // --- LEGENDARIOS EXCLUSIVOS Y POST-GAME ---
+            "377|Regirock|Cueva Insular", "378|Regice|Cueva Insular", "379|Registeel|Tumba Antigua",
+            "380|Latias|Isla del Sur / Historia", "381|Latios|Isla del Sur / Historia",
+            "382|Kyogre|Caverna Abisal", "383|Groudon|Caverna Abisal", "384|Rayquaza|Pilar Celeste",
+            "386|Deoxys|Pilar Celeste (Episodio Delta)",
+            "250|Ho-Oh|Malvamar (Omega)", "249|Lugia|Malvamar (Alfa)",
+            "484|Palkia|Grieta Espacio (Omega)", "483|Dialga|Grieta Espacio (Alfa)",
+            "641|Tornadus|Nubes (Omega)", "642|Thundurus|Nubes (Alfa)",
+            "643|Reshiram|Cueva Furtiva (Omega)", "644|Zekrom|Cueva Furtiva (Alfa)"
+        ];
+
+        const pokedex = rawPokedex.map((data) => {
+            const [id, name, evo] = data.split('|');
+            return { id: parseInt(id), name, evo };
+        });
+
+        const routeData = {
+            "Rubí Omega": [
+                { name: "Pueblo Raíz y Rutas Iniciales (101-104)", encounters: [{ id: 252, rate: "Elegir", method: "Inicial" }, { id: 255, rate: "Elegir", method: "Inicial" }, { id: 258, rate: "Elegir", method: "Inicial" }, { id: 261, rate: "Común", method: "Ruta 101" }, { id: 263, rate: "Común", method: "Ruta 101" }, { id: 273, rate: "Exclusivo OR", method: "Ruta 102" }, { id: 280, rate: "Raro", method: "Ruta 102" }, { id: 276, rate: "Común", method: "Ruta 104" }] },
+                { name: "Bosque Petalia y Rusturf", encounters: [{ id: 265, rate: "Común", method: "Bosque Petalia" }, { id: 285, rate: "Común", method: "Bosque Petalia" }, { id: 287, rate: "Raro", method: "Bosque Petalia" }, { id: 293, rate: "Común", method: "Túnel Fervegal" }, { id: 290, rate: "Común", method: "Ruta 116" }] },
+                { name: "Cueva Granito y Ruta 110", encounters: [{ id: 304, rate: "Común", method: "Cueva Granito" }, { id: 302, rate: "Raro", method: "Cueva Granito" }, { id: 309, rate: "Común", method: "Ruta 110" }, { id: 311, rate: "Común", method: "Ruta 110" }, { id: 312, rate: "Raro", method: "Ruta 110" }] },
+                { name: "Monte Cenizo y Senda Ígnea", encounters: [{ id: 322, rate: "Común", method: "Senda Ígnea" }, { id: 324, rate: "Común", method: "Senda Ígnea" }, { id: 316, rate: "Común", method: "Ruta 112" }] },
+                { name: "Ruta 113, 114 y Fósiles", encounters: [{ id: 328, rate: "Común", method: "Desierto (Ruta 111)" }, { id: 335, rate: "Exclusivo OR", method: "Ruta 114" }, { id: 345, rate: "Fósil Raíz", method: "Ruta 111" }, { id: 347, rate: "Fósil Garra", method: "Ruta 111" }] },
+                { name: "Monte Pírico y Safari", encounters: [{ id: 353, rate: "Común", method: "Monte Pírico" }, { id: 355, rate: "Común", method: "Monte Pírico" }, { id: 359, rate: "Raro", method: "Ruta 120" }] },
+                { name: "Cascada Meteoro y Rutas Marítimas", encounters: [{ id: 371, rate: "Raro", method: "Cascada Meteoro (Fondo)" }, { id: 363, rate: "Común", method: "Cueva Cardumen" }, { id: 361, rate: "Común", method: "Cueva Cardumen" }, { id: 369, rate: "Buceo", method: "Ruta 126" }, { id: 349, rate: "Pesca (Muy Raro)", method: "Ruta 119" }] },
+                { name: "Legendarios y Ultravuelo", encounters: [{ id: 383, rate: "Historia", method: "Caverna Abisal" }, { id: 381, rate: "Historia", method: "Isla del Sur" }, { id: 384, rate: "Episodio Delta", method: "Pilar Celeste" }, { id: 386, rate: "Episodio Delta", method: "Espacio" }, { id: 250, rate: "Exclusivo OR", method: "Malvamar" }, { id: 484, rate: "Exclusivo OR", method: "Ultravuelo" }, { id: 641, rate: "Exclusivo OR", method: "Ultravuelo" }, { id: 643, rate: "Exclusivo OR", method: "Ultravuelo" }] }
+            ],
+            "Zafiro Alfa": [
+                { name: "Pueblo Raíz y Rutas Iniciales (101-104)", encounters: [{ id: 252, rate: "Elegir", method: "Inicial" }, { id: 255, rate: "Elegir", method: "Inicial" }, { id: 258, rate: "Elegir", method: "Inicial" }, { id: 261, rate: "Común", method: "Ruta 101" }, { id: 263, rate: "Común", method: "Ruta 101" }, { id: 270, rate: "Exclusivo AS", method: "Ruta 102" }, { id: 280, rate: "Raro", method: "Ruta 102" }, { id: 276, rate: "Común", method: "Ruta 104" }] },
+                { name: "Bosque Petalia y Rusturf", encounters: [{ id: 265, rate: "Común", method: "Bosque Petalia" }, { id: 285, rate: "Común", method: "Bosque Petalia" }, { id: 287, rate: "Raro", method: "Bosque Petalia" }, { id: 293, rate: "Común", method: "Túnel Fervegal" }, { id: 290, rate: "Común", method: "Ruta 116" }] },
+                { name: "Cueva Granito y Ruta 110", encounters: [{ id: 304, rate: "Común", method: "Cueva Granito" }, { id: 303, rate: "Raro", method: "Cueva Granito" }, { id: 309, rate: "Común", method: "Ruta 110" }, { id: 312, rate: "Común", method: "Ruta 110" }, { id: 311, rate: "Raro", method: "Ruta 110" }] },
+                { name: "Monte Cenizo y Senda Ígnea", encounters: [{ id: 322, rate: "Común", method: "Senda Ígnea" }, { id: 324, rate: "Común", method: "Senda Ígnea" }, { id: 316, rate: "Común", method: "Ruta 112" }] },
+                { name: "Ruta 113, 114 y Fósiles", encounters: [{ id: 328, rate: "Común", method: "Desierto (Ruta 111)" }, { id: 336, rate: "Exclusivo AS", method: "Ruta 114" }, { id: 345, rate: "Fósil Raíz", method: "Ruta 111" }, { id: 347, rate: "Fósil Garra", method: "Ruta 111" }] },
+                { name: "Monte Pírico y Safari", encounters: [{ id: 353, rate: "Común", method: "Monte Pírico" }, { id: 355, rate: "Común", method: "Monte Pírico" }, { id: 359, rate: "Raro", method: "Ruta 120" }] },
+                { name: "Cascada Meteoro y Rutas Marítimas", encounters: [{ id: 371, rate: "Raro", method: "Cascada Meteoro (Fondo)" }, { id: 363, rate: "Común", method: "Cueva Cardumen" }, { id: 361, rate: "Común", method: "Cueva Cardumen" }, { id: 369, rate: "Buceo", method: "Ruta 126" }, { id: 349, rate: "Pesca (Muy Raro)", method: "Ruta 119" }] },
+                { name: "Legendarios y Ultravuelo", encounters: [{ id: 382, rate: "Historia", method: "Caverna Abisal" }, { id: 380, rate: "Historia", method: "Isla del Sur" }, { id: 384, rate: "Episodio Delta", method: "Pilar Celeste" }, { id: 386, rate: "Episodio Delta", method: "Espacio" }, { id: 249, rate: "Exclusivo AS", method: "Malvamar" }, { id: 483, rate: "Exclusivo AS", method: "Ultravuelo" }, { id: 642, rate: "Exclusivo AS", method: "Ultravuelo" }, { id: 644, rate: "Exclusivo AS", method: "Ultravuelo" }] }
+            ]
+        };
+
+        let caughtState = {}; 
+        let currentView = 'pokedex';
+        let searchQuery = '';
+        let filterState = 'all'; 
+        
+        let db, auth, userId;
+        const appId = 'oras-tracker'; // ID único en Firestore para ORAS
+
+        function getWikidexUrl(name) {
+            const safeName = name.replace(/ /g, '_');
+            return `https://www.wikidex.net/wiki/${safeName}`;
+        }
+
+        function getPokemonName(id) {
+            const p = pokedex.find(p => p.id === id);
+            return p ? p.name : `Desconocido (${id})`;
+        }
+
+        function isAvailableInGame(pokemonId, gameName) {
+            if (!routeData[gameName]) return false;
+            for (let route of routeData[gameName]) {
+                if (route.encounters.some(e => e.id === pokemonId)) return true;
+            }
+            return false;
+        }
+
+        window.toggleCaught = async function(pokemonId) {
+            caughtState[pokemonId] = !caughtState[pokemonId];
+            renderCurrentView(); 
+            localStorage.setItem('orasTrackerData', JSON.stringify(caughtState));
+            
+            if (db && userId) {
+                try {
+                    const docRef = doc(db, 'artifacts', appId, 'users', userId, 'trackerData', 'caughtState');
+                    await setDoc(docRef, caughtState);
+                } catch (error) { console.error("Error:", error); }
+            }
+        }
+
+        window.navigate = function(viewName) {
+            currentView = viewName;
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('bg-slate-700'));
+            const activeBtn = document.getElementById(`nav-${viewName}`);
+            if (activeBtn) activeBtn.classList.add('bg-slate-700');
+            renderCurrentView();
+            window.scrollTo(0, 0);
+        }
+
+        window.updateSearch = function(value) {
+            searchQuery = value.toLowerCase();
+            renderCurrentView();
+        }
+
+        window.updateFilter = function(value) {
+            filterState = value;
+            renderCurrentView();
+        }
+
+        function renderCurrentView() {
+            const container = document.getElementById('app-content');
+            if (currentView === 'pokedex') {
+                container.innerHTML = generatePokedexHTML();
+                document.body.className = "bg-gray-100 text-gray-800 min-h-screen flex flex-col game-bg-pokedex";
+            } else {
+                container.innerHTML = generateGamePageHTML(currentView);
+                const bgColors = { 'Rubí Omega': 'game-bg-omega', 'Zafiro Alfa': 'game-bg-alpha' };
+                document.body.className = `text-gray-800 min-h-screen flex flex-col ${bgColors[currentView]}`;
+            }
+        }
+
+        function generatePokedexHTML() {
+            const totalCaught = Object.values(caughtState).filter(v => v).length;
+            const progressPercent = Math.round((totalCaught / pokedex.length) * 100);
+
+            let html = `
+                <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-200">
+                    <div class="p-6 bg-slate-800 text-white border-b border-gray-700">
+                        <h1 class="text-3xl font-extrabold flex flex-wrap items-center gap-3">
+                            Pokédex de Hoenn (OR/AS)
+                            <span class="text-sm font-normal bg-red-600 px-3 py-1 rounded-full text-red-100">
+                                ${totalCaught} / ${pokedex.length} Atrapados
+                            </span>
+                        </h1>
+                        <p class="text-slate-400 mt-2 text-sm">Registro Regional de Hoenn y Ultravuelo.</p>
+                        <div class="w-full bg-slate-700 rounded-full h-2.5 mt-4">
+                            <div class="bg-red-500 h-2.5 rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
+                        </div>
+                        <div class="mt-6 flex flex-col sm:flex-row gap-4">
+                            <input type="text" placeholder="Buscar por nombre o número..." class="px-4 py-2 rounded-lg text-gray-800 w-full sm:w-1/2 focus:ring-2 focus:ring-red-500 outline-none" value="${searchQuery}" onkeyup="updateSearch(this.value)">
+                            <select class="px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-red-500 outline-none cursor-pointer" onchange="updateFilter(this.value)">
+                                <option value="all" ${filterState === 'all' ? 'selected' : ''}>Todos los Pokémon</option>
+                                <option value="caught" ${filterState === 'caught' ? 'selected' : ''}>Solo Atrapados</option>
+                                <option value="missing" ${filterState === 'missing' ? 'selected' : ''}>Faltantes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="uppercase tracking-wider border-b-2 border-gray-200 bg-gray-50 text-gray-600 font-bold">
+                                <tr>
+                                    <th class="px-6 py-4 text-center">Atrapado</th>
+                                    <th class="px-6 py-4 text-center">Nº Nac.</th>
+                                    <th class="px-6 py-4">Sprite</th>
+                                    <th class="px-6 py-4">Pokémon</th>
+                                    <th class="px-6 py-4">Evolución</th>
+                                    <th class="px-6 py-4">Versión Destacada</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+            `;
+
+            const filteredPokedex = pokedex.filter(poke => {
+                const isCaught = caughtState[poke.id] || false;
+                const matchesSearch = poke.name.toLowerCase().includes(searchQuery) || String(poke.id).includes(searchQuery);
+                let matchesFilter = true;
+                if (filterState === 'caught') matchesFilter = isCaught;
+                if (filterState === 'missing') matchesFilter = !isCaught;
+                return matchesSearch && matchesFilter;
+            });
+
+            if (filteredPokedex.length === 0) {
+                html += `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No se encontraron Pokémon.</td></tr>`;
+            }
+
+            filteredPokedex.forEach((poke) => {
+                const isCaught = caughtState[poke.id] || false;
+                let badges = '';
+                const games = [
+                    { name: 'Rubí Omega', color: 'bg-red-100 text-red-800 border-red-300' },
+                    { name: 'Zafiro Alfa', color: 'bg-blue-100 text-blue-800 border-blue-300' }
+                ];
+
+                games.forEach(g => {
+                    if (isAvailableInGame(poke.id, g.name)) {
+                        badges += `<button onclick="navigate('${g.name}')" class="px-2 py-1 text-xs border rounded-md font-semibold mr-2 transition hover:opacity-70 ${g.color}">${g.name}</button>`;
+                    }
+                });
+
+                if (badges === '') badges = `<span class="text-xs text-gray-400 italic">Otras rutas/Evolución</span>`;
+
+                html += `
+                    <tr class="hover:bg-gray-50 transition duration-150 ${isCaught ? 'bg-red-50/50' : ''}">
+                        <td class="px-6 py-4 text-center">
+                            <input type="checkbox" class="w-6 h-6 text-red-600 rounded border-gray-300 focus:ring-red-500 cursor-pointer checkbox-anim" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${poke.id})">
+                        </td>
+                        <td class="px-6 py-4 text-center font-mono text-gray-500">#${String(poke.id).padStart(3, '0')}</td>
+                        <td class="px-6 py-2">
+                            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.id}.png" alt="${poke.name}" class="w-12 h-12 inline-block object-contain pixelated" onerror="this.style.display='none'">
+                        </td>
+                        <td class="px-6 py-4 font-bold text-base">
+                            <a href="${getWikidexUrl(poke.name)}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline transition" title="Ver en Wikidex">${poke.name}</a>
+                        </td>
+                        <td class="px-6 py-4 text-sm font-medium text-red-700">${poke.evo}</td>
+                        <td class="px-6 py-4">${badges}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table></div></div>`;
+            return html;
+        }
+
+        function generateGamePageHTML(gameName) {
+            const routes = routeData[gameName];
+            let headerStyles = '';
+            if (gameName === 'Rubí Omega') headerStyles = 'bg-red-600 text-white';
+            if (gameName === 'Zafiro Alfa') headerStyles = 'bg-blue-600 text-white';
+
+            let html = `
+                <div class="mb-8">
+                    <div class="rounded-xl shadow-lg overflow-hidden border border-white/20 mb-8">
+                        <div class="p-8 ${headerStyles}">
+                            <h1 class="text-4xl font-extrabold mb-2">Edición ${gameName}</h1>
+                            <p class="text-lg opacity-90">Rutas clave, exclusivos y Ultravuelo.</p>
+                        </div>
+                    </div>
+                    <div class="space-y-8">
+            `;
+
+            if (!routes || routes.length === 0) {
+                html += `<p class="text-center text-gray-600 py-10 bg-white/50 rounded-xl">Datos no disponibles.</p>`;
+            } else {
+                routes.forEach(route => {
+                    html += `
+                        <div class="bg-white/90 backdrop-blur-sm rounded-xl shadow-md overflow-hidden">
+                            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                                <h2 class="text-xl font-bold text-gray-800">${route.name}</h2>
+                            </div>
+                            <div class="p-0 overflow-x-auto">
+                                <table class="w-full text-left text-sm whitespace-nowrap">
+                                    <thead class="bg-gray-100/50 text-gray-600 text-xs uppercase font-semibold">
+                                        <tr>
+                                            <th class="px-6 py-3 w-16 text-center">Atrapado</th>
+                                            <th class="px-6 py-3">Pokémon</th>
+                                            <th class="px-6 py-3">Ratio</th>
+                                            <th class="px-6 py-3">Método / Ubicación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-100">
+                    `;
+
+                    route.encounters.forEach(encounter => {
+                        const pokeName = getPokemonName(encounter.id);
+                        const isCaught = caughtState[encounter.id] || false;
+                        
+                        html += `
+                            <tr class="hover:bg-gray-50/80 transition ${isCaught ? 'bg-red-50/20' : ''}">
+                                <td class="px-6 py-3 text-center">
+                                    <input type="checkbox" class="w-5 h-5 text-red-600 rounded border-gray-300 cursor-pointer checkbox-anim focus:ring-red-500" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${encounter.id})">
+                                </td>
+                                <td class="px-6 py-3 font-semibold flex items-center gap-3">
+                                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${encounter.id}.png" alt="${pokeName}" class="w-10 h-10 object-contain" onerror="this.style.display='none'">
+                                    <span>
+                                        <a href="${getWikidexUrl(pokeName)}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline transition" title="Ver en Wikidex">${pokeName}</a> 
+                                        <span class="text-xs text-gray-400 font-mono ml-1">#${encounter.id}</span>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-3"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">${encounter.rate}</span></td>
+                                <td class="px-6 py-3 text-gray-600">${encounter.method}</td>
+                            </tr>
+                        `;
+                    });
+                    html += `</tbody></table></div></div>`;
+                });
+            }
+            html += `</div></div>`;
+            return html;
+        }
+
+        async function setupCloudStorage() {
+            try {
+                const localData = localStorage.getItem('orasTrackerData');
+                if (localData) {
+                    caughtState = JSON.parse(localData);
+                    renderCurrentView();
+                }
+
+                if (typeof __firebase_config === 'undefined') return;
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                await signInAnonymously(auth);
+
+                let mySyncCode = localStorage.getItem('pokemonSyncCode');
+                if (!mySyncCode) {
+                    mySyncCode = prompt("Ingresa una palabra secreta para sincronizar tu progreso (ej. JulianDex2026):");
+                    if (mySyncCode) {
+                        localStorage.setItem('pokemonSyncCode', mySyncCode.trim());
+                    }
+                }
+
+                userId = mySyncCode ? mySyncCode.trim() : auth.currentUser?.uid;
+                if (!userId) return;
+                
+                document.getElementById('storage-status').textContent = "ORAS Tracker - Conectado al Sistema de Aredia (Nube activa).";
+                const docRef = doc(db, 'artifacts', appId, 'users', userId, 'trackerData', 'caughtState');
+                
+                onSnapshot(docRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        caughtState = { ...caughtState, ...snapshot.data() };
+                        renderCurrentView();
+                    }
+                });
+            } catch (error) {
+                document.getElementById('storage-status').textContent = "ORAS Tracker - Guardado de manera local en tu PC.";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            navigate('pokedex');
+            setupCloudStorage();
+        });
+    </script>
+</body>
+</html>
