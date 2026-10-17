@@ -13,30 +13,26 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalos Tracker (X / Y) - Rutas Oficiales (Estilo Bulbapedia)</title>
+    <title>Kalos Tracker (X / Y) - Guía Completa de Encuentros (Bulbapedia)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .game-bg-x { background: linear-gradient(135deg, #1e3a8a 0%, #0284c7 50%, #0f172a 100%); }
-        .game-bg-y { background: linear-gradient(135deg, #881337 0%, #e11d48 50%, #0f172a 100%); }
-        .game-bg-pokedex { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
         .checkbox-anim { transition: all 0.2s ease-in-out; }
         .checkbox-anim:checked { transform: scale(1.1); }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+<body class="bg-slate-900 text-gray-100 min-h-screen flex flex-col">
 
-    <nav class="bg-slate-900 text-white shadow-lg sticky top-0 z-50">
+    <nav class="bg-slate-950 text-white shadow-xl sticky top-0 z-50 border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center space-x-3">
-                    <span class="text-xl font-bold tracking-wider cursor-pointer text-sky-400" onclick="navigate('pokedex')">Kalos Tracker (X/Y)</span>
+                    <span class="text-xl font-bold tracking-wider cursor-pointer text-sky-400" onclick="navigate('encounters')">Kalos Tracker (X/Y)</span>
                 </div>
                 <div class="flex items-center space-x-1 md:space-x-4 overflow-x-auto">
-                    <button onclick="navigate('pokedex')" id="nav-pokedex" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition whitespace-nowrap">Pokédex Regional</button>
-                    <button onclick="navigate('Pokémon X')" id="nav-Pokémon X" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-sky-400 hover:bg-sky-900 hover:text-white transition whitespace-nowrap">Pokémon X</button>
-                    <button onclick="navigate('Pokémon Y')" id="nav-Pokémon Y" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-rose-400 hover:bg-rose-900 hover:text-white transition whitespace-nowrap">Pokémon Y</button>
+                    <button onclick="navigate('encounters')" id="nav-encounters" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition whitespace-nowrap">Guía de Encuentros</button>
+                    <button onclick="navigate('pokedex')" id="nav-pokedex" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition whitespace-nowrap">Pokédex Regional</button>
                     <button onclick="navigate('Exclusivos')" id="nav-Exclusivos" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-amber-400 hover:bg-amber-900 hover:text-white transition whitespace-nowrap">Exclusivos de Versión</button>
                 </div>
             </div>
@@ -45,8 +41,8 @@
 
     <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full"></main>
 
-    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-sm mt-auto">
-        <p id="storage-status">Kalos Tracker - Sincronizado correctamente...</p>
+    <footer class="bg-slate-950 text-slate-400 py-6 text-center text-sm mt-auto border-t border-slate-800">
+        <p id="storage-status">Kalos Tracker - Conectado con base de datos de Bulbapedia...</p>
     </footer>
 
     <script type="module">
@@ -54,422 +50,450 @@
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const pokedex = [
-            { regionalId: 1, natId: 650, name: "Chespin", evo: "Nv. 16", zone: "Centro" },
-            { regionalId: 2, natId: 651, name: "Quilladin", evo: "Nv. 36", zone: "Centro" },
-            { regionalId: 3, natId: 652, name: "Chesnaught", evo: "Final", zone: "Centro" },
-            { regionalId: 4, natId: 653, name: "Fennekin", evo: "Nv. 16", zone: "Centro" },
-            { regionalId: 5, natId: 654, name: "Braixen", evo: "Nv. 36", zone: "Centro" },
-            { regionalId: 6, natId: 655, name: "Delphox", evo: "Final", zone: "Centro" },
-            { regionalId: 7, natId: 656, name: "Froakie", evo: "Nv. 16", zone: "Centro" },
-            { regionalId: 8, natId: 657, name: "Frogadier", evo: "Nv. 36", zone: "Centro" },
-            { regionalId: 9, natId: 658, name: "Greninja", evo: "Final", zone: "Centro" },
-            { regionalId: 10, natId: 659, name: "Bunnelby", evo: "Nv. 20", zone: "Centro" },
-            { regionalId: 11, natId: 660, name: "Diggersby", evo: "Final", zone: "Centro" },
-            { regionalId: 12, natId: 263, name: "Zigzagoon", evo: "Nv. 20", zone: "Centro" },
-            { regionalId: 13, natId: 264, name: "Linoone", evo: "Final", zone: "Centro" },
-            { regionalId: 14, natId: 661, name: "Fletchling", evo: "Nv. 17", zone: "Centro" },
-            { regionalId: 15, natId: 662, name: "Fletchinder", evo: "Nv. 35", zone: "Centro" },
-            { regionalId: 16, natId: 663, name: "Talonflame", evo: "Final", zone: "Centro" },
-            { regionalId: 17, natId: 16, name: "Pidgey", evo: "Nv. 18", zone: "Centro" },
-            { regionalId: 18, natId: 17, name: "Pidgeotto", evo: "Nv. 36", zone: "Centro" },
-            { regionalId: 19, natId: 18, name: "Pidgeot", evo: "Final", zone: "Centro" },
-            { regionalId: 20, natId: 664, name: "Scatterbug", evo: "Nv. 9", zone: "Centro" },
-            { regionalId: 21, natId: 665, name: "Spewpa", evo: "Nv. 12", zone: "Centro" },
-            { regionalId: 22, natId: 666, name: "Vivillon", evo: "Final", zone: "Centro" },
-            { regionalId: 23, natId: 10, name: "Caterpie", evo: "Nv. 7", zone: "Centro" },
-            { regionalId: 24, natId: 11, name: "Metapod", evo: "Nv. 10", zone: "Centro" },
-            { regionalId: 25, natId: 12, name: "Butterfree", evo: "Final", zone: "Centro" },
-            { regionalId: 26, natId: 13, name: "Weedle", evo: "Nv. 7", zone: "Centro" },
-            { regionalId: 27, natId: 14, name: "Kakuna", evo: "Nv. 10", zone: "Centro" },
-            { regionalId: 28, natId: 15, name: "Beedrill", evo: "Final", zone: "Centro" },
-            { regionalId: 29, natId: 511, name: "Pansage", evo: "Piedra Hoja", zone: "Centro" },
-            { regionalId: 30, natId: 512, name: "Simisage", evo: "Final", zone: "Centro" },
-            { regionalId: 31, natId: 513, name: "Pansear", evo: "Piedra Fuego", zone: "Centro" },
-            { regionalId: 32, natId: 514, name: "Simisear", evo: "Final", zone: "Centro" },
-            { regionalId: 33, natId: 515, name: "Panpour", evo: "Piedra Agua", zone: "Centro" },
-            { regionalId: 34, natId: 516, name: "Simipour", evo: "Final", zone: "Centro" },
-            { regionalId: 35, natId: 172, name: "Pichu", evo: "Amistad", zone: "Centro" },
-            { regionalId: 36, natId: 25, name: "Pikachu", evo: "Piedra Trueno", zone: "Centro" },
-            { regionalId: 37, natId: 26, name: "Raichu", evo: "Final", zone: "Centro" },
-            { regionalId: 38, natId: 399, name: "Bidoof", evo: "Nv. 15", zone: "Centro" },
-            { regionalId: 39, natId: 400, name: "Bibarel", evo: "Final", zone: "Centro" },
-            { regionalId: 40, natId: 206, name: "Dunsparce", evo: "Final", zone: "Centro" },
-            { regionalId: 41, natId: 298, name: "Azurill", evo: "Amistad", zone: "Centro" },
-            { regionalId: 42, natId: 183, name: "Marill", evo: "Nv. 18", zone: "Centro" },
-            { regionalId: 43, natId: 184, name: "Azumarill", evo: "Final", zone: "Centro" },
-            { regionalId: 44, natId: 412, name: "Burmy", evo: "Nv. 20", zone: "Centro" },
-            { regionalId: 45, natId: 413, name: "Wormadam", evo: "Final (Hembra)", zone: "Centro" },
-            { regionalId: 46, natId: 414, name: "Mothim", evo: "Final (Macho)", zone: "Centro" },
-            { regionalId: 47, natId: 283, name: "Surskit", evo: "Nv. 22", zone: "Centro" },
-            { regionalId: 48, natId: 284, name: "Masquerain", evo: "Final", zone: "Centro" },
-            { regionalId: 49, natId: 129, name: "Magikarp", evo: "Nv. 20", zone: "Centro" },
-            { regionalId: 50, natId: 130, name: "Gyarados", evo: "Final", zone: "Centro" },
-            { regionalId: 51, natId: 341, name: "Corphish", evo: "Nv. 30", zone: "Centro" },
-            { regionalId: 52, natId: 342, name: "Crawdaunt", evo: "Final", zone: "Centro" },
-            { regionalId: 53, natId: 118, name: "Goldeen", evo: "Nv. 33", zone: "Centro" },
-            { regionalId: 54, natId: 119, name: "Seaking", evo: "Final", zone: "Centro" },
-            { regionalId: 55, natId: 318, name: "Carvanha", evo: "Nv. 30", zone: "Centro" },
-            { regionalId: 56, natId: 319, name: "Sharpedo", evo: "Final", zone: "Centro" },
-            { regionalId: 57, natId: 667, name: "Litleo", evo: "Nv. 35", zone: "Centro" },
-            { regionalId: 58, natId: 668, name: "Pyroar", evo: "Final", zone: "Centro" },
-            { regionalId: 59, natId: 54, name: "Psyduck", evo: "Nv. 33", zone: "Centro" },
-            { regionalId: 60, natId: 55, name: "Golduck", evo: "Final", zone: "Centro" },
-            { regionalId: 61, natId: 83, name: "Farfetch'd", evo: "Final", zone: "Centro" },
-            { regionalId: 62, natId: 447, name: "Riolu", evo: "Amistad de Día", zone: "Centro" },
-            { regionalId: 63, natId: 448, name: "Lucario", evo: "Final", zone: "Centro" },
-            { regionalId: 64, natId: 280, name: "Ralts", evo: "Nv. 20", zone: "Centro" },
-            { regionalId: 65, natId: 281, name: "Kirlia", evo: "Nv. 30", zone: "Centro" },
-            { regionalId: 66, natId: 282, name: "Gardevoir", evo: "Final", zone: "Centro" },
-            { regionalId: 67, natId: 475, name: "Gallade", evo: "Piedra Alba (Macho)", zone: "Centro" },
-            { regionalId: 68, natId: 669, name: "Flabébé", evo: "Nv. 19", zone: "Centro" },
-            { regionalId: 69, natId: 670, name: "Floette", evo: "Piedra Día", zone: "Centro" },
-            { regionalId: 70, natId: 671, name: "Florges", evo: "Final", zone: "Centro" },
-            { regionalId: 71, natId: 406, name: "Budew", evo: "Amistad de Día", zone: "Centro" },
-            { regionalId: 72, natId: 315, name: "Roselia", evo: "Piedra Día", zone: "Centro" },
-            { regionalId: 73, natId: 407, name: "Roserade", evo: "Final", zone: "Centro" },
-            { regionalId: 74, natId: 165, name: "Ledyba", evo: "Nv. 18", zone: "Centro" },
-            { regionalId: 75, natId: 166, name: "Ledian", evo: "Final", zone: "Centro" },
-            { regionalId: 76, natId: 415, name: "Combee", evo: "Nv. 21 (Hembra)", zone: "Centro" },
-            { regionalId: 77, natId: 416, name: "Vespiquen", evo: "Final", zone: "Centro" },
-            { regionalId: 78, natId: 300, name: "Skitty", evo: "Piedra Lunar", zone: "Centro" },
-            { regionalId: 79, natId: 301, name: "Delcatty", evo: "Final", zone: "Centro" },
-            { regionalId: 80, natId: 1, name: "Bulbasaur", evo: "Nv. 16", zone: "Centro" },
-            { regionalId: 81, natId: 2, name: "Ivysaur", evo: "Nv. 32", zone: "Centro" },
-            { regionalId: 82, natId: 3, name: "Venusaur", evo: "Final", zone: "Centro" },
-            { regionalId: 83, natId: 4, name: "Charmander", evo: "Nv. 16", zone: "Centro" },
-            { regionalId: 84, natId: 5, name: "Charmeleon", evo: "Nv. 36", zone: "Centro" },
-            { regionalId: 85, natId: 6, name: "Charizard", evo: "Final", zone: "Centro" },
-            { regionalId: 86, natId: 7, name: "Squirtle", evo: "Nv. 16", zone: "Centro" },
-            { regionalId: 87, natId: 8, name: "Wartortle", evo: "Nv. 36", zone: "Centro" },
-            { regionalId: 88, natId: 9, name: "Blastoise", evo: "Final", zone: "Centro" },
-            { regionalId: 89, natId: 672, name: "Skiddo", evo: "Nv. 32", zone: "Centro" },
-            { regionalId: 90, natId: 673, name: "Gogoat", evo: "Final", zone: "Centro" },
-            { regionalId: 91, natId: 674, name: "Pancham", evo: "Nv. 32 + Siniestro", zone: "Centro" },
-            { regionalId: 92, natId: 675, name: "Pangoro", evo: "Final", zone: "Centro" },
-            { regionalId: 93, natId: 676, name: "Furfrou", evo: "Final", zone: "Centro" },
-            { regionalId: 94, natId: 84, name: "Doduo", evo: "Nv. 31", zone: "Centro" },
-            { regionalId: 95, natId: 85, name: "Dodrio", evo: "Final", zone: "Centro" },
-            { regionalId: 96, natId: 311, name: "Plusle", evo: "Final", zone: "Centro" },
-            { regionalId: 97, natId: 312, name: "Minun", evo: "Final", zone: "Centro" },
-            { regionalId: 98, natId: 316, name: "Gulpin", evo: "Nv. 26", zone: "Centro" },
-            { regionalId: 99, natId: 317, name: "Swalot", evo: "Final", zone: "Centro" },
-            { regionalId: 100, natId: 104, name: "Cubone", evo: "Nv. 28", zone: "Centro" },
-            { regionalId: 101, natId: 105, name: "Marowak", evo: "Final", zone: "Centro" },
-            { regionalId: 102, natId: 133, name: "Eevee", evo: "Evoluciones Múltiples", zone: "Centro" },
-            { regionalId: 103, natId: 134, name: "Vaporeon", evo: "Piedra Agua", zone: "Centro" },
-            { regionalId: 104, natId: 135, name: "Jolteon", evo: "Piedra Trueno", zone: "Centro" },
-            { regionalId: 105, natId: 136, name: "Flareon", evo: "Piedra Fuego", zone: "Centro" },
-            { regionalId: 106, natId: 196, name: "Espeon", evo: "Amistad (Día)", zone: "Centro" },
-            { regionalId: 107, natId: 197, name: "Umbreon", evo: "Amistad (Noche)", zone: "Centro" },
-            { regionalId: 108, natId: 470, name: "Leafeon", evo: "Roca Musgo", zone: "Centro" },
-            { regionalId: 109, natId: 471, name: "Glaceon", evo: "Roca Hielo", zone: "Centro" },
-            { regionalId: 110, natId: 700, name: "Sylveon", evo: "Amistad + Mov. Hada", zone: "Centro" },
-            { regionalId: 111, natId: 677, name: "Espurr", evo: "Nv. 25", zone: "Centro" },
-            { regionalId: 112, natId: 678, name: "Meowstic", evo: "Final", zone: "Centro" },
-            { regionalId: 113, natId: 682, name: "Spritzee", evo: "Intercambio c/Saquito (Exc. Y)", zone: "Centro" },
-            { regionalId: 114, natId: 683, name: "Aromatisse", evo: "Final", zone: "Centro" },
-            { regionalId: 115, natId: 684, name: "Swirlix", evo: "Intercambio c/Dulce Nata (Exc. X)", zone: "Centro" },
-            { regionalId: 116, natId: 685, name: "Slurpuff", evo: "Final", zone: "Centro" },
-            { regionalId: 117, natId: 175, name: "Togepi", evo: "Amistad", zone: "Centro" },
-            { regionalId: 118, natId: 176, name: "Togetic", evo: "Piedra Día", zone: "Centro" },
-            { regionalId: 119, natId: 468, name: "Togekiss", evo: "Final", zone: "Centro" },
-            { regionalId: 120, natId: 41, name: "Zubat", evo: "Nv. 22", zone: "Centro" },
-            { regionalId: 121, natId: 42, name: "Golbat", evo: "Amistad", zone: "Centro" },
-            { regionalId: 122, natId: 169, name: "Crobat", evo: "Final", zone: "Centro" },
-            { regionalId: 123, natId: 610, name: "Axew", evo: "Nv. 38", zone: "Centro" },
-            { regionalId: 124, natId: 611, name: "Fraxure", evo: "Nv. 48", zone: "Centro" },
-            { regionalId: 125, natId: 612, name: "Haxorus", evo: "Final", zone: "Centro" },
-            { regionalId: 126, natId: 327, name: "Spinda", evo: "Final", zone: "Centro" },
-            { regionalId: 127, natId: 198, name: "Murkrow", evo: "Piedra Noche", zone: "Centro" },
-            { regionalId: 128, natId: 632, name: "Durant", evo: "Final", zone: "Centro" },
-
-            // --- KALOS COSTA ---
-            { regionalId: 1, natId: 425, name: "Drifloon", evo: "Nv. 28", zone: "Costa" },
-            { regionalId: 2, natId: 426, name: "Drifblim", evo: "Final", zone: "Costa" },
-            { regionalId: 3, natId: 619, name: "Mienfoo", evo: "Nv. 50", zone: "Costa" },
-            { regionalId: 4, natId: 620, name: "Mienshao", evo: "Final", zone: "Costa" },
-            { regionalId: 5, natId: 335, name: "Zangoose", evo: "Final", zone: "Costa" },
-            { regionalId: 6, natId: 336, name: "Seviper", evo: "Final", zone: "Costa" },
-            { regionalId: 7, natId: 325, name: "Spoink", evo: "Nv. 32", zone: "Costa" },
-            { regionalId: 8, natId: 326, name: "Grumpig", evo: "Final", zone: "Costa" },
-            { regionalId: 9, natId: 359, name: "Absol", evo: "Final", zone: "Costa" },
-            { regionalId: 10, natId: 686, name: "Inkay", evo: "Nv. 30 (Consola invertida)", zone: "Costa" },
-            { regionalId: 11, natId: 687, name: "Malamar", evo: "Final", zone: "Costa" },
-            { regionalId: 12, natId: 337, name: "Lunatone", evo: "Final", zone: "Costa" },
-            { regionalId: 13, natId: 338, name: "Solrock", evo: "Final", zone: "Costa" },
-            { regionalId: 14, natId: 371, name: "Bagon", evo: "Nv. 30", zone: "Costa" },
-            { regionalId: 15, natId: 372, name: "Shelgon", evo: "Nv. 50", zone: "Costa" },
-            { regionalId: 16, natId: 373, name: "Salamence", evo: "Final", zone: "Costa" },
-            { regionalId: 17, natId: 278, name: "Wingull", evo: "Nv. 25", zone: "Costa" },
-            { regionalId: 18, natId: 279, name: "Pelipper", evo: "Final", zone: "Costa" },
-            { regionalId: 19, natId: 276, name: "Taillow", evo: "Nv. 22", zone: "Costa" },
-            { regionalId: 20, natId: 277, name: "Swellow", evo: "Final", zone: "Costa" },
-            { regionalId: 21, natId: 688, name: "Binacle", evo: "Nv. 39", zone: "Costa" },
-            { regionalId: 22, natId: 689, name: "Barbaracle", evo: "Final", zone: "Costa" },
-            { regionalId: 23, natId: 557, name: "Dwebble", evo: "Nv. 34", zone: "Costa" },
-            { regionalId: 24, natId: 558, name: "Crustle", evo: "Final", zone: "Costa" },
-            { regionalId: 25, natId: 72, name: "Tentacool", evo: "Nv. 30", zone: "Costa" },
-            { regionalId: 26, natId: 73, name: "Tentacruel", evo: "Final", zone: "Costa" },
-            { regionalId: 27, natId: 396, name: "Starly", evo: "Nv. 14", zone: "Costa" },
-            { regionalId: 28, natId: 397, name: "Staravia", evo: "Nv. 34", zone: "Costa" },
-            { regionalId: 29, natId: 398, name: "Staraptor", evo: "Final", zone: "Costa" },
-            { regionalId: 30, natId: 111, name: "Rhyhorn", evo: "Nv. 42", zone: "Costa" },
-            { regionalId: 31, natId: 112, name: "Rhydon", evo: "Intercambio c/Protector", zone: "Costa" },
-            { regionalId: 32, natId: 464, name: "Rhyperior", evo: "Final", zone: "Costa" },
-            { regionalId: 33, natId: 137, name: "Porygon", evo: "Intercambio c/Mejora", zone: "Costa" },
-            { regionalId: 34, natId: 233, name: "Porygon2", evo: "Intercambio c/Disco Extraño", zone: "Costa" },
-            { regionalId: 35, natId: 474, name: "Porygon-Z", evo: "Final", zone: "Costa" },
-            { regionalId: 36, natId: 138, name: "Omanyte", evo: "Nv. 40", zone: "Costa" },
-            { regionalId: 37, natId: 139, name: "Omastar", evo: "Final", zone: "Costa" },
-            { regionalId: 38, natId: 140, name: "Kabuto", evo: "Nv. 40", zone: "Costa" },
-            { regionalId: 39, natId: 141, name: "Kabutops", evo: "Final", zone: "Costa" },
-            { regionalId: 40, natId: 142, name: "Aerodactyl", evo: "Final", zone: "Costa" },
-            { regionalId: 41, natId: 345, name: "Lileep", evo: "Nv. 40", zone: "Costa" },
-            { regionalId: 42, natId: 346, name: "Cradily", evo: "Final", zone: "Costa" },
-            { regionalId: 43, natId: 347, name: "Anorith", evo: "Nv. 40", zone: "Costa" },
-            { regionalId: 44, natId: 348, name: "Armaldo", evo: "Final", zone: "Costa" },
-            { regionalId: 45, natId: 564, name: "Tirtouga", evo: "Nv. 37", zone: "Costa" },
-            { regionalId: 46, natId: 565, name: "Carracosta", evo: "Final", zone: "Costa" },
-            { regionalId: 47, natId: 566, name: "Archen", evo: "Nv. 37", zone: "Costa" },
-            { regionalId: 48, natId: 567, name: "Archeops", evo: "Final", zone: "Costa" },
-            { regionalId: 49, natId: 696, name: "Tyrunt", evo: "Nv. 39 (Día)", zone: "Costa" },
-            { regionalId: 50, natId: 697, name: "Tyrantrum", evo: "Final", zone: "Costa" },
-            { regionalId: 51, natId: 698, name: "Amaura", evo: "Nv. 39 (Noche)", zone: "Costa" },
-            { regionalId: 52, natId: 699, name: "Aurorus", evo: "Final", zone: "Costa" },
-            { regionalId: 53, natId: 215, name: "Sneasel", evo: "Nv. Noche c/Garra Afilada", zone: "Costa" },
-            { regionalId: 54, natId: 461, name: "Weavile", evo: "Final", zone: "Costa" },
-            { regionalId: 55, natId: 249, name: "Lugia", evo: "Solo Traslado", zone: "Costa" },
-            { regionalId: 56, natId: 250, name: "Ho-Oh", evo: "Solo Traslado", zone: "Costa" },
-            { regionalId: 57, natId: 679, name: "Honedge", evo: "Nv. 35", zone: "Costa" },
-            { regionalId: 58, natId: 680, name: "Doublade", evo: "Piedra Noche", zone: "Costa" },
-            { regionalId: 59, natId: 681, name: "Aegislash", evo: "Final", zone: "Costa" },
-            { regionalId: 60, natId: 543, name: "Venipede", evo: "Nv. 22", zone: "Costa" },
-            { regionalId: 61, natId: 544, name: "Whirlipede", evo: "Nv. 30", zone: "Costa" },
-            { regionalId: 62, natId: 545, name: "Scolipede", evo: "Final", zone: "Costa" },
-            { regionalId: 63, natId: 531, name: "Audino", evo: "Final", zone: "Costa" },
-            { regionalId: 64, natId: 235, name: "Smeargle", evo: "Final", zone: "Costa" },
-            { regionalId: 65, natId: 453, name: "Croagunk", evo: "Nv. 37", zone: "Costa" },
-            { regionalId: 66, natId: 454, name: "Toxicroak", evo: "Final", zone: "Costa" },
-            { regionalId: 67, natId: 580, name: "Ducklett", evo: "Nv. 35", zone: "Costa" },
-            { regionalId: 68, natId: 581, name: "Swanna", evo: "Final", zone: "Costa" },
-            { regionalId: 69, natId: 174, name: "Igglybuff", evo: "Amistad", zone: "Costa" },
-            { regionalId: 70, natId: 39, name: "Jigglypuff", evo: "Piedra Lunar", zone: "Costa" },
-            { regionalId: 71, natId: 40, name: "Wigglytuff", evo: "Final", zone: "Costa" },
-            { regionalId: 72, natId: 690, name: "Skrelp", evo: "Nv. 48 (Exc. Y)", zone: "Costa" },
-            { regionalId: 73, natId: 691, name: "Dragalge", evo: "Final", zone: "Costa" },
-            { regionalId: 74, natId: 692, name: "Clauncher", evo: "Nv. 37 (Exc. X)", zone: "Costa" },
-            { regionalId: 75, natId: 693, name: "Clawitzer", evo: "Final", zone: "Costa" },
-            { regionalId: 76, natId: 313, name: "Volbeat", evo: "Final", zone: "Costa" },
-            { regionalId: 77, natId: 314, name: "Illumise", evo: "Final", zone: "Costa" },
-            { regionalId: 78, natId: 187, name: "Hoppip", evo: "Nv. 18", zone: "Costa" },
-            { regionalId: 79, natId: 188, name: "Skiploom", evo: "Nv. 27", zone: "Costa" },
-            { regionalId: 80, natId: 189, name: "Jumpluff", evo: "Final", zone: "Costa" },
-            { regionalId: 81, natId: 273, name: "Seedot", evo: "Nv. 14", zone: "Costa" },
-            { regionalId: 82, natId: 274, name: "Nuzleaf", evo: "Piedra Hoja", zone: "Costa" },
-            { regionalId: 83, natId: 275, name: "Shiftry", evo: "Final", zone: "Costa" },
-            { regionalId: 84, natId: 270, name: "Lotad", evo: "Nv. 14", zone: "Costa" },
-            { regionalId: 85, natId: 271, name: "Lombre", evo: "Piedra Agua", zone: "Costa" },
-            { regionalId: 86, natId: 272, name: "Ludicolo", evo: "Final", zone: "Costa" },
-            { regionalId: 87, natId: 694, name: "Helioptile", evo: "Piedra Sol", zone: "Costa" },
-            { regionalId: 88, natId: 695, name: "Heliolisk", evo: "Final", zone: "Costa" },
-            { regionalId: 89, natId: 701, name: "Hawlucha", evo: "Final", zone: "Costa" },
-            { regionalId: 90, natId: 562, name: "Yamask", evo: "Nv. 34", zone: "Costa" },
-            { regionalId: 91, natId: 563, name: "Cofagrigus", evo: "Final", zone: "Costa" },
-            { regionalId: 92, natId: 63, name: "Abra", evo: "Nv. 16", zone: "Costa" },
-            { regionalId: 93, natId: 64, name: "Kadabra", evo: "Intercambio", zone: "Costa" },
-            { regionalId: 94, natId: 65, name: "Alakazam", evo: "Final", zone: "Costa" },
-            { regionalId: 95, natId: 524, name: "Roggenrola", evo: "Nv. 25", zone: "Costa" },
-            { regionalId: 96, natId: 525, name: "Boldore", evo: "Intercambio", zone: "Costa" },
-            { regionalId: 97, natId: 526, name: "Gigalith", evo: "Final", zone: "Costa" },
-            { regionalId: 98, natId: 214, name: "Heracross", evo: "Final", zone: "Costa" },
-            { regionalId: 99, natId: 216, name: "Teddiursa", evo: "Nv. 30", zone: "Costa" },
-            { regionalId: 100, natId: 217, name: "Ursaring", evo: "Final", zone: "Costa" },
-            { regionalId: 101, natId: 446, name: "Munchlax", evo: "Amistad", zone: "Costa" },
-            { regionalId: 102, natId: 143, name: "Snorlax", evo: "Final", zone: "Costa" },
-            { regionalId: 103, natId: 79, name: "Slowpoke", evo: "Nv. 37 / Roca Rey", zone: "Costa" },
-            { regionalId: 104, natId: 80, name: "Slowbro", evo: "Final", zone: "Costa" },
-            { regionalId: 105, natId: 199, name: "Slowking", evo: "Final", zone: "Costa" },
-            { regionalId: 106, natId: 102, name: "Exeggcute", evo: "Piedra Hoja", zone: "Costa" },
-            { regionalId: 107, natId: 103, name: "Exeggutor", evo: "Final", zone: "Costa" },
-            { regionalId: 108, natId: 441, name: "Chatot", evo: "Final", zone: "Costa" },
-            { regionalId: 109, natId: 458, name: "Mantyke", evo: "Subir Nv. con Remoraid", zone: "Costa" },
-            { regionalId: 110, natId: 226, name: "Mantine", evo: "Final", zone: "Costa" },
-            { regionalId: 111, natId: 366, name: "Clamperl", evo: "Intercambio (Diente/Escama)", zone: "Costa" },
-            { regionalId: 112, natId: 367, name: "Huntail", evo: "Final", zone: "Costa" },
-            { regionalId: 113, natId: 368, name: "Gorebyss", evo: "Final", zone: "Costa" },
-            { regionalId: 114, natId: 222, name: "Corsola", evo: "Final", zone: "Costa" },
-            { regionalId: 115, natId: 170, name: "Chinchou", evo: "Nv. 27", zone: "Costa" },
-            { regionalId: 116, natId: 171, name: "Lanturn", evo: "Final", zone: "Costa" },
-            { regionalId: 117, natId: 594, name: "Alomomola", evo: "Final", zone: "Costa" },
-            { regionalId: 118, natId: 131, name: "Lapras", evo: "Final", zone: "Costa" },
-            { regionalId: 119, natId: 144, name: "Articuno", evo: "Errante (Si Chespin)", zone: "Costa" },
-            { regionalId: 120, natId: 145, name: "Zapdos", evo: "Errante (Si Fennekin)", zone: "Costa" },
-            { regionalId: 121, natId: 146, name: "Moltres", evo: "Errante (Si Froakie)", zone: "Costa" },
-
-            // --- KALOS MONTAÑA ---
-            { regionalId: 1, natId: 50, name: "Diglett", evo: "Nv. 26", zone: "Montaña" },
-            { regionalId: 2, natId: 51, name: "Dugtrio", evo: "Final", zone: "Montaña" },
-            { regionalId: 3, natId: 328, name: "Trapinch", evo: "Nv. 35", zone: "Montaña" },
-            { regionalId: 4, natId: 329, name: "Vibrava", evo: "Nv. 45", zone: "Montaña" },
-            { regionalId: 5, natId: 330, name: "Flygon", evo: "Final", zone: "Montaña" },
-            { regionalId: 6, natId: 443, name: "Gible", evo: "Nv. 24", zone: "Montaña" },
-            { regionalId: 7, natId: 444, name: "Gabite", evo: "Nv. 48", zone: "Montaña" },
-            { regionalId: 8, natId: 445, name: "Garchomp", evo: "Final", zone: "Montaña" },
-            { regionalId: 9, natId: 74, name: "Geodude", evo: "Nv. 25", zone: "Montaña" },
-            { regionalId: 10, natId: 75, name: "Graveler", evo: "Intercambio", zone: "Montaña" },
-            { regionalId: 11, natId: 76, name: "Golem", evo: "Final", zone: "Montaña" },
-            { regionalId: 12, natId: 218, name: "Slugma", evo: "Nv. 38", zone: "Montaña" },
-            { regionalId: 13, natId: 219, name: "Magcargo", evo: "Final", zone: "Montaña" },
-            { regionalId: 14, natId: 451, name: "Skorupi", evo: "Nv. 40", zone: "Montaña" },
-            { regionalId: 15, natId: 452, name: "Drapion", evo: "Final", zone: "Montaña" },
-            { regionalId: 16, natId: 194, name: "Wooper", evo: "Nv. 20", zone: "Montaña" },
-            { regionalId: 17, natId: 195, name: "Quagsire", evo: "Final", zone: "Montaña" },
-            { regionalId: 18, natId: 704, name: "Goomy", evo: "Nv. 40", zone: "Montaña" },
-            { regionalId: 19, natId: 705, name: "Sliggoo", evo: "Nv. 50 (Lluvia)", zone: "Montaña" },
-            { regionalId: 20, natId: 706, name: "Goodra", evo: "Final", zone: "Montaña" },
-            { regionalId: 21, natId: 588, name: "Karrablast", evo: "Intercambio x Shelmet", zone: "Montaña" },
-            { regionalId: 22, natId: 589, name: "Escavalier", evo: "Final", zone: "Montaña" },
-            { regionalId: 23, natId: 616, name: "Shelmet", evo: "Intercambio x Karrablast", zone: "Montaña" },
-            { regionalId: 24, natId: 617, name: "Accelgor", evo: "Final", zone: "Montaña" },
-            { regionalId: 25, natId: 69, name: "Bellsprout", evo: "Nv. 21", zone: "Montaña" },
-            { regionalId: 26, natId: 70, name: "Weepinbell", evo: "Piedra Hoja", zone: "Montaña" },
-            { regionalId: 27, natId: 71, name: "Victreebel", evo: "Final", zone: "Montaña" },
-            { regionalId: 28, natId: 455, name: "Carnivine", evo: "Final", zone: "Montaña" },
-            { regionalId: 29, natId: 92, name: "Gastly", evo: "Nv. 25", zone: "Montaña" },
-            { regionalId: 30, natId: 93, name: "Haunter", evo: "Intercambio", zone: "Montaña" },
-            { regionalId: 31, natId: 94, name: "Gengar", evo: "Final", zone: "Montaña" },
-            { regionalId: 32, natId: 167, name: "Spinarak", evo: "Nv. 22", zone: "Montaña" },
-            { regionalId: 33, natId: 168, name: "Ariados", evo: "Final", zone: "Montaña" },
-            { regionalId: 34, natId: 100, name: "Voltorb", evo: "Nv. 30", zone: "Montaña" },
-            { regionalId: 35, natId: 101, name: "Electrode", evo: "Final", zone: "Montaña" },
-            { regionalId: 36, natId: 568, name: "Trubbish", evo: "Nv. 36", zone: "Montaña" },
-            { regionalId: 37, natId: 569, name: "Garbodor", evo: "Final", zone: "Montaña" },
-            { regionalId: 38, natId: 220, name: "Swinub", evo: "Nv. 33", zone: "Montaña" },
-            { regionalId: 39, natId: 221, name: "Piloswine", evo: "Nv. c/ Poder Pasado", zone: "Montaña" },
-            { regionalId: 40, natId: 473, name: "Mamoswine", evo: "Final", zone: "Montaña" },
-            { regionalId: 41, natId: 238, name: "Smoochum", evo: "Nv. 30", zone: "Montaña" },
-            { regionalId: 42, natId: 124, name: "Jynx", evo: "Final", zone: "Montaña" },
-            { regionalId: 43, natId: 582, name: "Vanillite", evo: "Nv. 35", zone: "Montaña" },
-            { regionalId: 44, natId: 583, name: "Vanillish", evo: "Nv. 47", zone: "Montaña" },
-            { regionalId: 45, natId: 584, name: "Vanilluxe", evo: "Final", zone: "Montaña" },
-            { regionalId: 46, natId: 459, name: "Snover", evo: "Nv. 40", zone: "Montaña" },
-            { regionalId: 47, natId: 460, name: "Abomasnow", evo: "Final", zone: "Montaña" },
-            { regionalId: 48, natId: 225, name: "Delibird", evo: "Final", zone: "Montaña" },
-            { regionalId: 49, natId: 361, name: "Snorunt", evo: "Nv. 42 / Piedra Alba", zone: "Montaña" },
-            { regionalId: 50, natId: 362, name: "Glalie", evo: "Final", zone: "Montaña" },
-            { regionalId: 51, natId: 478, name: "Froslass", evo: "Final", zone: "Montaña" },
-            { regionalId: 52, natId: 128, name: "Tauros", evo: "Final", zone: "Montaña" },
-            { regionalId: 53, natId: 241, name: "Miltank", evo: "Final", zone: "Montaña" },
-            { regionalId: 54, natId: 179, name: "Mareep", evo: "Nv. 15", zone: "Montaña" },
-            { regionalId: 55, natId: 180, name: "Flaaffy", evo: "Nv. 30", zone: "Montaña" },
-            { regionalId: 56, natId: 181, name: "Ampharos", evo: "Final", zone: "Montaña" },
-            { regionalId: 57, natId: 127, name: "Pinsir", evo: "Final", zone: "Montaña" },
-            { regionalId: 58, natId: 214, name: "Heracross", evo: "Final", zone: "Montaña" },
-            { regionalId: 59, natId: 417, name: "Pachirisu", evo: "Final", zone: "Montaña" },
-            { regionalId: 60, natId: 702, name: "Dedenne", evo: "Final", zone: "Montaña" },
-            { regionalId: 61, natId: 27, name: "Sandshrew", evo: "Nv. 22", zone: "Montaña" },
-            { regionalId: 62, natId: 28, name: "Sandslash", evo: "Final", zone: "Montaña" },
-            { regionalId: 63, natId: 304, name: "Aron", evo: "Nv. 32 (Exc. X)", zone: "Montaña" },
-            { regionalId: 64, natId: 305, name: "Lairon", evo: "Nv. 42", zone: "Montaña" },
-            { regionalId: 65, natId: 306, name: "Aggron", evo: "Final", zone: "Montaña" },
-            { regionalId: 66, natId: 246, name: "Larvitar", evo: "Nv. 30 (Exc. Y)", zone: "Montaña" },
-            { regionalId: 67, natId: 247, name: "Pupitar", evo: "Nv. 55", zone: "Montaña" },
-            { regionalId: 68, natId: 248, name: "Tyranitar", evo: "Final", zone: "Montaña" },
-            { regionalId: 69, natId: 322, name: "Numel", evo: "Nv. 33", zone: "Montaña" },
-            { regionalId: 70, natId: 323, name: "Camerupt", evo: "Final", zone: "Montaña" },
-            { regionalId: 71, natId: 108, name: "Lickitung", evo: "Nv. con Desenrollar", zone: "Montaña" },
-            { regionalId: 72, natId: 463, name: "Lickilicky", evo: "Final", zone: "Montaña" },
-            { regionalId: 73, natId: 703, name: "Carbink", evo: "Final", zone: "Montaña" },
-            { regionalId: 74, natId: 707, name: "Klefki", evo: "Final", zone: "Montaña" },
-            { regionalId: 75, natId: 538, name: "Throh", evo: "Final", zone: "Montaña" },
-            { regionalId: 76, natId: 539, name: "Sawk", evo: "Final", zone: "Montaña" },
-            { regionalId: 77, natId: 333, name: "Swablu", evo: "Nv. 35", zone: "Montaña" },
-            { regionalId: 78, natId: 334, name: "Altaria", evo: "Final", zone: "Montaña" },
-            { regionalId: 79, natId: 527, name: "Woobat", evo: "Amistad", zone: "Montaña" },
-            { regionalId: 80, natId: 528, name: "Swoobat", evo: "Final", zone: "Montaña" },
-            { regionalId: 81, natId: 708, name: "Phantump", evo: "Intercambio", zone: "Montaña" },
-            { regionalId: 82, natId: 709, name: "Trevenant", evo: "Final", zone: "Montaña" },
-            { regionalId: 83, natId: 710, name: "Pumpkaboo", evo: "Intercambio", zone: "Montaña" },
-            { regionalId: 84, natId: 711, name: "Gourgeist", evo: "Final", zone: "Montaña" },
-            { regionalId: 85, natId: 353, name: "Shuppet", evo: "Nv. 37", zone: "Montaña" },
-            { regionalId: 86, natId: 354, name: "Banette", evo: "Final", zone: "Montaña" },
-            { regionalId: 87, natId: 81, name: "Magnemite", evo: "Nv. 30", zone: "Montaña" },
-            { regionalId: 88, natId: 82, name: "Magneton", evo: "Zona Magnética", zone: "Montaña" },
-            { regionalId: 89, natId: 462, name: "Magnezone", evo: "Final", zone: "Montaña" },
-            { regionalId: 90, natId: 712, name: "Bergmite", evo: "Nv. 37", zone: "Montaña" },
-            { regionalId: 91, natId: 713, name: "Avalugg", evo: "Final", zone: "Montaña" },
-            { regionalId: 92, natId: 228, name: "Houndour", evo: "Nv. 24", zone: "Montaña" },
-            { regionalId: 93, natId: 229, name: "Houndoom", evo: "Final", zone: "Montaña" },
-            { regionalId: 94, natId: 517, name: "Munna", evo: "Piedra Lunar", zone: "Montaña" },
-            { regionalId: 95, natId: 518, name: "Musharna", evo: "Final", zone: "Montaña" },
-            { regionalId: 96, natId: 163, name: "Hoothoot", evo: "Nv. 20", zone: "Montaña" },
-            { regionalId: 97, natId: 164, name: "Noctowl", evo: "Final", zone: "Montaña" },
-            { regionalId: 98, natId: 714, name: "Noibat", evo: "Nv. 48", zone: "Montaña" },
-            { regionalId: 99, natId: 715, name: "Noivern", evo: "Final", zone: "Montaña" },
-            { regionalId: 100, natId: 23, name: "Ekans", evo: "Nv. 22", zone: "Montaña" },
-            { regionalId: 101, natId: 24, name: "Arbok", evo: "Final", zone: "Montaña" },
-            { regionalId: 102, natId: 147, name: "Dratini", evo: "Nv. 30", zone: "Montaña" },
-            { regionalId: 103, natId: 148, name: "Dragonair", evo: "Nv. 55", zone: "Montaña" },
-            { regionalId: 104, natId: 149, name: "Dragonite", evo: "Final", zone: "Montaña" },
-            { regionalId: 105, natId: 716, name: "Xerneas", evo: "Legendario (Exc. X)", zone: "Montaña" },
-            { regionalId: 106, natId: 717, name: "Yveltal", evo: "Legendario (Exc. Y)", zone: "Montaña" },
-            { regionalId: 107, natId: 718, name: "Zygarde", evo: "Legendario", zone: "Montaña" },
-            { regionalId: 108, natId: 150, name: "Mewtwo", evo: "Villa Pokémon", zone: "Montaña" }
-        ];
-
-        // Ruta 13 y demás rutas corregidas exactamente al formato Bulbapedia (Dirt/Ambush, Rock Smash, etc.)
-        const routeData = {
-            "Pokémon X": [
-                { name: "Pueblo Boceto", encounters: [
-                    { id: 650, level: "5", rate: "100%", method: "Inicial (Elección con Prof. Ciprés)" },
-                    { id: 653, level: "5", rate: "100%", method: "Inicial (Elección con Prof. Ciprés)" },
-                    { id: 656, level: "5", rate: "100%", method: "Inicial (Elección con Prof. Ciprés)" }
-                ]},
-                { name: "Ruta 13", encounters: [
-                    { id: 51, level: "26-28", rate: "40%", method: "Dirt (Nubes de polvo)" },
-                    { id: 328, level: "26-28", rate: "40%", method: "Dirt (Nubes de polvo)" },
-                    { id: 443, level: "26-28", rate: "20%", method: "Dirt (Nubes de polvo)" },
-                    { id: 75, level: "26-28", rate: "66%", method: "Rock Smash (Golpe Roca)" },
-                    { id: 218, level: "26, 28", rate: "34%", method: "Rock Smash (Golpe Roca)" }
-                ]}
-            ],
-            "Pokémon Y": [
-                { name: "Pueblo Boceto", encounters: [
-                    { id: 650, level: "5", rate: "100%", method: "Inicial (Elección con Prof. Ciprés)" },
-                    { id: 653, level: "5", rate: "100%", method: "Inicial (Elección con Prof. Ciprés)" },
-                    { id: 656, level: "5", rate: "100%", method: "Inicial (Elección con Prof. Ciprés)" }
-                ]},
-                { name: "Ruta 13", encounters: [
-                    { id: 51, level: "26-28", rate: "40%", method: "Dirt (Nubes de polvo)" },
-                    { id: 328, level: "26-28", rate: "40%", method: "Dirt (Nubes de polvo)" },
-                    { id: 443, level: "26-28", rate: "20%", method: "Dirt (Nubes de polvo)" },
-                    { id: 75, level: "26-28", rate: "66%", method: "Rock Smash (Golpe Roca)" },
-                    { id: 218, level: "26, 28", rate: "34%", method: "Rock Smash (Golpe Roca)" }
-                ]}
-            ]
+        const pokedexNames = {
+            1: "Bulbasaur", 2: "Ivysaur", 3: "Venusaur", 4: "Charmander", 5: "Charmeleon", 6: "Charizard",
+            7: "Squirtle", 8: "Wartortle", 9: "Blastoise", 10: "Caterpie", 11: "Metapod", 12: "Butterfree",
+            13: "Weedle", 14: "Kakuna", 15: "Beedrill", 16: "Pidgey", 17: "Pidgeotto", 18: "Pidgeot",
+            23: "Ekans", 24: "Arbok", 25: "Pikachu", 26: "Raichu", 27: "Sandshrew", 28: "Sandslash",
+            41: "Zubat", 42: "Golbat", 50: "Diglett", 51: "Dugtrio", 54: "Psyduck", 55: "Golduck",
+            63: "Abra", 64: "Kadabra", 65: "Alakazam", 69: "Bellsprout", 70: "Weepinbell", 71: "Victreebel",
+            72: "Tentacool", 73: "Tentacruel", 74: "Geodude", 75: "Graveler", 76: "Golem", 79: "Slowpoke",
+            80: "Slowbro", 81: "Magnemite", 82: "Magneton", 83: "Farfetch'd", 84: "Doduo", 85: "Dodrio",
+            92: "Gastly", 93: "Haunter", 94: "Gengar", 95: "Onix", 100: "Voltorb", 101: "Electrode",
+            104: "Cubone", 105: "Marowak", 108: "Lickitung", 111: "Rhyhorn", 112: "Rhydon", 118: "Goldeen",
+            119: "Seaking", 128: "Tauros", 129: "Magikarp", 130: "Gyarados", 131: "Lapras", 133: "Eevee",
+            143: "Snorlax", 147: "Dratini", 148: "Dragonair", 149: "Dragonite", 150: "Mewtwo", 163: "Hoothoot",
+            165: "Ledyba", 166: "Ledian", 167: "Spinarak", 168: "Ariados", 169: "Crobat", 170: "Chinchou",
+            171: "Lanturn", 172: "Pichu", 175: "Togepi", 179: "Mareep", 180: "Flaaffy", 181: "Ampharos",
+            183: "Marill", 184: "Azumarill", 187: "Hoppip", 188: "Skiploom", 189: "Jumpluff", 194: "Wooper",
+            195: "Quagsire", 198: "Murkrow", 206: "Dunsparce", 209: "Snubbull", 213: "Shuckle", 214: "Heracross",
+            215: "Sneasel", 218: "Slugma", 219: "Magcargo", 220: "Swinub", 221: "Piloswine", 222: "Corsola",
+            225: "Delibird", 226: "Mantine", 228: "Houndour", 229: "Houndoom", 235: "Smeargle", 238: "Smoochum",
+            241: "Miltank", 246: "Larvitar", 247: "Pupitar", 261: "Poochyena", 262: "Mightyena", 263: "Zigzagoon",
+            264: "Linoone", 270: "Lotad", 273: "Seedot", 276: "Taillow", 277: "Swellow", 278: "Wingull",
+            279: "Pelipper", 280: "Ralts", 281: "Kirlia", 282: "Gardevoir", 283: "Surskit", 284: "Masquerain",
+            293: "Whismur", 294: "Loudred", 298: "Azurill", 300: "Skitty", 304: "Aron", 305: "Lairon",
+            309: "Electrike", 310: "Manectric", 311: "Plusle", 312: "Minun", 313: "Volbeat", 314: "Illumise",
+            315: "Roselia", 316: "Gulpin", 318: "Carvanha", 319: "Sharpedo", 322: "Numel", 325: "Spoink",
+            327: "Spinda", 328: "Trapinch", 329: "Vibrava", 330: "Flygon", 333: "Swablu", 334: "Altaria",
+            335: "Zangoose", 336: "Seviper", 337: "Lunatone", 338: "Solrock", 339: "Barboach", 340: "Whiscash",
+            341: "Corphish", 342: "Crawdaunt", 353: "Shuppet", 354: "Banette", 359: "Absol", 361: "Snorunt",
+            366: "Clamperl", 371: "Bagon", 372: "Shelgon", 396: "Starly", 397: "Staravia", 399: "Bidoof",
+            400: "Bibarel", 406: "Budew", 412: "Burmy", 415: "Combee", 417: "Pachirisu", 418: "Buizel",
+            419: "Floatzel", 425: "Drifloon", 426: "Drifblim", 430: "Honchkrow", 434: "Stunky", 435: "Skuntank",
+            441: "Chatot", 443: "Gible", 444: "Gabite", 447: "Riolu", 448: "Lucario", 451: "Skorupi",
+            452: "Drapion", 453: "Croagunk", 454: "Toxicroak", 455: "Carnivine", 458: "Mantyke", 459: "Snover",
+            460: "Abomasnow", 461: "Weavile", 468: "Togekiss", 470: "Leafeon", 471: "Glaceon", 473: "Mamoswine",
+            475: "Gallade", 478: "Froslass", 504: "Patrat", 505: "Watchog", 509: "Purrloin", 510: "Liepard",
+            511: "Pansage", 513: "Pansear", 515: "Panpour", 524: "Roggenrola", 525: "Boldore", 527: "Woobat",
+            528: "Swoobat", 531: "Audino", 538: "Throh", 539: "Sawk", 540: "Sewaddle", 543: "Venipede",
+            544: "Whirlipede", 545: "Scolipede", 550: "Basculin", 557: "Dwebble", 558: "Crustle", 559: "Scraggy",
+            562: "Yamask", 568: "Trubbish", 569: "Garbodor", 574: "Gothita", 577: "Solosis", 580: "Ducklett",
+            582: "Vanillite", 583: "Vanillish", 588: "Karrablast", 590: "Foongus", 591: "Amoonguss", 594: "Alomomola",
+            597: "Ferroseed", 607: "Litwick", 610: "Axew", 613: "Cubchoo", 616: "Shelmet", 618: "Stunfisk",
+            619: "Mienfoo", 620: "Mienshao", 624: "Pawniard", 625: "Bisharp", 631: "Heatmor", 632: "Durant",
+            633: "Deino", 634: "Zweilous", 650: "Chespin", 653: "Fennekin", 656: "Froakie", 659: "Bunnelby",
+            660: "Diggersby", 661: "Fletchling", 662: "Fletchinder", 664: "Scatterbug", 667: "Litleo", 669: "Flabébé",
+            672: "Skiddo", 674: "Pancham", 676: "Furfrou", 677: "Espurr", 679: "Honedge", 682: "Spritzee",
+            684: "Swirlix", 686: "Inkay", 688: "Binacle", 690: "Skrelp", 692: "Clauncher", 694: "Helioptile",
+            696: "Tyrunt", 698: "Amaura", 701: "Hawlucha", 702: "Dedenne", 703: "Carbink", 704: "Goomy",
+            705: "Sliggoo", 707: "Klefki", 708: "Phantump", 710: "Pumpkaboo", 712: "Bergmite", 714: "Noibat",
+            716: "Xerneas", 717: "Yveltal", 718: "Zygarde"
         };
+
+        const allLocationsEncounters = [
+            {
+                locationName: "Pueblo Boceto (Vaniville Town)",
+                encounters: [
+                    { id: 650, games: ["X", "Y"], location: "Starter (Elección)", levels: "5", rate: "100%" },
+                    { id: 653, games: ["X", "Y"], location: "Starter (Elección)", levels: "5", rate: "100%" },
+                    { id: 656, games: ["X", "Y"], location: "Starter (Elección)", levels: "5", rate: "100%" }
+                ]
+            },
+            {
+                locationName: "Ruta 2 (Avance Trail)",
+                encounters: [
+                    { id: 659, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "2-3", rate: "20%" },
+                    { id: 661, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "2-3", rate: "20%" },
+                    { id: 664, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "2-3", rate: "20%" },
+                    { id: 263, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3-4", rate: "15%" },
+                    { id: 16, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3-4", rate: "14%" },
+                    { id: 13, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3-4", rate: "11%" },
+                    { id: 10, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3-4", rate: "11%" }
+                ]
+            },
+            {
+                locationName: "Bosque Novarte (Santalune Forest)",
+                encounters: [
+                    { id: 664, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "2-4", rate: "20%" },
+                    { id: 13, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "2-4", rate: "20%" },
+                    { id: 10, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "2-3", rate: "20%" },
+                    { id: 511, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "4", rate: "10%" },
+                    { id: 513, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "4", rate: "10%" },
+                    { id: 515, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "4", rate: "10%" },
+                    { id: 25, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3-4", rate: "6%" }
+                ]
+            },
+            {
+                locationName: "Ruta 3 (Ouvert Way)",
+                encounters: [
+                    { id: 399, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3-4", rate: "20%" },
+                    { id: 659, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3-4", rate: "20%" },
+                    { id: 661, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3, 5", rate: "20%" },
+                    { id: 298, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "3-5", rate: "10%" },
+                    { id: 412, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "5", rate: "10%" },
+                    { id: 206, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "5", rate: "5%" }
+                ]
+            },
+            {
+                locationName: "Ruta 4 (Parterre Way)",
+                encounters: [
+                    { id: 669, games: ["X", "Y"], location: "Yellow Flowers", levels: "4-5", rate: "20%" },
+                    { id: 172, games: ["X", "Y"], location: "Yellow Flowers", levels: "4-5", rate: "15%" },
+                    { id: 406, games: ["X", "Y"], location: "Yellow Flowers", levels: "4-5", rate: "15%" },
+                    { id: 280, games: ["X", "Y"], location: "Yellow Flowers", levels: "4", rate: "10%" },
+                    { id: 165, games: ["X", "Y"], location: "Yellow Flowers", levels: "4-5", rate: "10%" },
+                    { id: 300, games: ["X", "Y"], location: "Yellow Flowers", levels: "8", rate: "5%" },
+                    { id: 179, games: ["X", "Y"], location: "Horde Encounter", levels: "7", rate: "35%" }
+                ]
+            },
+            {
+                locationName: "Ciudad Luminalia - Laboratorio Prof. Ciprés",
+                encounters: [
+                    { id: 1, games: ["X", "Y"], location: "Kanto Starter (Regalo)", levels: "10", rate: "100%" },
+                    { id: 4, games: ["X", "Y"], location: "Kanto Starter (Regalo)", levels: "10", rate: "100%" },
+                    { id: 7, games: ["X", "Y"], location: "Kanto Starter (Regalo)", levels: "10", rate: "100%" }
+                ]
+            },
+            {
+                locationName: "Ruta 5 (Versant Road)",
+                encounters: [
+                    { id: 667, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "8-10", rate: "20%" },
+                    { id: 672, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "8-10", rate: "20%" },
+                    { id: 674, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "8-10", rate: "20%" },
+                    { id: 676, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "8-10", rate: "20%" },
+                    { id: 63, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "10", rate: "10%" },
+                    { id: 84, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "8, 10", rate: "10%" },
+                    { id: 311, games: ["X", "Y"], location: "Horde Encounter", levels: "6", rate: "35%" },
+                    { id: 312, games: ["X", "Y"], location: "Horde Encounter", levels: "6", rate: "35%" }
+                ]
+            },
+            {
+                locationName: "Ruta 6 (Palais Lane)",
+                encounters: [
+                    { id: 677, games: ["X", "Y"], location: "Grass (Camino largo)", levels: "11-12", rate: "20%" },
+                    { id: 83, games: ["X", "Y"], location: "Grass (Camino largo)", levels: "10-12", rate: "20%" },
+                    { id: 104, games: ["X", "Y"], location: "Grass (Camino largo)", levels: "10, 12", rate: "15%" },
+                    { id: 163, games: ["X", "Y"], location: "Grass (Camino largo)", levels: "11-12", rate: "15%" },
+                    { id: 316, games: ["X", "Y"], location: "Grass (Camino largo)", levels: "10-12", rate: "15%" },
+                    { id: 543, games: ["X", "Y"], location: "Bush Shake (Arbustos)", levels: "10-12", rate: "50%" }
+                ]
+            },
+            {
+                locationName: "Palacio Cénit (Parfum Palace)",
+                encounters: [
+                    { id: 129, games: ["X", "Y"], location: "Fishing (Caña Vieja)", levels: "15", rate: "100%" },
+                    { id: 118, games: ["X", "Y"], location: "Fishing (Caña Buena)", levels: "25", rate: "65%" },
+                    { id: 341, games: ["X", "Y"], location: "Fishing (Caña Buena)", levels: "25", rate: "35%" }
+                ]
+            },
+            {
+                locationName: "Ruta 7 (Rivière Walk)",
+                encounters: [
+                    { id: 682, games: ["Y"], location: "Grass (Hierba alta)", levels: "13-14", rate: "20%" },
+                    { id: 684, games: ["X"], location: "Grass (Hierba alta)", levels: "13-14", rate: "20%" },
+                    { id: 315, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "12-14", rate: "15%" },
+                    { id: 669, games: ["X", "Y"], location: "Yellow Flowers", levels: "12-14", rate: "15%" },
+                    { id: 133, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "11, 13", rate: "10%" },
+                    { id: 313, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "13", rate: "10%" },
+                    { id: 314, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "13", rate: "10%" },
+                    { id: 143, games: ["X", "Y"], location: "Bridge (Evento Snorlax)", levels: "15", rate: "100%" }
+                ]
+            },
+            {
+                locationName: "Cueva Conecta (Connecting Cave)",
+                encounters: [
+                    { id: 41, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "13-15", rate: "25%" },
+                    { id: 293, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "13-15", rate: "25%" },
+                    { id: 527, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "13-15", rate: "20%" },
+                    { id: 610, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "14-15", rate: "15%" },
+                    { id: 213, games: ["X", "Y"], location: "Rock Smash (Golpe Roca)", levels: "13-15", rate: "66%" }
+                ]
+            },
+            {
+                locationName: "Ruta 8 (Muraille Coast)",
+                encounters: [
+                    { id: 686, games: ["X", "Y"], location: "Grass (Acantilado)", levels: "13-15", rate: "20%" },
+                    { id: 325, games: ["X", "Y"], location: "Grass (Acantilado)", levels: "13-15", rate: "20%" },
+                    { id: 335, games: ["X", "Y"], location: "Grass (Acantilado)", levels: "14", rate: "15%" },
+                    { id: 336, games: ["X", "Y"], location: "Grass (Acantilado)", levels: "14", rate: "15%" },
+                    { id: 359, games: ["X", "Y"], location: "Grass (Acantilado)", levels: "15", rate: "10%" },
+                    { id: 371, games: ["X", "Y"], location: "Grass (Acantilado)", levels: "14-15", rate: "10%" },
+                    { id: 690, games: ["Y"], location: "Fishing (Caña Buena)", levels: "25", rate: "35%" },
+                    { id: 692, games: ["X"], location: "Fishing (Caña Buena)", levels: "25", rate: "35%" }
+                ]
+            },
+            {
+                locationName: "Pueblo Petroglifo (Ambrette Town)",
+                encounters: [
+                    { id: 696, games: ["X", "Y"], location: "Fossil Restorer (Mandíbula)", levels: "20", rate: "100%" },
+                    { id: 698, games: ["X", "Y"], location: "Fossil Restorer (Aleta)", levels: "20", rate: "100%" }
+                ]
+            },
+            {
+                locationName: "Ruta 9 (Spikes Passage)",
+                encounters: [
+                    { id: 111, games: ["X", "Y"], location: "Rhyhorn Ride Area", levels: "18-20", rate: "60%" },
+                    { id: 688, games: ["X", "Y"], location: "Rhyhorn Ride Area", levels: "19-20", rate: "20%" },
+                    { id: 451, games: ["X", "Y"], location: "Rhyhorn Ride Area", levels: "18, 20", rate: "20%" }
+                ]
+            },
+            {
+                locationName: "Cueva Brillante (Glittering Cave)",
+                encounters: [
+                    { id: 679, games: ["X", "Y"], location: "Shadows (Sombras)", levels: "16-18", rate: "25%" },
+                    { id: 524, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "16-18", rate: "20%" },
+                    { id: 111, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "17-18", rate: "20%" },
+                    { id: 304, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "16, 18", rate: "15%" },
+                    { id: 557, games: ["X", "Y"], location: "Rock Smash (Golpe Roca)", levels: "16-18", rate: "66%" },
+                    { id: 95, games: ["X", "Y"], location: "Rock Smash (Golpe Roca)", levels: "16-18", rate: "34%" }
+                ]
+            },
+            {
+                locationName: "Ruta 10 (Menhir Trail)",
+                encounters: [
+                    { id: 701, games: ["X", "Y"], location: "Yellow Flowers", levels: "19-21", rate: "20%" },
+                    { id: 359, games: ["X", "Y"], location: "Yellow Flowers", levels: "20-21", rate: "15%" },
+                    { id: 559, games: ["X", "Y"], location: "Yellow Flowers", levels: "19-20", rate: "15%" },
+                    { id: 215, games: ["X", "Y"], location: "Yellow Flowers", levels: "19, 21", rate: "10%" },
+                    { id: 228, games: ["X"], location: "Yellow Flowers", levels: "19, 21", rate: "10%" },
+                    { id: 309, games: ["Y"], location: "Yellow Flowers", levels: "19, 21", rate: "10%" },
+                    { id: 179, games: ["X", "Y"], location: "Horde Encounter", levels: "10", rate: "35%" },
+                    { id: 23, games: ["X", "Y"], location: "Horde Encounter", levels: "10", rate: "35%" }
+                ]
+            },
+            {
+                locationName: "Cueva Reflejos (Reflection Cave)",
+                encounters: [
+                    { id: 439, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "21-23", rate: "20%" },
+                    { id: 524, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "21-23", rate: "20%" },
+                    { id: 574, games: ["X"], location: "Cave Floor (Suelo)", levels: "21-22", rate: "15%" },
+                    { id: 577, games: ["Y"], location: "Cave Floor (Suelo)", levels: "21-22", rate: "15%" },
+                    { id: 703, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "22-23", rate: "10%" },
+                    { id: 619, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "21-23", rate: "10%" },
+                    { id: 116, games: ["X", "Y"], location: "Ceiling Shadows (Techo)", levels: "21-23", rate: "30%" }
+                ]
+            },
+            {
+                locationName: "Ruta 11 (Miroir Way)",
+                encounters: [
+                    { id: 702, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "21-23", rate: "20%" },
+                    { id: 694, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "21-23", rate: "20%" },
+                    { id: 619, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "21, 23", rate: "15%" },
+                    { id: 235, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "22-23", rate: "10%" },
+                    { id: 434, games: ["Y"], location: "Grass (Hierba alta)", levels: "22-23", rate: "10%" },
+                    { id: 316, games: ["X", "Y"], location: "Horde Encounter", levels: "11", rate: "35%" }
+                ]
+            },
+            {
+                locationName: "Ruta 12 (Fourrage Way)",
+                encounters: [
+                    { id: 672, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "25-27", rate: "20%" },
+                    { id: 128, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "25, 27", rate: "15%" },
+                    { id: 241, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "25, 27", rate: "15%" },
+                    { id: 214, games: ["Y"], location: "Grass (Hierba alta)", levels: "27", rate: "10%" },
+                    { id: 127, games: ["X"], location: "Grass (Hierba alta)", levels: "27", rate: "10%" },
+                    { id: 279, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "25-27", rate: "10%" },
+                    { id: 131, games: ["X", "Y"], location: "NPC Gift (Regalo Surf)", levels: "30", rate: "100%" }
+                ]
+            },
+            {
+                locationName: "Bahía Azul (Azure Bay)",
+                encounters: [
+                    { id: 279, games: ["X", "Y"], location: "Grass (Islas)", levels: "25-27", rate: "20%" },
+                    { id: 278, games: ["X", "Y"], location: "Surfing (Surf)", levels: "25-27", rate: "30%" },
+                    { id: 72, games: ["X", "Y"], location: "Surfing (Surf)", levels: "25-27", rate: "30%" },
+                    { id: 366, games: ["X", "Y"], location: "Fishing (Caña Buena)", levels: "25", rate: "35%" },
+                    { id: 130, games: ["X", "Y"], location: "Fishing (Supercaña)", levels: "35", rate: "35%" }
+                ]
+            },
+            {
+                locationName: "Ruta 13 (Lumiose Badlands)",
+                encounters: [
+                    { id: 51, games: ["X", "Y"], location: "Dirt (Nubes de Polvo)", levels: "26-28", rate: "40%" },
+                    { id: 328, games: ["X", "Y"], location: "Dirt (Nubes de Polvo)", levels: "26-28", rate: "40%" },
+                    { id: 443, games: ["X", "Y"], location: "Dirt (Nubes de Polvo)", levels: "26-28", rate: "20%" },
+                    { id: 75, games: ["X", "Y"], location: "Rock Smash (Golpe Roca)", levels: "26-28", rate: "66%" },
+                    { id: 218, games: ["X", "Y"], location: "Rock Smash (Golpe Roca)", levels: "26, 28", rate: "34%" }
+                ]
+            },
+            {
+                locationName: "Ruta 14 (Laverre Nature Trail)",
+                encounters: [
+                    { id: 704, games: ["X", "Y"], location: "Swamp (Pantano)", levels: "30-32", rate: "15%" },
+                    { id: 195, games: ["X", "Y"], location: "Swamp (Pantano)", levels: "30-32", rate: "15%" },
+                    { id: 616, games: ["X", "Y"], location: "Swamp (Pantano)", levels: "30-32", rate: "15%" },
+                    { id: 588, games: ["X", "Y"], location: "Swamp (Pantano)", levels: "30-32", rate: "15%" },
+                    { id: 70, games: ["X", "Y"], location: "Swamp (Pantano)", levels: "30-31", rate: "15%" },
+                    { id: 455, games: ["X", "Y"], location: "Swamp (Pantano)", levels: "31-32", rate: "10%" }
+                ]
+            },
+            {
+                locationName: "Ruta 15 (Brun Way)",
+                encounters: [
+                    { id: 708, games: ["X", "Y"], location: "Red Flowers", levels: "34-36", rate: "20%" },
+                    { id: 710, games: ["X", "Y"], location: "Red Flowers", levels: "34-36", rate: "20%" },
+                    { id: 198, games: ["X", "Y"], location: "Red Flowers", levels: "34-35", rate: "15%" },
+                    { id: 452, games: ["X", "Y"], location: "Red Flowers", levels: "35-36", rate: "10%" },
+                    { id: 625, games: ["X", "Y"], location: "Red Flowers", levels: "36", rate: "10%" },
+                    { id: 590, games: ["X", "Y"], location: "Horde Encounter", levels: "18", rate: "35%" }
+                ]
+            },
+            {
+                locationName: "Hotel Desolación (Lost Hotel)",
+                encounters: [
+                    { id: 707, games: ["X", "Y"], location: "Trash Cans (Contenedores)", levels: "36-38", rate: "30%" },
+                    { id: 569, games: ["X", "Y"], location: "Trash Cans (Contenedores)", levels: "36-38", rate: "30%" },
+                    { id: 479, games: ["X", "Y"], location: "Trash Cans (Martes)", levels: "38", rate: "20%" },
+                    { id: 568, games: ["X", "Y"], location: "Floor (Suelo)", levels: "35-37", rate: "30%" },
+                    { id: 93, games: ["X", "Y"], location: "Floor (Suelo)", levels: "35-37", rate: "25%" },
+                    { id: 101, games: ["X", "Y"], location: "Floor (Suelo)", levels: "36-38", rate: "20%" }
+                ]
+            },
+            {
+                locationName: "Ruta 16 (Melancolie Way)",
+                encounters: [
+                    { id: 708, games: ["X", "Y"], location: "Yellow Flowers", levels: "34-36", rate: "20%" },
+                    { id: 710, games: ["X", "Y"], location: "Yellow Flowers", levels: "34-36", rate: "20%" },
+                    { id: 198, games: ["X", "Y"], location: "Yellow Flowers", levels: "34-35", rate: "15%" },
+                    { id: 305, games: ["X"], location: "Yellow Flowers", levels: "35-36", rate: "10%" },
+                    { id: 247, games: ["Y"], location: "Yellow Flowers", levels: "35-36", rate: "10%" }
+                ]
+            },
+            {
+                locationName: "Gruta Helada (Frost Cavern)",
+                encounters: [
+                    { id: 712, games: ["X", "Y"], location: "Cave Ice Floor", levels: "38-40", rate: "25%" },
+                    { id: 583, games: ["X", "Y"], location: "Cave Ice Floor", levels: "38-39", rate: "20%" },
+                    { id: 614, games: ["X", "Y"], location: "Cave Ice Floor", levels: "39-40", rate: "15%" },
+                    { id: 460, games: ["X", "Y"], location: "Cave Ice Floor", levels: "38-40", rate: "15%" },
+                    { id: 124, games: ["X", "Y"], location: "Cave Ice Floor", levels: "38, 40", rate: "10%" },
+                    { id: 613, games: ["X", "Y"], location: "Horde Encounter", levels: "20", rate: "35%" }
+                ]
+            },
+            {
+                locationName: "Ruta 17 (Mamoswine Road)",
+                encounters: [
+                    { id: 460, games: ["X", "Y"], location: "Snow Area (Nieve)", levels: "38-40", rate: "30%" },
+                    { id: 225, games: ["X", "Y"], location: "Snow Area (Nieve)", levels: "38-39", rate: "30%" },
+                    { id: 221, games: ["X", "Y"], location: "Snow Area (Nieve)", levels: "39-40", rate: "20%" },
+                    { id: 473, games: ["X", "Y"], location: "Snow Area (Nieve)", levels: "40", rate: "20%" }
+                ]
+            },
+            {
+                locationName: "Ruta 18 (Vallée Étroite Way)",
+                encounters: [
+                    { id: 625, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "46-48", rate: "20%" },
+                    { id: 632, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "46-48", rate: "20%" },
+                    { id: 631, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "46-48", rate: "20%" },
+                    { id: 75, games: ["X", "Y"], location: "Rock Smash (Golpe Roca)", levels: "45-47", rate: "66%" },
+                    { id: 219, games: ["X", "Y"], location: "Rock Smash (Golpe Roca)", levels: "45-47", rate: "34%" }
+                ]
+            },
+            {
+                locationName: "Cueva Términus (Terminus Cave)",
+                encounters: [
+                    { id: 632, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "46-48", rate: "20%" },
+                    { id: 452, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "46-48", rate: "20%" },
+                    { id: 112, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "46-47", rate: "15%" },
+                    { id: 718, games: ["X", "Y"], location: "Deep Cave (Zygarde)", levels: "70", rate: "100%" }
+                ]
+            },
+            {
+                locationName: "Ruta 19 (Grande Vallée Way)",
+                encounters: [
+                    { id: 705, games: ["X", "Y"], location: "Yellow Flowers", levels: "48-50", rate: "20%" },
+                    { id: 24, games: ["X", "Y"], location: "Yellow Flowers", levels: "48-49", rate: "20%" },
+                    { id: 71, games: ["X", "Y"], location: "Yellow Flowers", levels: "48-50", rate: "15%" },
+                    { id: 209, games: ["X", "Y"], location: "Yellow Flowers", levels: "48, 50", rate: "15%" }
+                ]
+            },
+            {
+                locationName: "Ruta 20 (Winding Woods)",
+                encounters: [
+                    { id: 709, games: ["X", "Y"], location: "Forest Grass", levels: "50-52", rate: "20%" },
+                    { id: 711, games: ["X", "Y"], location: "Forest Grass", levels: "50-52", rate: "20%" },
+                    { id: 591, games: ["X", "Y"], location: "Forest Grass", levels: "50-51", rate: "15%" },
+                    { id: 127, games: ["X"], location: "Forest Grass", levels: "51-52", rate: "10%" },
+                    { id: 214, games: ["Y"], location: "Forest Grass", levels: "51-52", rate: "10%" }
+                ]
+            },
+            {
+                locationName: "Villa Pokémon (Pokémon Village)",
+                encounters: [
+                    { id: 235, games: ["X", "Y"], location: "Yellow Flowers", levels: "48-50", rate: "20%" },
+                    { id: 531, games: ["X", "Y"], location: "Yellow Flowers", levels: "48-50", rate: "20%" },
+                    { id: 591, games: ["X", "Y"], location: "Yellow Flowers", levels: "48-50", rate: "15%" },
+                    { id: 713, games: ["X", "Y"], location: "Yellow Flowers", levels: "49-50", rate: "10%" },
+                    { id: 150, games: ["X", "Y"], location: "Unknown Dungeon (Mewtwo)", levels: "70", rate: "100%" }
+                ]
+            },
+            {
+                locationName: "Ruta 21 (Dernière Way)",
+                encounters: [
+                    { id: 334, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "48-50", rate: "20%" },
+                    { id: 217, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "48-50", rate: "20%" },
+                    { id: 505, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "48-49", rate: "15%" },
+                    { id: 625, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "49-50", rate: "15%" }
+                ]
+            },
+            {
+                locationName: "Ruta 22 (Palais Galerie)",
+                encounters: [
+                    { id: 662, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "24-26", rate: "20%" },
+                    { id: 660, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "24-26", rate: "20%" },
+                    { id: 184, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "24-25", rate: "15%" },
+                    { id: 281, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "25-26", rate: "15%" },
+                    { id: 112, games: ["X", "Y"], location: "Grass (Hierba alta)", levels: "25-26", rate: "10%" }
+                ]
+            },
+            {
+                locationName: "Calle Victoria (Victory Road)",
+                encounters: [
+                    { id: 625, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "57-59", rate: "20%" },
+                    { id: 620, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "57-59", rate: "20%" },
+                    { id: 112, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "56-58", rate: "15%" },
+                    { id: 452, games: ["X", "Y"], location: "Cave Floor (Suelo)", levels: "57-58", rate: "15%" },
+                    { id: 715, games: ["X", "Y"], location: "Ceiling Shadows (Techo)", levels: "58-60", rate: "30%" },
+                    { id: 634, games: ["X", "Y"], location: "Ceiling Shadows (Techo)", levels: "59-60", rate: "20%" }
+                ]
+            }
+        ];
 
         const versionExclusives = {
             "Pokémon X": [
-                { name: "Swirlix", note: "Ruta 7 (Hierba alta) - 20%" },
-                { name: "Slurpuff", note: "Evoluciona por Intercambio con Dulce Nata" },
-                { name: "Clauncher", note: "Ruta 8 / Bahía Azul (Caña Buena)" },
-                { name: "Xerneas", note: "Legendario principal (Nivel 50)" }
+                { name: "Swirlix / Slurpuff", note: "Ruta 7 / Intercambio con Dulce Nata" },
+                { name: "Clauncher / Clawitzer", note: "Ruta 8 (Caña Buena) / Evolución Nv. 37" },
+                { name: "Aron / Lairon / Aggron", note: "Cueva Reflejos / Evolución" },
+                { name: "Houndour / Houndoom", note: "Ruta 10 / Evolución Nv. 24" },
+                { name: "Stunky / Skuntank", note: "Ruta 11 / Evolución Nv. 34" },
+                { name: "Pinsir", note: "Ruta 20 / Bosque Errabundo" },
+                { name: "Xerneas", note: "Guarida del Team Flare (Nivel 50)" }
             ],
             "Pokémon Y": [
-                { name: "Spritzee", note: "Ruta 7 (Hierba alta) - 20%" },
-                { name: "Aromatisse", note: "Evoluciona por Intercambio con Saquito Fragante" },
-                { name: "Skrelp", note: "Ruta 8 / Bahía Azul (Caña Buena)" },
-                { name: "Yveltal", note: "Legendario principal (Nivel 50)" }
+                { name: "Spritzee / Aromatisse", note: "Ruta 7 / Intercambio con Saquito Fragante" },
+                { name: "Skrelp / Dragalge", note: "Ruta 8 (Caña Buena) / Evolución Nv. 48" },
+                { name: "Larvitar / Pupitar / Tyranitar", note: "Cueva Reflejos / Evolución" },
+                { name: "Electrike / Manectric", note: "Ruta 10 / Evolución Nv. 26" },
+                { name: "Purrloin / Liepard", note: "Ruta 11 / Evolución Nv. 20" },
+                { name: "Heracross", note: "Ruta 12 / Ruta 20" },
+                { name: "Yveltal", note: "Guarida del Team Flare (Nivel 50)" }
             ]
         };
 
         let caughtState = {}; 
-        let currentView = 'pokedex';
+        let currentView = 'encounters';
         let searchQuery = '';
-        let filterState = 'all';
-        let zoneFilter = 'all';
         
         let db, auth, userId;
         const appId = 'kalos-tracker'; 
@@ -480,16 +504,7 @@
         }
 
         function getPokemonName(id) {
-            const p = pokedex.find(p => p.natId === id);
-            return p ? p.name : `Desconocido (${id})`;
-        }
-
-        function isAvailableInGame(pokemonId, gameName) {
-            if (!routeData[gameName]) return false;
-            for (let route of routeData[gameName]) {
-                if (route.encounters.some(e => e.id === pokemonId)) return true;
-            }
-            return false;
+            return pokedexNames[id] || `Pokémon #${id}`;
         }
 
         window.toggleCaught = async function(natId) {
@@ -506,50 +521,114 @@
 
         window.navigate = function(viewName) {
             currentView = viewName;
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('bg-slate-700'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('bg-slate-800'));
             const activeBtn = document.getElementById(`nav-${viewName}`);
-            if (activeBtn) activeBtn.classList.add('bg-slate-700');
+            if (activeBtn) activeBtn.classList.add('bg-slate-800');
             renderCurrentView();
             window.scrollTo(0, 0);
         }
 
         window.updateSearch = function(value) { searchQuery = value.toLowerCase(); renderCurrentView(); }
-        window.updateFilter = function(value) { filterState = value; renderCurrentView(); }
-        window.updateZoneFilter = function(value) { zoneFilter = value; renderCurrentView(); }
 
         function renderCurrentView() {
             const container = document.getElementById('app-content');
-            if (currentView === 'pokedex') {
+            if (currentView === 'encounters') {
+                container.innerHTML = generateEncountersHTML();
+            } else if (currentView === 'pokedex') {
                 container.innerHTML = generatePokedexHTML();
-                document.body.className = "bg-gray-100 text-gray-800 min-h-screen flex flex-col game-bg-pokedex";
             } else if (currentView === 'Exclusivos') {
                 container.innerHTML = generateExclusivesHTML();
-                document.body.className = "bg-gray-100 text-gray-800 min-h-screen flex flex-col game-bg-pokedex";
-            } else {
-                container.innerHTML = generateGamePageHTML(currentView);
-                const bgColors = { 'Pokémon X': 'game-bg-x', 'Pokémon Y': 'game-bg-y' };
-                document.body.className = `text-gray-800 min-h-screen flex flex-col ${bgColors[currentView]}`;
             }
+        }
+
+        function generateEncountersHTML() {
+            let html = `
+                <div class="space-y-8">
+                    <div class="rounded-xl shadow-lg border border-slate-700 bg-slate-800 p-6 sm:p-8">
+                        <h1 class="text-3xl font-extrabold text-white mb-2">Guía Única de Encuentros de Kalos (X / Y)</h1>
+                        <p class="text-slate-300 mb-4">Ubicaciones y porcentajes de aparición verificados estilo Bulbapedia.</p>
+                        <input type="text" placeholder="Buscar por lugar o Pokémon..." class="px-4 py-2.5 rounded-lg bg-slate-900 text-white w-full border border-slate-700 focus:ring-2 focus:ring-sky-500 outline-none" value="${searchQuery}" onkeyup="updateSearch(this.value)">
+                    </div>
+            `;
+
+            const filteredLocations = allLocationsEncounters.filter(loc => {
+                const matchesLoc = loc.locationName.toLowerCase().includes(searchQuery);
+                const matchesMon = loc.encounters.some(e => getPokemonName(e.id).toLowerCase().includes(searchQuery));
+                return matchesLoc || matchesMon;
+            });
+
+            filteredLocations.forEach(loc => {
+                html += `
+                    <div class="bg-slate-800 rounded-xl shadow-md border border-slate-700 overflow-hidden">
+                        <div class="px-6 py-4 bg-slate-950 border-b border-slate-700">
+                            <h2 class="text-xl font-bold text-sky-400">${loc.locationName}</h2>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm whitespace-nowrap">
+                                <thead class="bg-slate-900 text-slate-400 text-xs uppercase font-semibold border-b border-slate-700">
+                                    <tr>
+                                        <th class="px-4 py-3 w-16 text-center">Captura</th>
+                                        <th class="px-4 py-3">Pokémon</th>
+                                        <th class="px-4 py-3 text-center">Games</th>
+                                        <th class="px-4 py-3">Location</th>
+                                        <th class="px-4 py-3 text-center">Levels</th>
+                                        <th class="px-4 py-3 text-center">Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-700/50">
+                `;
+
+                loc.encounters.forEach(encounter => {
+                    const pokeName = getPokemonName(encounter.id);
+                    const isCaught = caughtState[encounter.id] || false;
+
+                    let gamesBadges = encounter.games.map(g => {
+                        const bg = g === 'X' ? 'bg-sky-600' : 'bg-rose-600';
+                        return `<span class="px-2 py-0.5 text-xs font-bold text-white ${bg} rounded mr-1">${g}</span>`;
+                    }).join('');
+
+                    html += `
+                        <tr class="hover:bg-slate-700/50 transition ${isCaught ? 'bg-sky-950/30' : ''}">
+                            <td class="px-4 py-3 text-center">
+                                <input type="checkbox" class="w-5 h-5 text-sky-500 rounded border-slate-600 cursor-pointer checkbox-anim" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${encounter.id})">
+                            </td>
+                            <td class="px-4 py-3 font-semibold flex items-center gap-3">
+                                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${encounter.id}.png" alt="${pokeName}" class="w-10 h-10 object-contain" onerror="this.style.display='none'">
+                                <span><a href="${getWikidexUrl(pokeName)}" target="_blank" class="text-sky-400 hover:underline">${pokeName}</a> <span class="text-xs text-slate-500 font-mono">#${encounter.id}</span></span>
+                            </td>
+                            <td class="px-4 py-3 text-center">${gamesBadges}</td>
+                            <td class="px-4 py-3 text-slate-300 font-medium">${encounter.location}</td>
+                            <td class="px-4 py-3 text-center text-slate-300 font-mono">${encounter.levels}</td>
+                            <td class="px-4 py-3 text-center font-bold text-sky-400 font-mono">${encounter.rate}</td>
+                        </tr>
+                    `;
+                });
+
+                html += `</tbody></table></div></div>`;
+            });
+
+            html += `</div>`;
+            return html;
         }
 
         function generateExclusivesHTML() {
             let html = `
-                <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-200 p-8">
-                    <h1 class="text-3xl font-extrabold mb-6 text-slate-900">Pokémon Exclusivos por Versión</h1>
+                <div class="bg-slate-800 rounded-xl shadow-xl overflow-hidden border border-slate-700 p-8">
+                    <h1 class="text-3xl font-extrabold mb-6 text-white">Pokémon Exclusivos por Versión</h1>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             `;
             for (const [version, list] of Object.entries(versionExclusives)) {
                 let badgeColor = version === 'Pokémon X' ? 'bg-sky-600' : 'bg-rose-600';
                 html += `
-                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 shadow-sm">
+                    <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 shadow-sm">
                         <h2 class="text-2xl font-bold mb-4 text-white p-3 rounded-lg ${badgeColor}">${version}</h2>
                         <ul class="space-y-3">
                 `;
                 list.forEach(item => {
                     html += `
-                        <li class="flex justify-between items-center bg-white p-3 rounded-lg border border-gray-100 shadow-xs">
-                            <span class="font-bold text-slate-800">${item.name}</span>
-                            <span class="text-xs text-slate-500 bg-gray-100 px-2 py-1 rounded">${item.note}</span>
+                        <li class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <span class="font-bold text-slate-200">${item.name}</span>
+                            <span class="text-xs text-slate-400 bg-slate-900 px-2 py-1 rounded">${item.note}</span>
                         </li>
                     `;
                 });
@@ -560,143 +639,52 @@
         }
 
         function generatePokedexHTML() {
+            const allIds = Object.keys(pokedexNames).map(Number);
             const totalCaught = Object.values(caughtState).filter(v => v).length;
-            const progressPercent = Math.round((totalCaught / pokedex.length) * 100);
+            const progressPercent = Math.round((totalCaught / allIds.length) * 100);
 
             let html = `
-                <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-200">
-                    <div class="p-6 bg-slate-800 text-white border-b border-gray-700">
+                <div class="bg-slate-800 rounded-xl shadow-xl overflow-hidden border border-slate-700">
+                    <div class="p-6 bg-slate-900 text-white border-b border-slate-700">
                         <h1 class="text-3xl font-extrabold flex flex-wrap items-center gap-3">
-                            Pokédex Regional Kalos
+                            Pokédex de Kalos
                             <span class="text-sm font-normal bg-sky-600 px-3 py-1 rounded-full text-sky-100">
-                                ${totalCaught} / ${pokedex.length} Registrados
+                                ${totalCaught} / ${allIds.length} Registrados
                             </span>
                         </h1>
                         <div class="w-full bg-slate-700 rounded-full h-2.5 mt-4">
                             <div class="bg-sky-500 h-2.5 rounded-full transition-all duration-500" style="width: ${progressPercent}%"></div>
                         </div>
-                        <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <input type="text" placeholder="Buscar Pokémon..." class="px-4 py-2 rounded-lg text-gray-800 w-full focus:ring-2 focus:ring-sky-500 outline-none" value="${searchQuery}" onkeyup="updateSearch(this.value)">
-                            <select class="px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer" onchange="updateZoneFilter(this.value)">
-                                <option value="all" ${zoneFilter === 'all' ? 'selected' : ''}>Todas las Zonas</option>
-                                <option value="Centro" ${zoneFilter === 'Centro' ? 'selected' : ''}>Kalos Centro</option>
-                                <option value="Costa" ${zoneFilter === 'Costa' ? 'selected' : ''}>Kalos Costa</option>
-                                <option value="Montaña" ${zoneFilter === 'Montaña' ? 'selected' : ''}>Kalos Montaña</option>
-                            </select>
-                            <select class="px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer" onchange="updateFilter(this.value)">
-                                <option value="all" ${filterState === 'all' ? 'selected' : ''}>Todos</option>
-                                <option value="caught" ${filterState === 'caught' ? 'selected' : ''}>Atrapados</option>
-                                <option value="missing" ${filterState === 'missing' ? 'selected' : ''}>Faltantes</option>
-                            </select>
-                        </div>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm whitespace-nowrap">
-                            <thead class="uppercase tracking-wider border-b-2 border-gray-200 bg-gray-50 text-gray-600 font-bold">
+                            <thead class="uppercase tracking-wider border-b border-slate-700 bg-slate-900 text-slate-400 font-bold">
                                 <tr>
                                     <th class="px-6 py-4 text-center">Atrapado</th>
-                                    <th class="px-6 py-4 text-center">Nº Reg.</th>
                                     <th class="px-6 py-4 text-center">Nº Nac.</th>
-                                    <th class="px-6 py-4">Zona</th>
                                     <th class="px-6 py-4">Sprite</th>
                                     <th class="px-6 py-4">Pokémon</th>
-                                    <th class="px-6 py-4">Evolución</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-100">
+                            <tbody class="divide-y divide-slate-700">
             `;
 
-            const filteredPokedex = pokedex.filter(poke => {
-                const isCaught = caughtState[poke.natId] || false;
-                const matchesSearch = poke.name.toLowerCase().includes(searchQuery) || String(poke.natId).includes(searchQuery);
-                const matchesZone = (zoneFilter === 'all' || poke.zone === zoneFilter);
-                let matchesFilter = true;
-                if (filterState === 'caught') matchesFilter = isCaught;
-                if (filterState === 'missing') matchesFilter = !isCaught;
-                return matchesSearch && matchesZone && matchesFilter;
-            });
-
-            filteredPokedex.forEach((poke) => {
-                const isCaught = caughtState[poke.natId] || false;
+            allIds.forEach((id) => {
+                const pokeName = getPokemonName(id);
+                const isCaught = caughtState[id] || false;
                 html += `
-                    <tr class="hover:bg-gray-50 transition duration-150 ${isCaught ? 'bg-sky-50/50' : ''}">
+                    <tr class="hover:bg-slate-700/50 transition ${isCaught ? 'bg-sky-950/30' : ''}">
                         <td class="px-6 py-4 text-center">
-                            <input type="checkbox" class="w-6 h-6 text-sky-600 rounded border-gray-300 cursor-pointer checkbox-anim" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${poke.natId})">
+                            <input type="checkbox" class="w-6 h-6 text-sky-500 rounded border-slate-600 cursor-pointer checkbox-anim" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${id})">
                         </td>
-                        <td class="px-6 py-4 text-center font-mono font-bold text-sky-900">#${String(poke.regionalId).padStart(3, '0')}</td>
-                        <td class="px-6 py-4 text-center font-mono text-gray-500">#${String(poke.natId).padStart(3, '0')}</td>
-                        <td class="px-6 py-4"><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-100 text-slate-800">${poke.zone}</span></td>
-                        <td class="px-6 py-2"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.natId}.png" alt="${poke.name}" class="w-12 h-12 inline-block object-contain" onerror="this.style.display='none'"></td>
-                        <td class="px-6 py-4 font-bold text-base"><a href="${getWikidexUrl(poke.name)}" target="_blank" class="text-blue-600 hover:underline">${poke.name}</a></td>
-                        <td class="px-6 py-4 text-sm font-medium text-sky-700">${poke.evo}</td>
+                        <td class="px-6 py-4 text-center font-mono font-bold text-sky-400">#${String(id).padStart(3, '0')}</td>
+                        <td class="px-6 py-2"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png" alt="${pokeName}" class="w-12 h-12 inline-block object-contain" onerror="this.style.display='none'"></td>
+                        <td class="px-6 py-4 font-bold text-base"><a href="${getWikidexUrl(pokeName)}" target="_blank" class="text-sky-400 hover:underline">${pokeName}</a></td>
                     </tr>
                 `;
             });
 
             html += `</tbody></table></div></div>`;
-            return html;
-        }
-
-        function generateGamePageHTML(gameName) {
-            const routes = routeData[gameName];
-            let headerStyles = gameName === 'Pokémon X' ? 'bg-sky-600 text-white' : 'bg-rose-600 text-white';
-
-            let html = `
-                <div class="mb-8">
-                    <div class="rounded-xl shadow-lg overflow-hidden border border-white/20 mb-8">
-                        <div class="p-8 ${headerStyles}">
-                            <h1 class="text-4xl font-extrabold mb-2">Edición ${gameName}</h1>
-                            <p class="text-lg opacity-90">Formato de encuentros idéntico a Bulbapedia (Pokémon, Games, Location, Levels, Rate).</p>
-                        </div>
-                    </div>
-                    <div class="space-y-8">
-            `;
-
-            routes.forEach(route => {
-                html += `
-                    <div class="bg-white/90 backdrop-blur-sm rounded-xl shadow-md overflow-hidden">
-                        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                            <h2 class="text-xl font-bold text-gray-800">${route.name}</h2>
-                        </div>
-                        <div class="p-0 overflow-x-auto">
-                            <table class="w-full text-left text-sm whitespace-nowrap">
-                                <thead class="bg-gray-100/50 text-gray-600 text-xs uppercase font-semibold">
-                                    <tr>
-                                        <th class="px-4 py-3 w-16 text-center">Atrapar</th>
-                                        <th class="px-4 py-3">Pokémon</th>
-                                        <th class="px-4 py-3 text-center">Games</th>
-                                        <th class="px-4 py-3">Location</th>
-                                        <th class="px-4 py-3">Levels</th>
-                                        <th class="px-4 py-3">Rate</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-100">
-                `;
-                route.encounters.forEach(encounter => {
-                    const pokeName = getPokemonName(encounter.id);
-                    const isCaught = caughtState[encounter.id] || false;
-                    html += `
-                        <tr class="hover:bg-gray-50/80 transition ${isCaught ? 'bg-sky-50/20' : ''}">
-                            <td class="px-4 py-3 text-center">
-                                <input type="checkbox" class="w-5 h-5 text-sky-600 rounded border-gray-300 cursor-pointer checkbox-anim" ${isCaught ? 'checked' : ''} onchange="toggleCaught(${encounter.id})">
-                            </td>
-                            <td class="px-4 py-3 font-semibold flex items-center gap-3">
-                                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${encounter.id}.png" alt="${pokeName}" class="w-10 h-10 object-contain" onerror="this.style.display='none'">
-                                <span><a href="${getWikidexUrl(pokeName)}" target="_blank" class="text-blue-600 hover:underline">${pokeName}</a></span>
-                            </td>
-                            <td class="px-4 py-3 text-center">
-                                <span class="px-2 py-1 text-xs font-bold text-white bg-blue-600 rounded">X</span>
-                                <span class="px-2 py-1 text-xs font-bold text-white bg-red-600 rounded">Y</span>
-                            </td>
-                            <td class="px-4 py-3 text-gray-700 font-medium">${encounter.method}</td>
-                            <td class="px-4 py-3 text-gray-600">${encounter.level}</td>
-                            <td class="px-4 py-3 font-semibold text-sky-900">${encounter.rate}</td>
-                        </tr>
-                    `;
-                });
-                html += `</tbody></table></div></div>`;
-            });
-            html += `</div></div>`;
             return html;
         }
 
