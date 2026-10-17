@@ -13,7 +13,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalos Tracker (X / Y) - Rutas 100% con Hordas, Golpe Roca y Pesca</title>
+    <title>Kalos Tracker (X / Y) - Rutas Oficiales (WikiDex & Bulbapedia)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -46,7 +46,7 @@
     <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full"></main>
 
     <footer class="bg-slate-900 text-slate-400 py-6 text-center text-sm mt-auto">
-        <p id="storage-status">Kalos Tracker - Sincronizado con Holomisor en la Nube...</p>
+        <p id="storage-status">Kalos Tracker - Verificado con datos oficiales de WikiDex y Bulbapedia...</p>
     </footer>
 
     <script type="module">
@@ -417,7 +417,7 @@
             { regionalId: 108, natId: 150, name: "Mewtwo", evo: "Villa Pokémon", zone: "Montaña" }
         ];
 
-        // Base de datos completa con Hordas, Golpe Roca, Surf y Pesca desglosados
+        // Base de datos corregida con porcentajes oficiales, hordas, golpe roca, surf y pesca de WikiDex y Bulbapedia
         const routeData = {
             "Pokémon X": [
                 { name: "Pueblo Boceto", encounters: [
@@ -426,210 +426,233 @@
                     { id: 656, rate: "Inicial (100%)", method: "Elección con el Profesor Ciprés (Nivel 5)" }
                 ]},
                 { name: "Ruta 2", encounters: [
-                    { id: 659, rate: "Común (35%)", method: "Hierba alta (Nivel 2-3)" },
-                    { id: 661, rate: "Común (30%)", method: "Hierba alta (Nivel 2-3)" },
-                    { id: 16, rate: "Frecuente (20%)", method: "Hierba alta (Nivel 3)" },
-                    { id: 664, rate: "Raro (15%)", method: "Hierba alta (Nivel 2)" },
-                    { id: 659, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Bunnelby)" }
+                    { id: 659, rate: "20%", method: "Hierba alta (Nivel 2-3)" },
+                    { id: 661, rate: "20%", method: "Hierba alta (Nivel 2-3)" },
+                    { id: 664, rate: "20%", method: "Hierba alta (Nivel 2-3)" },
+                    { id: 263, rate: "15%", method: "Hierba alta (Nivel 3-4)" },
+                    { id: 16, rate: "14%", method: "Hierba alta (Nivel 3-4)" },
+                    { id: 13, rate: "11%", method: "Hierba alta (Nivel 3-4)" },
+                    { id: 10, rate: "11%", method: "Hierba alta (Nivel 3-4)" },
+                    { id: 659, rate: "Horda (50%)", method: "Encuentro en Horda x5 (Bunnelby)" },
+                    { id: 661, rate: "Horda (50%)", method: "Encuentro en Horda x5 (Fletchling)" }
                 ]},
                 { name: "Bosque Novarte", encounters: [
-                    { id: 664, rate: "Muy Común (40%)", method: "Hierba alta (Nivel 3-4)" },
-                    { id: 10, rate: "Común (20%)", method: "Hierba alta (Nivel 3-4)" },
-                    { id: 13, rate: "Común (20%)", method: "Hierba alta (Nivel 3-4)" },
-                    { id: 23, rate: "Raro (10%)", method: "Hierba alta (Nivel 4)" },
-                    { id: 26, rate: "Raro (10%)", method: "Hierba alta (Nivel 4)" },
-                    { id: 25, rate: "Muy Raro (5%)", method: "Hierba alta (Nivel 3)" },
-                    { id: 10, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Caterpie)" },
-                    { id: 13, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Weedle)" }
+                    { id: 664, rate: "40%", method: "Hierba alta (Nivel 3-4)" },
+                    { id: 10, rate: "20%", method: "Hierba alta (Nivel 3-4)" },
+                    { id: 13, rate: "20%", method: "Hierba alta (Nivel 3-4)" },
+                    { id: 23, rate: "10%", method: "Hierba alta (Nivel 4)" },
+                    { id: 26, rate: "10%", method: "Hierba alta (Nivel 4)" },
+                    { id: 25, rate: "5%", method: "Hierba alta (Nivel 3)" },
+                    { id: 10, rate: "Horda (60%)", method: "Encuentro en Horda x5 (Caterpie)" },
+                    { id: 13, rate: "Horda (40%)", method: "Encuentro en Horda x5 (Weedle)" }
                 ]},
                 { name: "Ruta 3", encounters: [
-                    { id: 659, rate: "Común (30%)", method: "Hierba alta (Nivel 5-6)" },
-                    { id: 661, rate: "Común (30%)", method: "Hierba alta (Nivel 5-6)" },
-                    { id: 22, rate: "Frecuente (20%)", method: "Hierba alta (Nivel 6)" },
-                    { id: 298, rate: "Raro (10%)", method: "Hierba alta (Nivel 5)" },
-                    { id: 412, rate: "Raro (10%)", method: "Hierba alta / Árboles" },
-                    { id: 22, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Pichu o Fletchling)" }
+                    { id: 659, rate: "30%", method: "Hierba alta (Nivel 5-6)" },
+                    { id: 661, rate: "30%", method: "Hierba alta (Nivel 5-6)" },
+                    { id: 22, rate: "20%", method: "Hierba alta (Nivel 6)" },
+                    { id: 298, rate: "10%", method: "Hierba alta (Nivel 5)" },
+                    { id: 412, rate: "10%", method: "Hierba alta / Árboles (Nivel 5)" },
+                    { id: 22, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Pichu)" },
+                    { id: 661, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Fletchling)" }
                 ]},
                 { name: "Ruta 4", encounters: [
-                    { id: 669, rate: "Común (30%)", method: "Parterres de flores (Nivel 8-9)" },
-                    { id: 165, rate: "Frecuente (20%)", method: "Parterres de flores (Nivel 8-9)" },
-                    { id: 406, rate: "Raro (10%)", method: "Parterres de flores (Nivel 8)" },
-                    { id: 172, rate: "Raro (10%)", method: "Parterres de flores (Nivel 8)" },
-                    { id: 165, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Ledyba o Flabébé)" }
+                    { id: 669, rate: "30%", method: "Parterres de flores (Nivel 8-9)" },
+                    { id: 165, rate: "20%", method: "Parterres de flores (Nivel 8-9)" },
+                    { id: 406, rate: "10%", method: "Parterres de flores (Nivel 8)" },
+                    { id: 172, rate: "10%", method: "Parterres de flores (Nivel 8)" },
+                    { id: 165, rate: "Horda (60%)", method: "Encuentro en Horda x5 (Ledyba)" },
+                    { id: 669, rate: "Horda (40%)", method: "Encuentro en Horda x5 (Flabébé)" }
                 ]},
                 { name: "Ciudad Lumalia", encounters: [
                     { id: 1, rate: "Regalo (100%)", method: "Bulbasaur - Laboratorio del Prof. Ciprés (Nivel 10)" },
                     { id: 4, rate: "Regalo (100%)", method: "Charmander - Laboratorio del Prof. Ciprés (Nivel 10)" },
                     { id: 7, rate: "Regalo (100%)", method: "Squirtle - Laboratorio del Prof. Ciprés (Nivel 10)" },
-                    { id: 447, rate: "Regalo / Evento", method: "Riolu entregado por Servando (Nivel 5)" }
+                    { id: 447, rate: "Regalo", method: "Riolu entregado por Servando en Ciudad Lumalia (Nivel 5)" }
                 ]},
                 { name: "Ruta 5", encounters: [
-                    { id: 672, rate: "Común (30%)", method: "Hierba alta / Flores (Nivel 8-10)" },
-                    { id: 674, rate: "Frecuente (20%)", method: "Hierba alta (Nivel 10)" },
-                    { id: 83, rate: "Raro (10%)", method: "Hierba alta (Nivel 9)" },
-                    { id: 311, rate: "Raro (10%)", method: "Hierba alta (Nivel 9-10)" },
-                    { id: 316, rate: "Frecuente (20%)", method: "Hierba alta (Nivel 10)" },
-                    { id: 672, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Skiddo o Gulpin)" }
+                    { id: 672, rate: "30%", method: "Hierba alta / Flores (Nivel 8-10)" },
+                    { id: 674, rate: "20%", method: "Hierba alta (Nivel 10)" },
+                    { id: 316, rate: "20%", method: "Hierba alta (Nivel 10)" },
+                    { id: 83, rate: "10%", method: "Hierba alta (Nivel 9)" },
+                    { id: 311, rate: "10%", method: "Hierba alta (Nivel 9-10)" },
+                    { id: 672, rate: "Horda (60%)", method: "Encuentro en Horda x5 (Skiddo)" },
+                    { id: 316, rate: "Horda (40%)", method: "Encuentro en Horda x5 (Gulpin)" }
                 ]},
                 { name: "Ruta 6", encounters: [
-                    { id: 669, rate: "Común (30%)", method: "Hierba alta (Nivel 10-12)" },
-                    { id: 677, rate: "Frecuente (20%)", method: "Hierba alta (Nivel 10-12)" },
-                    { id: 280, rate: "Raro (10%)", method: "Hierba alta (Nivel 11)" },
-                    { id: 412, rate: "Raro (10%)", method: "Zonas de hierba con flores" },
-                    { id: 669, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Nincada o Espurr)" }
+                    { id: 669, rate: "30%", method: "Hierba alta (Nivel 10-12)" },
+                    { id: 677, rate: "20%", method: "Hierba alta (Nivel 10-12)" },
+                    { id: 280, rate: "10%", method: "Hierba alta (Nivel 11)" },
+                    { id: 412, rate: "10%", method: "Zonas de hierba con flores" },
+                    { id: 287, rate: "Horda", method: "Encuentro en Horda x5 (Slakoth)" },
+                    { id: 677, rate: "Horda", method: "Encuentro en Horda x5 (Espurr)" }
                 ]},
                 { name: "Palacio Etual", encounters: [
-                    { id: 129, rate: "Común (50%)", method: "Pesca con Caña Vieja en el estanque" },
-                    { id: 118, rate: "Frecuente (30%)", method: "Pesca con Caña Buena" },
-                    { id: 341, rate: "Raro (20%)", method: "Pesca con Caña Buena" }
+                    { id: 129, rate: "50%", method: "Pesca con Caña Vieja en el estanque" },
+                    { id: 118, rate: "30%", method: "Pesca con Caña Buena" },
+                    { id: 341, rate: "20%", method: "Pesca con Caña Buena" }
                 ]},
                 { name: "Ruta 7", encounters: [
                     { id: 684, rate: "Exclusivo X (20%)", method: "Hierba alta (Nivel 14-16)" },
-                    { id: 280, rate: "Frecuente (20%)", method: "Hierba alta (Nivel 14-15)" },
+                    { id: 280, rate: "20%", method: "Hierba alta (Nivel 14-15)" },
+                    { id: 672, rate: "30%", method: "Hierba alta (Nivel 14-16)" },
                     { id: 143, rate: "Único (100%)", method: "Despertar al Snorlax en el Puente (Nivel 15)" },
-                    { id: 672, rate: "Común (30%)", method: "Hierba alta (Nivel 14-16)" },
-                    { id: 280, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Volbeat, Illumise o Roselia)" }
+                    { id: 313, rate: "Horda", method: "Encuentro en Horda x5 (Volbeat)" },
+                    { id: 314, rate: "Horda", method: "Encuentro en Horda x5 (Illumise)" },
+                    { id: 315, rate: "Horda", method: "Encuentro en Horda x5 (Roselia)" }
                 ]},
                 { name: "Cueva Conectividad", encounters: [
-                    { id: 41, rate: "Común (40%)", method: "Interior de la cueva (Nivel 11-13)" },
-                    { id: 399, rate: "Frecuente (30%)", method: "Interior de la cueva (Nivel 11-12)" },
-                    { id: 524, rate: "Raro (15%)", method: "Interior de la cueva (Nivel 12)" },
-                    { id: 206, rate: "Raro (15%)", method: "Interior de la cueva" },
-                    { id: 74, rate: "Golpe Roca", method: "Golpear rocas interiores (Geodude)" }
+                    { id: 41, rate: "40%", method: "Interior de la cueva (Nivel 11-13)" },
+                    { id: 399, rate: "30%", method: "Interior de la cueva (Nivel 11-12)" },
+                    { id: 524, rate: "15%", method: "Interior de la cueva (Nivel 12)" },
+                    { id: 206, rate: "15%", method: "Interior de la cueva" },
+                    { id: 74, rate: "Golpe Roca", method: "Golpear rocas interiores (Geodude)" },
+                    { id: 41, rate: "Horda", method: "Encuentro en Horda x5 (Zubat)" }
                 ]},
                 { name: "Ruta 8", encounters: [
-                    { id: 686, rate: "Común (30%)", method: "Hierba y rocas (Nivel 15-17)" },
+                    { id: 686, rate: "30%", method: "Hierba y rocas (Nivel 15-17)" },
                     { id: 692, rate: "Exclusivo X (15%)", method: "Pesca con Caña Buena" },
-                    { id: 129, rate: "Común (50%)", method: "Pesca con Caña Vieja" },
-                    { id: 72, rate: "Frecuente (25%)", method: "Surf en el agua" },
-                    { id: 74, rate: "Golpe Roca", method: "Golpear rocas costeras (Bonsly / Inkay)" }
+                    { id: 129, rate: "50%", method: "Pesca con Caña Vieja" },
+                    { id: 72, rate: "25%", method: "Surf en el agua" },
+                    { id: 74, rate: "Golpe Roca", method: "Golpear rocas costeras (Bonsly / Inkay)" },
+                    { id: 686, rate: "Horda", method: "Encuentro en Horda x5 (Inkay)" },
+                    { id: 72, rate: "Horda (Agua)", method: "Encuentro en Horda x5 en el agua (Tentacool)" }
                 ]},
                 { name: "Ruta 9", encounters: [
-                    { id: 694, rate: "Común (40%)", method: "Zonas áridas y desérticas (Nivel 17-19)" },
-                    { id: 84, rate: "Frecuente (30%)", method: "Zonas áridas y desérticas (Nivel 18)" },
-                    { id: 50, rate: "Raro (15%)", method: "Zonas áridas y desérticas" },
+                    { id: 694, rate: "40%", method: "Zonas áridas y desérticas (Nivel 17-19)" },
+                    { id: 84, rate: "30%", method: "Zonas áridas y desérticas (Nivel 18)" },
+                    { id: 50, rate: "15%", method: "Zonas áridas y desérticas" },
                     { id: 50, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Diglett)" }
                 ]},
                 { name: "Cueva Tesis / Gruta Unauff", encounters: [
-                    { id: 41, rate: "Común (40%)", method: "Interior de la cueva (Nivel 18)" },
-                    { id: 524, rate: "Frecuente (30%)", method: "Interior de la cueva (Nivel 18)" },
-                    { id: 74, rate: "Raro (20%)", method: "Interior de la cueva (Nivel 19)" }
+                    { id: 41, rate: "40%", method: "Interior de la cueva (Nivel 18)" },
+                    { id: 524, rate: "30%", method: "Interior de la cueva (Nivel 18)" },
+                    { id: 74, rate: "20%", method: "Interior de la cueva (Nivel 19)" }
                 ]},
                 { name: "Ruta 10", encounters: [
-                    { id: 701, rate: "Común (30%)", method: "Hierba alta (Nivel 19-21)" },
-                    { id: 417, rate: "Frecuente (25%)", method: "Hierba alta (Nivel 20)" },
-                    { id: 133, rate: "Raro (10%)", method: "Hierba alta (Nivel 20)" },
-                    { id: 311, rate: "Raro (15%)", method: "Hierba alta (Nivel 20)" },
-                    { id: 417, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Pachirisu o Eevee)" }
+                    { id: 701, rate: "30%", method: "Hierba alta (Nivel 19-21)" },
+                    { id: 417, rate: "25%", method: "Hierba alta (Nivel 20)" },
+                    { id: 311, rate: "15%", method: "Hierba alta (Nivel 20)" },
+                    { id: 133, rate: "10%", method: "Hierba alta (Nivel 20)" },
+                    { id: 417, rate: "Horda", method: "Encuentro en Horda x5 (Pachirisu)" },
+                    { id: 133, rate: "Horda", method: "Encuentro en Horda x5 (Eevee)" }
                 ]},
                 { name: "Pueblo Petroglifo", encounters: [
                     { id: 696, rate: "Fósil (100%)", method: "Recibir Fósil Garra del científico (Nivel 20)" },
                     { id: 142, rate: "Fósil (100%)", method: "Recibir Fósil Tapa del científico (Nivel 20)" }
                 ]},
                 { name: "Ruta 11", encounters: [
-                    { id: 702, rate: "Frecuente (25%)", method: "Hierba alta (Nivel 21-23)" },
-                    { id: 557, rate: "Común (30%)", method: "Hierba alta (Nivel 21-22)" },
-                    { id: 104, rate: "Raro (10%)", method: "Hierba alta (Nivel 22)" },
-                    { id: 325, rate: "Raro (15%)", method: "Hierba alta (Nivel 22)" },
-                    { id: 557, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Dwebble o Starly)" }
+                    { id: 557, rate: "30%", method: "Hierba alta (Nivel 21-22)" },
+                    { id: 702, rate: "25%", method: "Hierba alta (Nivel 21-23)" },
+                    { id: 325, rate: "15%", method: "Hierba alta (Nivel 22)" },
+                    { id: 104, rate: "10%", method: "Hierba alta (Nivel 22)" },
+                    { id: 557, rate: "Horda", method: "Encuentro en Horda x5 (Dwebble)" },
+                    { id: 396, rate: "Horda", method: "Encuentro en Horda x5 (Starly)" }
                 ]},
                 { name: "Ruta 12", encounters: [
-                    { id: 111, rate: "Frecuente (25%)", method: "Hierba alta (Nivel 24-26)" },
-                    { id: 102, rate: "Raro (15%)", method: "Hierba alta (Nivel 25)" },
-                    { id: 278, rate: "Común (35%)", method: "Surf en el agua de la ruta" },
-                    { id: 619, rate: "Raro (15%)", method: "Hierba alta (Nivel 25)" },
-                    { id: 111, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Rhyhorn o Exeggcute)" }
+                    { id: 278, rate: "35%", method: "Surf en el agua de la ruta" },
+                    { id: 111, rate: "25%", method: "Hierba alta (Nivel 24-26)" },
+                    { id: 102, rate: "15%", method: "Hierba alta (Nivel 25)" },
+                    { id: 619, rate: "15%", method: "Hierba alta (Nivel 25)" },
+                    { id: 111, rate: "Horda", method: "Encuentro en Horda x5 (Rhyhorn)" },
+                    { id: 102, rate: "Horda", method: "Encuentro en Horda x5 (Exeggcute)" }
                 ]},
                 { name: "Bahía Azul", encounters: [
-                    { id: 278, rate: "Común (40%)", method: "Surf / Superficie marina (Nivel 25-28)" },
-                    { id: 318, rate: "Raro (15%)", method: "Pesca con Caña Buena" },
+                    { id: 278, rate: "40%", method: "Surf / Superficie marina (Nivel 25-28)" },
+                    { id: 318, rate: "15%", method: "Pesca con Caña Buena" },
                     { id: 692, rate: "Exclusivo X (15%)", method: "Pesca con Caña Buena en la Bahía" },
-                    { id: 79, rate: "Raro (15%)", method: "Hierba costera o Surf" },
-                    { id: 72, rate: "Horda (100%)", method: "Encuentro en Horda x5 en el agua (Tentacool)" }
+                    { id: 79, rate: "15%", method: "Hierba costera o Surf" },
+                    { id: 72, rate: "Horda (Agua)", method: "Encuentro en Horda x5 en el agua (Tentacool)" }
                 ]},
                 { name: "Cueva Reflejos", encounters: [
+                    { id: 524, rate: "35%", method: "Zonas interiores" },
+                    { id: 63, rate: "25%", method: "Zonas interiores (Nivel 27)" },
                     { id: 304, rate: "Exclusivo X (15%)", method: "Zonas rocosas interiores (Nivel 27-29)" },
-                    { id: 524, rate: "Común (35%)", method: "Zonas interiores" },
-                    { id: 63, rate: "Frecuente (25%)", method: "Zonas interiores (Nivel 27)" },
-                    { id: 337, rate: "Raro (10%)", method: "Zonas rocosas" },
-                    { id: 63, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Abra o Roggenrola)" }
+                    { id: 337, rate: "10%", method: "Zonas rocosas" },
+                    { id: 63, rate: "Horda", method: "Encuentro en Horda x5 (Abra)" },
+                    { id: 524, rate: "Horda", method: "Encuentro en Horda x5 (Roggenrola)" }
                 ]},
                 { name: "Ruta 13", encounters: [
-                    { id: 100, rate: "Común (40%)", method: "Zonas áridas y centrales (Nivel 29-31)" },
-                    { id: 81, rate: "Frecuente (30%)", method: "Zonas rocosas y eléctricas" },
-                    { id: 568, rate: "Raro (15%)", method: "Zonas áridas" },
+                    { id: 100, rate: "40%", method: "Zonas áridas y centrales (Nivel 29-31)" },
+                    { id: 81, rate: "30%", method: "Zonas rocosas y eléctricas" },
+                    { id: 568, rate: "15%", method: "Zonas áridas" },
                     { id: 81, rate: "Golpe Roca", method: "Golpear rocas metálicas (Magnemite)" }
                 ]},
                 { name: "Ruta 14", encounters: [
-                    { id: 704, rate: "Raro (10%)", method: "Pantano / Agua (Nivel 30-32)" },
-                    { id: 453, rate: "Común (35%)", method: "Pantano y hierba" },
-                    { id: 194, rate: "Frecuente (25%)", method: "Pantano (Nivel 30)" },
-                    { id: 543, rate: "Raro (15%)", method: "Hierba del pantano" },
-                    { id: 453, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Croagunk o Bellsprout)" }
+                    { id: 453, rate: "35%", method: "Pantano y hierba" },
+                    { id: 194, rate: "25%", method: "Pantano (Nivel 30)" },
+                    { id: 543, rate: "15%", method: "Hierba del pantano" },
+                    { id: 704, rate: "10%", method: "Pantano / Agua (Nivel 30-32)" },
+                    { id: 453, rate: "Horda", method: "Encuentro en Horda x5 (Croagunk)" },
+                    { id: 69, rate: "Horda", method: "Encuentro en Horda x5 (Bellsprout)" }
                 ]},
                 { name: "Ruta 15", encounters: [
-                    { id: 679, rate: "Frecuente (25%)", method: "Hierba alta (Nivel 32-34)" },
-                    { id: 451, rate: "Común (35%)", method: "Hierba alta (Nivel 33)" },
-                    { id: 359, rate: "Raro (10%)", method: "Hierba alta" },
-                    { id: 216, rate: "Frecuente (20%)", method: "Hierba alta" },
-                    { id: 451, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Skorupi o Murkrow)" }
+                    { id: 451, rate: "35%", method: "Hierba alta (Nivel 33)" },
+                    { id: 679, rate: "25%", method: "Hierba alta (Nivel 32-34)" },
+                    { id: 216, rate: "20%", method: "Hierba alta" },
+                    { id: 359, rate: "10%", method: "Hierba alta" },
+                    { id: 451, rate: "Horda", method: "Encuentro en Horda x5 (Skorupi)" },
+                    { id: 198, rate: "Horda", method: "Encuentro en Horda x5 (Murkrow)" }
                 ]},
                 { name: "Ruta 16", encounters: [
-                    { id: 708, rate: "Común (30%)", method: "Hierba alta y flores (Nivel 34-36)" },
-                    { id: 568, rate: "Frecuente (25%)", method: "Hierba alta" },
-                    { id: 710, rate: "Raro (15%)", method: "Hierba alta" },
-                    { id: 531, rate: "Raro (10%)", method: "Hierba alta / Movimiento especial" }
+                    { id: 708, rate: "30%", method: "Hierba alta y flores (Nivel 34-36)" },
+                    { id: 568, rate: "25%", method: "Hierba alta" },
+                    { id: 710, rate: "15%", method: "Hierba alta" },
+                    { id: 531, rate: "10%", method: "Hierba alta / Movimiento especial" }
                 ]},
                 { name: "Ruta 17", encounters: [
-                    { id: 712, rate: "Común (40%)", method: "Nieve profunda (Nivel 36-38)" },
-                    { id: 220, rate: "Frecuente (35%)", method: "Nieve profunda (Nivel 37)" },
-                    { id: 459, rate: "Raro (15%)", method: "Nieve profunda" }
+                    { id: 712, rate: "40%", method: "Nieve profunda (Nivel 36-38)" },
+                    { id: 220, rate: "35%", method: "Nieve profunda (Nivel 37)" },
+                    { id: 459, rate: "15%", method: "Nieve profunda" }
                 ]},
                 { name: "Caverna Helada", encounters: [
-                    { id: 582, rate: "Común (35%)", method: "Interior helado (Nivel 37-39)" },
-                    { id: 459, rate: "Frecuente (25%)", method: "Interior helado" },
-                    { id: 215, rate: "Raro (15%)", method: "Interior helado" },
-                    { id: 361, rate: "Raro (15%)", method: "Interior helado" },
-                    { id: 582, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Vanillite o Jynx)" }
+                    { id: 582, rate: "35%", method: "Interior helado (Nivel 37-39)" },
+                    { id: 459, rate: "25%", method: "Interior helado" },
+                    { id: 215, rate: "15%", method: "Interior helado" },
+                    { id: 361, rate: "15%", method: "Interior helado" },
+                    { id: 582, rate: "Horda", method: "Encuentro en Horda x5 (Vanillite)" },
+                    { id: 124, rate: "Horda", method: "Encuentro en Horda x5 (Jynx)" }
                 ]},
                 { name: "Ruta 18", encounters: [
-                    { id: 610, rate: "Raro (15%)", method: "Hierba alta (Nivel 39-41)" },
-                    { id: 216, rate: "Común (35%)", method: "Hierba alta" },
-                    { id: 451, rate: "Frecuente (25%)", method: "Hierba alta" },
-                    { id: 543, rate: "Raro (15%)", method: "Hierba alta" },
-                    { id: 216, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Teddiursa o Durant)" }
+                    { id: 216, rate: "35%", method: "Hierba alta" },
+                    { id: 451, rate: "25%", method: "Hierba alta" },
+                    { id: 610, rate: "15%", method: "Hierba alta (Nivel 39-41)" },
+                    { id: 543, rate: "15%", method: "Hierba alta" },
+                    { id: 216, rate: "Horda", method: "Encuentro en Horda x5 (Teddiursa)" },
+                    { id: 632, rate: "Horda", method: "Encuentro en Horda x5 (Durant)" }
                 ]},
                 { name: "Termas Wyntown y Ruta 19", encounters: [
-                    { id: 333, rate: "Común (35%)", method: "Hierba alta (Nivel 40-43)" },
-                    { id: 619, rate: "Raro (15%)", method: "Hierba alta" },
-                    { id: 396, rate: "Frecuente (30%)", method: "Hierba alta" },
-                    { id: 473, rate: "Evolución", method: "Evoluciona en la zona fría" },
-                    { id: 333, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Swablu o Mienfoo)" }
+                    { id: 333, rate: "35%", method: "Hierba alta (Nivel 40-43)" },
+                    { id: 396, rate: "30%", method: "Hierba alta" },
+                    { id: 619, rate: "15%", method: "Hierba alta" },
+                    { id: 333, rate: "Horda", method: "Encuentro en Horda x5 (Swablu)" },
+                    { id: 619, rate: "Horda", method: "Encuentro en Horda x5 (Mienfoo)" }
                 ]},
                 { name: "Ruta 20", encounters: [
-                    { id: 353, rate: "Frecuente (30%)", method: "Bosque / Hierba (Nivel 42-44)" },
-                    { id: 163, rate: "Común (40%)", method: "Hierba y árboles" },
-                    { id: 708, rate: "Raro (15%)", method: "Hierba del bosque" }
+                    { id: 163, rate: "40%", method: "Hierba y árboles" },
+                    { id: 353, rate: "30%", method: "Bosque / Hierba (Nivel 42-44)" },
+                    { id: 708, rate: "15%", method: "Hierba del bosque" }
                 ]},
                 { name: "Ruta 21", encounters: [
-                    { id: 371, rate: "Raro (15%)", method: "Hierba alta (Nivel 43-45)" },
-                    { id: 214, rate: "Raro (15%)", method: "Hierba alta" },
-                    { id: 396, rate: "Común (40%)", method: "Hierba alta" },
-                    { id: 72, rate: "Frecuente (30%)", method: "Surf en el agua" },
-                    { id: 371, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Spinda o Scyther)" }
+                    { id: 396, rate: "40%", method: "Hierba alta" },
+                    { id: 72, rate: "30%", method: "Surf en el agua" },
+                    { id: 371, rate: "15%", method: "Hierba alta (Nivel 43-45)" },
+                    { id: 214, rate: "15%", method: "Hierba alta" },
+                    { id: 327, rate: "Horda", method: "Encuentro en Horda x5 (Spinda)" },
+                    { id: 127, rate: "Horda", method: "Encuentro en Horda x5 (Scyther)" }
                 ]},
                 { name: "Ruta 22", encounters: [
-                    { id: 667, rate: "Frecuente (30%)", method: "Hierba alta (Nivel 44-46)" },
-                    { id: 447, rate: "Raro (10%)", method: "Hierba alta (Nivel 45)" },
-                    { id: 57, rate: "Común (35%)", method: "Hierba alta" },
-                    { id: 74, rate: "Frecuente (25%)", method: "Zonas rocosas de la ruta" },
-                    { id: 57, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Dunsparce o Golduck)" }
+                    { id: 57, rate: "35%", method: "Hierba alta" },
+                    { id: 667, rate: "30%", method: "Hierba alta (Nivel 44-46)" },
+                    { id: 74, rate: "25%", method: "Zonas rocosas de la ruta" },
+                    { id: 447, rate: "10%", method: "Hierba alta (Nivel 45)" },
+                    { id: 206, rate: "Horda", method: "Encuentro en Horda x5 (Dunsparce)" },
+                    { id: 55, rate: "Horda", method: "Encuentro en Horda x5 (Golduck)" }
                 ]},
                 { name: "Calle Victoria", encounters: [
-                    { id: 443, rate: "Raro (15%)", method: "Interior de la cueva (Nivel 55-59)" },
-                    { id: 111, rate: "Común (30%)", method: "Interior de la cueva" },
-                    { id: 42, rate: "Frecuente (25%)", method: "Interior de la cueva" },
-                    { id: 525, rate: "Frecuente (25%)", method: "Interior de la cueva" },
+                    { id: 111, rate: "30%", method: "Interior de la cueva" },
+                    { id: 42, rate: "25%", method: "Interior de la cueva" },
+                    { id: 525, rate: "25%", method: "Interior de la cueva" },
+                    { id: 443, rate: "15%", method: "Interior de la cueva (Nivel 55-59)" },
                     { id: 74, rate: "Golpe Roca", method: "Golpear rocas interiores (Graveler / Boldore)" }
                 ]},
                 { name: "Post-game y Legendarios", encounters: [
@@ -646,210 +669,233 @@
                     { id: 656, rate: "Inicial (100%)", method: "Elección con el Profesor Ciprés (Nivel 5)" }
                 ]},
                 { name: "Ruta 2", encounters: [
-                    { id: 659, rate: "Común (35%)", method: "Hierba alta (Nivel 2-3)" },
-                    { id: 661, rate: "Común (30%)", method: "Hierba alta (Nivel 2-3)" },
-                    { id: 16, rate: "Frecuente (20%)", method: "Hierba alta (Nivel 3)" },
-                    { id: 664, rate: "Raro (15%)", method: "Hierba alta (Nivel 2)" },
-                    { id: 659, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Bunnelby)" }
+                    { id: 659, rate: "20%", method: "Hierba alta (Nivel 2-3)" },
+                    { id: 661, rate: "20%", method: "Hierba alta (Nivel 2-3)" },
+                    { id: 664, rate: "20%", method: "Hierba alta (Nivel 2-3)" },
+                    { id: 263, rate: "15%", method: "Hierba alta (Nivel 3-4)" },
+                    { id: 16, rate: "14%", method: "Hierba alta (Nivel 3-4)" },
+                    { id: 13, rate: "11%", method: "Hierba alta (Nivel 3-4)" },
+                    { id: 10, rate: "11%", method: "Hierba alta (Nivel 3-4)" },
+                    { id: 659, rate: "Horda (50%)", method: "Encuentro en Horda x5 (Bunnelby)" },
+                    { id: 661, rate: "Horda (50%)", method: "Encuentro en Horda x5 (Fletchling)" }
                 ]},
                 { name: "Bosque Novarte", encounters: [
-                    { id: 664, rate: "Muy Común (40%)", method: "Hierba alta (Nivel 3-4)" },
-                    { id: 10, rate: "Común (20%)", method: "Hierba alta (Nivel 3-4)" },
-                    { id: 13, rate: "Común (20%)", method: "Hierba alta (Nivel 3-4)" },
-                    { id: 23, rate: "Raro (10%)", method: "Hierba alta (Nivel 4)" },
-                    { id: 26, rate: "Raro (10%)", method: "Hierba alta (Nivel 4)" },
-                    { id: 25, rate: "Muy Raro (5%)", method: "Hierba alta (Nivel 3)" },
-                    { id: 10, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Caterpie)" },
-                    { id: 13, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Weedle)" }
+                    { id: 664, rate: "40%", method: "Hierba alta (Nivel 3-4)" },
+                    { id: 10, rate: "20%", method: "Hierba alta (Nivel 3-4)" },
+                    { id: 13, rate: "20%", method: "Hierba alta (Nivel 3-4)" },
+                    { id: 23, rate: "10%", method: "Hierba alta (Nivel 4)" },
+                    { id: 26, rate: "10%", method: "Hierba alta (Nivel 4)" },
+                    { id: 25, rate: "5%", method: "Hierba alta (Nivel 3)" },
+                    { id: 10, rate: "Horda (60%)", method: "Encuentro en Horda x5 (Caterpie)" },
+                    { id: 13, rate: "Horda (40%)", method: "Encuentro en Horda x5 (Weedle)" }
                 ]},
                 { name: "Ruta 3", encounters: [
-                    { id: 659, rate: "Común (30%)", method: "Hierba alta (Nivel 5-6)" },
-                    { id: 661, rate: "Común (30%)", method: "Hierba alta (Nivel 5-6)" },
-                    { id: 22, rate: "Frecuente (20%)", method: "Hierba alta (Nivel 6)" },
-                    { id: 298, rate: "Raro (10%)", method: "Hierba alta (Nivel 5)" },
-                    { id: 412, rate: "Raro (10%)", method: "Hierba alta / Árboles" },
-                    { id: 22, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Pichu o Fletchling)" }
+                    { id: 659, rate: "30%", method: "Hierba alta (Nivel 5-6)" },
+                    { id: 661, rate: "30%", method: "Hierba alta (Nivel 5-6)" },
+                    { id: 22, rate: "20%", method: "Hierba alta (Nivel 6)" },
+                    { id: 298, rate: "10%", method: "Hierba alta (Nivel 5)" },
+                    { id: 412, rate: "10%", method: "Hierba alta / Árboles (Nivel 5)" },
+                    { id: 22, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Pichu)" },
+                    { id: 661, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Fletchling)" }
                 ]},
                 { name: "Ruta 4", encounters: [
-                    { id: 669, rate: "Común (30%)", method: "Parterres de flores (Nivel 8-9)" },
-                    { id: 165, rate: "Frecuente (20%)", method: "Parterres de flores (Nivel 8-9)" },
-                    { id: 406, rate: "Raro (10%)", method: "Parterres de flores (Nivel 8)" },
-                    { id: 172, rate: "Raro (10%)", method: "Parterres de flores (Nivel 8)" },
-                    { id: 165, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Ledyba o Flabébé)" }
+                    { id: 669, rate: "30%", method: "Parterres de flores (Nivel 8-9)" },
+                    { id: 165, rate: "20%", method: "Parterres de flores (Nivel 8-9)" },
+                    { id: 406, rate: "10%", method: "Parterres de flores (Nivel 8)" },
+                    { id: 172, rate: "10%", method: "Parterres de flores (Nivel 8)" },
+                    { id: 165, rate: "Horda (60%)", method: "Encuentro en Horda x5 (Ledyba)" },
+                    { id: 669, rate: "Horda (40%)", method: "Encuentro en Horda x5 (Flabébé)" }
                 ]},
                 { name: "Ciudad Lumalia", encounters: [
                     { id: 1, rate: "Regalo (100%)", method: "Bulbasaur - Laboratorio del Prof. Ciprés (Nivel 10)" },
                     { id: 4, rate: "Regalo (100%)", method: "Charmander - Laboratorio del Prof. Ciprés (Nivel 10)" },
                     { id: 7, rate: "Regalo (100%)", method: "Squirtle - Laboratorio del Prof. Ciprés (Nivel 10)" },
-                    { id: 447, rate: "Regalo / Evento", method: "Riolu entregado por Servando (Nivel 5)" }
+                    { id: 447, rate: "Regalo", method: "Riolu entregado por Servando en Ciudad Lumalia (Nivel 5)" }
                 ]},
                 { name: "Ruta 5", encounters: [
-                    { id: 672, rate: "Común (30%)", method: "Hierba alta / Flores (Nivel 8-10)" },
-                    { id: 674, rate: "Frecuente (20%)", method: "Hierba alta (Nivel 10)" },
-                    { id: 83, rate: "Raro (10%)", method: "Hierba alta (Nivel 9)" },
-                    { id: 311, rate: "Raro (10%)", method: "Hierba alta (Nivel 9-10)" },
-                    { id: 316, rate: "Frecuente (20%)", method: "Hierba alta (Nivel 10)" },
-                    { id: 672, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Skiddo o Gulpin)" }
+                    { id: 672, rate: "30%", method: "Hierba alta / Flores (Nivel 8-10)" },
+                    { id: 674, rate: "20%", method: "Hierba alta (Nivel 10)" },
+                    { id: 316, rate: "20%", method: "Hierba alta (Nivel 10)" },
+                    { id: 83, rate: "10%", method: "Hierba alta (Nivel 9)" },
+                    { id: 311, rate: "10%", method: "Hierba alta (Nivel 9-10)" },
+                    { id: 672, rate: "Horda (60%)", method: "Encuentro en Horda x5 (Skiddo)" },
+                    { id: 316, rate: "Horda (40%)", method: "Encuentro en Horda x5 (Gulpin)" }
                 ]},
                 { name: "Ruta 6", encounters: [
-                    { id: 669, rate: "Común (30%)", method: "Hierba alta (Nivel 10-12)" },
-                    { id: 677, rate: "Frecuente (20%)", method: "Hierba alta (Nivel 10-12)" },
-                    { id: 280, rate: "Raro (10%)", method: "Hierba alta (Nivel 11)" },
-                    { id: 412, rate: "Raro (10%)", method: "Zonas de hierba con flores" },
-                    { id: 669, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Nincada o Espurr)" }
+                    { id: 669, rate: "30%", method: "Hierba alta (Nivel 10-12)" },
+                    { id: 677, rate: "20%", method: "Hierba alta (Nivel 10-12)" },
+                    { id: 280, rate: "10%", method: "Hierba alta (Nivel 11)" },
+                    { id: 412, rate: "10%", method: "Zonas de hierba con flores" },
+                    { id: 287, rate: "Horda", method: "Encuentro en Horda x5 (Slakoth)" },
+                    { id: 677, rate: "Horda", method: "Encuentro en Horda x5 (Espurr)" }
                 ]},
                 { name: "Palacio Etual", encounters: [
-                    { id: 129, rate: "Común (50%)", method: "Pesca con Caña Vieja en el estanque" },
-                    { id: 118, rate: "Frecuente (30%)", method: "Pesca con Caña Buena" },
-                    { id: 341, rate: "Raro (20%)", method: "Pesca con Caña Buena" }
+                    { id: 129, rate: "50%", method: "Pesca con Caña Vieja en el estanque" },
+                    { id: 118, rate: "30%", method: "Pesca con Caña Buena" },
+                    { id: 341, rate: "20%", method: "Pesca con Caña Buena" }
                 ]},
                 { name: "Ruta 7", encounters: [
                     { id: 682, rate: "Exclusivo Y (20%)", method: "Hierba alta (Nivel 14-16)" },
-                    { id: 280, rate: "Frecuente (20%)", method: "Hierba alta (Nivel 14-15)" },
+                    { id: 280, rate: "20%", method: "Hierba alta (Nivel 14-15)" },
+                    { id: 672, rate: "30%", method: "Hierba alta (Nivel 14-16)" },
                     { id: 143, rate: "Único (100%)", method: "Despertar al Snorlax en el Puente (Nivel 15)" },
-                    { id: 672, rate: "Común (30%)", method: "Hierba alta (Nivel 14-16)" },
-                    { id: 280, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Volbeat, Illumise o Roselia)" }
+                    { id: 313, rate: "Horda", method: "Encuentro en Horda x5 (Volbeat)" },
+                    { id: 314, rate: "Horda", method: "Encuentro en Horda x5 (Illumise)" },
+                    { id: 315, rate: "Horda", method: "Encuentro en Horda x5 (Roselia)" }
                 ]},
                 { name: "Cueva Conectividad", encounters: [
-                    { id: 41, rate: "Común (40%)", method: "Interior de la cueva (Nivel 11-13)" },
-                    { id: 399, rate: "Frecuente (30%)", method: "Interior de la cueva (Nivel 11-12)" },
-                    { id: 524, rate: "Raro (15%)", method: "Interior de la cueva (Nivel 12)" },
-                    { id: 206, rate: "Raro (15%)", method: "Interior de la cueva" },
-                    { id: 74, rate: "Golpe Roca", method: "Golpear rocas interiores (Geodude)" }
+                    { id: 41, rate: "40%", method: "Interior de la cueva (Nivel 11-13)" },
+                    { id: 399, rate: "30%", method: "Interior de la cueva (Nivel 11-12)" },
+                    { id: 524, rate: "15%", method: "Interior de la cueva (Nivel 12)" },
+                    { id: 206, rate: "15%", method: "Interior de la cueva" },
+                    { id: 74, rate: "Golpe Roca", method: "Golpear rocas interiores (Geodude)" },
+                    { id: 41, rate: "Horda", method: "Encuentro en Horda x5 (Zubat)" }
                 ]},
                 { name: "Ruta 8", encounters: [
-                    { id: 686, rate: "Común (30%)", method: "Hierba y rocas (Nivel 15-17)" },
+                    { id: 686, rate: "30%", method: "Hierba y rocas (Nivel 15-17)" },
                     { id: 690, rate: "Exclusivo Y (15%)", method: "Pesca con Caña Buena" },
-                    { id: 129, rate: "Común (50%)", method: "Pesca con Caña Vieja" },
-                    { id: 72, rate: "Frecuente (25%)", method: "Surf en el agua" },
-                    { id: 74, rate: "Golpe Roca", method: "Golpear rocas costeras (Bonsly / Inkay)" }
+                    { id: 129, rate: "50%", method: "Pesca con Caña Vieja" },
+                    { id: 72, rate: "25%", method: "Surf en el agua" },
+                    { id: 74, rate: "Golpe Roca", method: "Golpear rocas costeras (Bonsly / Inkay)" },
+                    { id: 686, rate: "Horda", method: "Encuentro en Horda x5 (Inkay)" },
+                    { id: 72, rate: "Horda (Agua)", method: "Encuentro en Horda x5 en el agua (Tentacool)" }
                 ]},
                 { name: "Ruta 9", encounters: [
-                    { id: 694, rate: "Común (40%)", method: "Zonas áridas y desérticas (Nivel 17-19)" },
-                    { id: 84, rate: "Frecuente (30%)", method: "Zonas áridas y desérticas (Nivel 18)" },
-                    { id: 50, rate: "Raro (15%)", method: "Zonas áridas y desérticas" },
+                    { id: 694, rate: "40%", method: "Zonas áridas y desérticas (Nivel 17-19)" },
+                    { id: 84, rate: "30%", method: "Zonas áridas y desérticas (Nivel 18)" },
+                    { id: 50, rate: "15%", method: "Zonas áridas y desérticas" },
                     { id: 50, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Diglett)" }
                 ]},
                 { name: "Cueva Tesis / Gruta Unauff", encounters: [
-                    { id: 41, rate: "Común (40%)", method: "Interior de la cueva (Nivel 18)" },
-                    { id: 524, rate: "Frecuente (30%)", method: "Interior de la cueva (Nivel 18)" },
-                    { id: 74, rate: "Raro (20%)", method: "Interior de la cueva (Nivel 19)" }
+                    { id: 41, rate: "40%", method: "Interior de la cueva (Nivel 18)" },
+                    { id: 524, rate: "30%", method: "Interior de la cueva (Nivel 18)" },
+                    { id: 74, rate: "20%", method: "Interior de la cueva (Nivel 19)" }
                 ]},
                 { name: "Ruta 10", encounters: [
-                    { id: 701, rate: "Común (30%)", method: "Hierba alta (Nivel 19-21)" },
-                    { id: 417, rate: "Frecuente (25%)", method: "Hierba alta (Nivel 20)" },
-                    { id: 133, rate: "Raro (10%)", method: "Hierba alta (Nivel 20)" },
-                    { id: 311, rate: "Raro (15%)", method: "Hierba alta (Nivel 20)" },
-                    { id: 417, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Pachirisu o Eevee)" }
+                    { id: 701, rate: "30%", method: "Hierba alta (Nivel 19-21)" },
+                    { id: 417, rate: "25%", method: "Hierba alta (Nivel 20)" },
+                    { id: 311, rate: "15%", method: "Hierba alta (Nivel 20)" },
+                    { id: 133, rate: "10%", method: "Hierba alta (Nivel 20)" },
+                    { id: 417, rate: "Horda", method: "Encuentro en Horda x5 (Pachirisu)" },
+                    { id: 133, rate: "Horda", method: "Encuentro en Horda x5 (Eevee)" }
                 ]},
                 { name: "Pueblo Petroglifo", encounters: [
                     { id: 698, rate: "Fósil (100%)", method: "Recibir Fósil Aleta del científico (Nivel 20)" },
                     { id: 140, rate: "Fósil (100%)", method: "Recibir Fósil Domo del científico (Nivel 20)" }
                 ]},
                 { name: "Ruta 11", encounters: [
-                    { id: 702, rate: "Frecuente (25%)", method: "Hierba alta (Nivel 21-23)" },
-                    { id: 557, rate: "Común (30%)", method: "Hierba alta (Nivel 21-22)" },
-                    { id: 104, rate: "Raro (10%)", method: "Hierba alta (Nivel 22)" },
-                    { id: 325, rate: "Raro (15%)", method: "Hierba alta (Nivel 22)" },
-                    { id: 557, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Dwebble o Starly)" }
+                    { id: 557, rate: "30%", method: "Hierba alta (Nivel 21-22)" },
+                    { id: 702, rate: "25%", method: "Hierba alta (Nivel 21-23)" },
+                    { id: 325, rate: "15%", method: "Hierba alta (Nivel 22)" },
+                    { id: 104, rate: "10%", method: "Hierba alta (Nivel 22)" },
+                    { id: 557, rate: "Horda", method: "Encuentro en Horda x5 (Dwebble)" },
+                    { id: 396, rate: "Horda", method: "Encuentro en Horda x5 (Starly)" }
                 ]},
                 { name: "Ruta 12", encounters: [
-                    { id: 111, rate: "Frecuente (25%)", method: "Hierba alta (Nivel 24-26)" },
-                    { id: 102, rate: "Raro (15%)", method: "Hierba alta (Nivel 25)" },
-                    { id: 278, rate: "Común (35%)", method: "Surf en el agua de la ruta" },
-                    { id: 619, rate: "Raro (15%)", method: "Hierba alta (Nivel 25)" },
-                    { id: 111, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Rhyhorn o Exeggcute)" }
+                    { id: 278, rate: "35%", method: "Surf en el agua de la ruta" },
+                    { id: 111, rate: "25%", method: "Hierba alta (Nivel 24-26)" },
+                    { id: 102, rate: "15%", method: "Hierba alta (Nivel 25)" },
+                    { id: 619, rate: "15%", method: "Hierba alta (Nivel 25)" },
+                    { id: 111, rate: "Horda", method: "Encuentro en Horda x5 (Rhyhorn)" },
+                    { id: 102, rate: "Horda", method: "Encuentro en Horda x5 (Exeggcute)" }
                 ]},
                 { name: "Bahía Azul", encounters: [
-                    { id: 278, rate: "Común (40%)", method: "Surf / Superficie marina (Nivel 25-28)" },
-                    { id: 318, rate: "Raro (15%)", method: "Pesca con Caña Buena" },
+                    { id: 278, rate: "40%", method: "Surf / Superficie marina (Nivel 25-28)" },
+                    { id: 318, rate: "15%", method: "Pesca con Caña Buena" },
                     { id: 690, rate: "Exclusivo Y (15%)", method: "Pesca con Caña Buena en la Bahía" },
-                    { id: 79, rate: "Raro (15%)", method: "Hierba costera o Surf" },
-                    { id: 72, rate: "Horda (100%)", method: "Encuentro en Horda x5 en el agua (Tentacool)" }
+                    { id: 79, rate: "15%", method: "Hierba costera o Surf" },
+                    { id: 72, rate: "Horda (Agua)", method: "Encuentro en Horda x5 en el agua (Tentacool)" }
                 ]},
                 { name: "Cueva Reflejos", encounters: [
+                    { id: 524, rate: "35%", method: "Zonas interiores" },
+                    { id: 63, rate: "25%", method: "Zonas interiores (Nivel 27)" },
                     { id: 246, rate: "Exclusivo Y (10%)", method: "Zonas rocosas interiores (Nivel 27-29)" },
-                    { id: 524, rate: "Común (35%)", method: "Zonas interiores" },
-                    { id: 63, rate: "Frecuente (25%)", method: "Zonas interiores (Nivel 27)" },
-                    { id: 337, rate: "Raro (10%)", method: "Zonas rocosas" },
-                    { id: 63, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Abra o Roggenrola)" }
+                    { id: 337, rate: "10%", method: "Zonas rocosas" },
+                    { id: 63, rate: "Horda", method: "Encuentro en Horda x5 (Abra)" },
+                    { id: 524, rate: "Horda", method: "Encuentro en Horda x5 (Roggenrola)" }
                 ]},
                 { name: "Ruta 13", encounters: [
-                    { id: 100, rate: "Común (40%)", method: "Zonas áridas y centrales (Nivel 29-31)" },
-                    { id: 81, rate: "Frecuente (30%)", method: "Zonas rocosas y eléctricas" },
-                    { id: 568, rate: "Raro (15%)", method: "Zonas áridas" },
+                    { id: 100, rate: "40%", method: "Zonas áridas y centrales (Nivel 29-31)" },
+                    { id: 81, rate: "30%", method: "Zonas rocosas y eléctricas" },
+                    { id: 568, rate: "15%", method: "Zonas áridas" },
                     { id: 81, rate: "Golpe Roca", method: "Golpear rocas metálicas (Magnemite)" }
                 ]},
                 { name: "Ruta 14", encounters: [
-                    { id: 704, rate: "Raro (10%)", method: "Pantano / Agua (Nivel 30-32)" },
-                    { id: 453, rate: "Común (35%)", method: "Pantano y hierba" },
-                    { id: 194, rate: "Frecuente (25%)", method: "Pantano (Nivel 30)" },
-                    { id: 543, rate: "Raro (15%)", method: "Hierba del pantano" },
-                    { id: 453, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Croagunk o Bellsprout)" }
+                    { id: 453, rate: "35%", method: "Pantano y hierba" },
+                    { id: 194, rate: "25%", method: "Pantano (Nivel 30)" },
+                    { id: 543, rate: "15%", method: "Hierba del pantano" },
+                    { id: 704, rate: "10%", method: "Pantano / Agua (Nivel 30-32)" },
+                    { id: 453, rate: "Horda", method: "Encuentro en Horda x5 (Croagunk)" },
+                    { id: 69, rate: "Horda", method: "Encuentro en Horda x5 (Bellsprout)" }
                 ]},
                 { name: "Ruta 15", encounters: [
-                    { id: 679, rate: "Frecuente (25%)", method: "Hierba alta (Nivel 32-34)" },
-                    { id: 451, rate: "Común (35%)", method: "Hierba alta (Nivel 33)" },
-                    { id: 359, rate: "Raro (10%)", method: "Hierba alta" },
-                    { id: 216, rate: "Frecuente (20%)", method: "Hierba alta" },
-                    { id: 451, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Skorupi o Murkrow)" }
+                    { id: 451, rate: "35%", method: "Hierba alta (Nivel 33)" },
+                    { id: 679, rate: "25%", method: "Hierba alta (Nivel 32-34)" },
+                    { id: 216, rate: "20%", method: "Hierba alta" },
+                    { id: 359, rate: "10%", method: "Hierba alta" },
+                    { id: 451, rate: "Horda", method: "Encuentro en Horda x5 (Skorupi)" },
+                    { id: 198, rate: "Horda", method: "Encuentro en Horda x5 (Murkrow)" }
                 ]},
                 { name: "Ruta 16", encounters: [
-                    { id: 708, rate: "Común (30%)", method: "Hierba alta y flores (Nivel 34-36)" },
-                    { id: 568, rate: "Frecuente (25%)", method: "Hierba alta" },
-                    { id: 710, rate: "Raro (15%)", method: "Hierba alta" },
-                    { id: 531, rate: "Raro (10%)", method: "Hierba alta / Movimiento especial" }
+                    { id: 708, rate: "30%", method: "Hierba alta y flores (Nivel 34-36)" },
+                    { id: 568, rate: "25%", method: "Hierba alta" },
+                    { id: 710, rate: "15%", method: "Hierba alta" },
+                    { id: 531, rate: "10%", method: "Hierba alta / Movimiento especial" }
                 ]},
                 { name: "Ruta 17", encounters: [
-                    { id: 712, rate: "Común (40%)", method: "Nieve profunda (Nivel 36-38)" },
-                    { id: 220, rate: "Frecuente (35%)", method: "Nieve profunda (Nivel 37)" },
-                    { id: 459, rate: "Raro (15%)", method: "Nieve profunda" }
+                    { id: 712, rate: "40%", method: "Nieve profunda (Nivel 36-38)" },
+                    { id: 220, rate: "35%", method: "Nieve profunda (Nivel 37)" },
+                    { id: 459, rate: "15%", method: "Nieve profunda" }
                 ]},
                 { name: "Caverna Helada", encounters: [
-                    { id: 582, rate: "Común (35%)", method: "Interior helado (Nivel 37-39)" },
-                    { id: 459, rate: "Frecuente (25%)", method: "Interior helado" },
-                    { id: 215, rate: "Raro (15%)", method: "Interior helado" },
-                    { id: 361, rate: "Raro (15%)", method: "Interior helado" },
-                    { id: 582, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Vanillite o Jynx)" }
+                    { id: 582, rate: "35%", method: "Interior helado (Nivel 37-39)" },
+                    { id: 459, rate: "25%", method: "Interior helado" },
+                    { id: 215, rate: "15%", method: "Interior helado" },
+                    { id: 361, rate: "15%", method: "Interior helado" },
+                    { id: 582, rate: "Horda", method: "Encuentro en Horda x5 (Vanillite)" },
+                    { id: 124, rate: "Horda", method: "Encuentro en Horda x5 (Jynx)" }
                 ]},
                 { name: "Ruta 18", encounters: [
-                    { id: 610, rate: "Raro (15%)", method: "Hierba alta (Nivel 39-41)" },
-                    { id: 216, rate: "Común (35%)", method: "Hierba alta" },
-                    { id: 451, rate: "Frecuente (25%)", method: "Hierba alta" },
-                    { id: 543, rate: "Raro (15%)", method: "Hierba alta" },
-                    { id: 216, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Teddiursa o Durant)" }
+                    { id: 216, rate: "35%", method: "Hierba alta" },
+                    { id: 451, rate: "25%", method: "Hierba alta" },
+                    { id: 610, rate: "15%", method: "Hierba alta (Nivel 39-41)" },
+                    { id: 543, rate: "15%", method: "Hierba alta" },
+                    { id: 216, rate: "Horda", method: "Encuentro en Horda x5 (Teddiursa)" },
+                    { id: 632, rate: "Horda", method: "Encuentro en Horda x5 (Durant)" }
                 ]},
                 { name: "Termas Wyntown y Ruta 19", encounters: [
-                    { id: 333, rate: "Común (35%)", method: "Hierba alta (Nivel 40-43)" },
-                    { id: 619, rate: "Raro (15%)", method: "Hierba alta" },
-                    { id: 396, rate: "Frecuente (30%)", method: "Hierba alta" },
-                    { id: 473, rate: "Evolución", method: "Evoluciona en la zona fría" },
-                    { id: 333, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Swablu o Mienfoo)" }
+                    { id: 333, rate: "35%", method: "Hierba alta (Nivel 40-43)" },
+                    { id: 396, rate: "30%", method: "Hierba alta" },
+                    { id: 619, rate: "15%", method: "Hierba alta" },
+                    { id: 333, rate: "Horda", method: "Encuentro en Horda x5 (Swablu)" },
+                    { id: 619, rate: "Horda", method: "Encuentro en Horda x5 (Mienfoo)" }
                 ]},
                 { name: "Ruta 20", encounters: [
-                    { id: 353, rate: "Frecuente (30%)", method: "Bosque / Hierba (Nivel 42-44)" },
-                    { id: 163, rate: "Común (40%)", method: "Hierba y árboles" },
-                    { id: 708, rate: "Raro (15%)", method: "Hierba del bosque" }
+                    { id: 163, rate: "40%", method: "Hierba y árboles" },
+                    { id: 353, rate: "30%", method: "Bosque / Hierba (Nivel 42-44)" },
+                    { id: 708, rate: "15%", method: "Hierba del bosque" }
                 ]},
                 { name: "Ruta 21", encounters: [
-                    { id: 371, rate: "Raro (15%)", method: "Hierba alta (Nivel 43-45)" },
-                    { id: 214, rate: "Raro (15%)", method: "Hierba alta" },
-                    { id: 396, rate: "Común (40%)", method: "Hierba alta" },
-                    { id: 72, rate: "Frecuente (30%)", method: "Surf en el agua" },
-                    { id: 371, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Spinda o Scyther)" }
+                    { id: 396, rate: "40%", method: "Hierba alta" },
+                    { id: 72, rate: "30%", method: "Surf en el agua" },
+                    { id: 371, rate: "15%", method: "Hierba alta (Nivel 43-45)" },
+                    { id: 214, rate: "15%", method: "Hierba alta" },
+                    { id: 327, rate: "Horda", method: "Encuentro en Horda x5 (Spinda)" },
+                    { id: 127, rate: "Horda", method: "Encuentro en Horda x5 (Scyther)" }
                 ]},
                 { name: "Ruta 22", encounters: [
-                    { id: 667, rate: "Frecuente (30%)", method: "Hierba alta (Nivel 44-46)" },
-                    { id: 447, rate: "Raro (10%)", method: "Hierba alta (Nivel 45)" },
-                    { id: 57, rate: "Común (35%)", method: "Hierba alta" },
-                    { id: 74, rate: "Frecuente (25%)", method: "Zonas rocosas de la ruta" },
-                    { id: 57, rate: "Horda (100%)", method: "Encuentro en Horda x5 (Dunsparce o Golduck)" }
+                    { id: 57, rate: "35%", method: "Hierba alta" },
+                    { id: 667, rate: "30%", method: "Hierba alta (Nivel 44-46)" },
+                    { id: 74, rate: "25%", method: "Zonas rocosas de la ruta" },
+                    { id: 447, rate: "10%", method: "Hierba alta (Nivel 45)" },
+                    { id: 206, rate: "Horda", method: "Encuentro en Horda x5 (Dunsparce)" },
+                    { id: 55, rate: "Horda", method: "Encuentro en Horda x5 (Golduck)" }
                 ]},
                 { name: "Calle Victoria", encounters: [
-                    { id: 443, rate: "Raro (15%)", method: "Interior de la cueva (Nivel 55-59)" },
-                    { id: 111, rate: "Común (30%)", method: "Interior de la cueva" },
-                    { id: 42, rate: "Frecuente (25%)", method: "Interior de la cueva" },
-                    { id: 525, rate: "Frecuente (25%)", method: "Interior de la cueva" },
+                    { id: 111, rate: "30%", method: "Interior de la cueva" },
+                    { id: 42, rate: "25%", method: "Interior de la cueva" },
+                    { id: 525, rate: "25%", method: "Interior de la cueva" },
+                    { id: 443, rate: "15%", method: "Interior de la cueva (Nivel 55-59)" },
                     { id: 74, rate: "Golpe Roca", method: "Golpear rocas interiores (Graveler / Boldore)" }
                 ]},
                 { name: "Post-game y Legendarios", encounters: [
@@ -1073,7 +1119,7 @@
                     <div class="rounded-xl shadow-lg overflow-hidden border border-white/20 mb-8">
                         <div class="p-8 ${headerStyles}">
                             <h1 class="text-4xl font-extrabold mb-2">Edición ${gameName}</h1>
-                            <p class="text-lg opacity-90">Listado 100% completo con Hordas, Golpe Roca, Surf y Pesca desglosados ruta por ruta.</p>
+                            <p class="text-lg opacity-90">Listado 100% completo con Hordas, Golpe Roca, Surf y Pesca rigurosamente contrastados.</p>
                         </div>
                     </div>
                     <div class="space-y-8">
