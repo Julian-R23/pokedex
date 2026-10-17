@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Configuración Global de Firebase -->
+    <script>
+        window.__firebase_config = JSON.stringify({
+            apiKey: "AIzaSyBnM2viNQwdBMwn-esGR0XYmFfw0X7pi2Y",
+            authDomain: "pokedex-1-4.firebaseapp.com",
+            projectId: "pokedex-1-4",
+            storageBucket: "pokedex-1-4.firebasestorage.app",
+            messagingSenderId: "264689854822",
+            appId: "1:264689854822:web:98081e14809e368668c0a7"
+        });
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alola Tracker (Sol / Luna) - 100% Regional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .game-bg-sun { background: linear-gradient(135deg, #ea580c 0%, #f59e0b 50%, #0f172a 100%); }
+        .game-bg-moon { background: linear-gradient(135deg, #4338ca 0%, #3b82f6 50%, #0f172a 100%); }
+        .game-bg-pokedex { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
+        .checkbox-anim { transition: all 0.2s ease-in-out; }
+        .checkbox-anim:checked { transform: scale(1.1); }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+
+    <nav class="bg-slate-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <a href="index.html" class="p-2 bg-slate-800 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition" title="Volver al Hub">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    </a>
+                    <span class="text-xl font-bold tracking-wider cursor-pointer text-amber-400" onclick="navigate('pokedex')">Alola Completa (Sol/Luna)</span>
+                </div>
+                <div class="flex items-center space-x-1 md:space-x-4 overflow-x-auto">
+                    <button onclick="navigate('pokedex')" id="nav-pokedex" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition whitespace-nowrap">Pokédex Regional</button>
+                    <button onclick="navigate('Pokémon Sol')" id="nav-Pokémon Sol" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-amber-400 hover:bg-amber-900 hover:text-white transition whitespace-nowrap">Pokémon Sol</button>
+                    <button onclick="navigate('Pokémon Luna')" id="nav-Pokémon Luna" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-indigo-400 hover:bg-indigo-900 hover:text-white transition whitespace-nowrap">Pokémon Luna</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full"></main>
+
+    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-sm mt-auto">
+        <p id="storage-status">Alola Tracker - Conectando con la Rotom-Dex en la Nube...</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Pokédex Regional de Alola (Sol y Luna) ordenada por Islas
+        const pokedex = [
+            // --- ISLA MELEMELE (#001 - #120) ---
+            { regionalId: 1, natId: 722, name: "Rowlet", evo: "Nv. 17", zone: "Melemele" },
+            { regionalId: 2, natId: 723, name: "Dartrix", evo: "Nv. 34", zone: "Melemele" },
+            { regionalId: 3, natId: 724, name: "Decidueye", evo: "Final", zone: "Melemele" },
+            { regionalId: 4, natId: 725, name: "Litten", evo: "Nv. 17", zone: "Melemele" },
+            { regionalId: 5, natId: 726, name: "Torracat", evo: "Nv. 34", zone: "Melemele" },
+            { regionalId: 6, natId: 727, name: "Incineroar", evo: "Final", zone: "Melemele" },
+            { regionalId: 7, natId: 728, name: "Popplio", evo: "Nv. 17", zone: "Melemele" },
+            { regionalId: 8, natId: 729, name: "Brionne", evo: "Nv. 34", zone: "Melemele" },
+            { regionalId: 9, natId: 730, name: "Primarina", evo: "Final", zone: "Melemele" },
+            { regionalId: 10, natId: 731, name: "Pikipek", evo: "Nv. 14", zone: "Melemele" },
+            { regionalId: 11, natId: 732, name: "Trumbeak", evo: "Nv. 28", zone: "Melemele" },
+            { regionalId: 12, natId: 733, name: "Toucannon", evo: "Final", zone: "Melemele" },
+            { regionalId: 13, natId: 734, name: "Yungoos", evo: "Nv. 20 (Día)", zone: "Melemele" },
+            { regionalId: 14, natId: 735, name: "Gumshoos", evo: "Final", zone: "Melemele" },
+            { regionalId: 15, natId: 19, name: "Rattata de Alola", evo: "Nv. 20 (Noche)", zone: "Melemele" },
+            { regionalId: 16, natId: 20, name: "Raticate de Alola", evo: "Final", zone: "Melemele" },
+            { regionalId: 17, natId: 10, name: "Caterpie", evo: "Nv. 7", zone: "Melemele" },
+            { regionalId: 18, natId: 11, name: "Metapod", evo: "Nv. 10", zone: "Melemele" },
+            { regionalId: 19, natId: 12, name: "Butterfree", evo: "Final", zone: "Melemele" },
+            { regionalId: 20, natId: 165, name: "Ledyba", evo: "Nv. 18 (Día)", zone: "Melemele" },
+            { regionalId: 21, natId: 166, name: "Ledian", evo: "Final", zone: "Melemele" },
+            { regionalId: 22, natId: 167, name: "Spinarak", evo: "Nv. 22 (Noche)", zone: "Melemele" },
+            { regionalId: 23, natId: 168, name: "Ariados", evo: "Final", zone: "Melemele" },
+            { regionalId: 24, natId: 440, name: "Happiny", evo: "Subir Nv. con Piedra Oval (Día)", zone: "Melemele" },
+            { regionalId: 25, natId: 113, name: "Chansey", evo: "Amistad", zone: "Melemele" },
+            { regionalId: 26, natId: 242, name: "Blissey", evo: "Final", zone: "Melemele" },
+            { regionalId: 27, natId: 108, name: "Lickitung", evo: "Nv. con Desenrollar", zone: "Melemele" },
+            { regionalId: 28, natId: 463, name: "Lickilicky", evo: "Final", zone: "Melemele" },
+            { regionalId: 29, natId: 172, name: "Pichu", evo: "Amistad", zone: "Melemele" },
+            { regionalId: 30, natId: 25, name: "Pikachu", evo: "Piedra Trueno", zone: "Melemele" },
+            { regionalId: 31, natId: 26, name: "Raichu de Alola", evo: "Final", zone: "Melemele" },
+            { regionalId: 32, natId: 736, name: "Grubbin", evo: "Nv. 20", zone: "Melemele" },
+            { regionalId: 33, natId: 737, name: "Charjabug", evo: "Subir Nv. en Cañón de Poni", zone: "Melemele" },
+            { regionalId: 34, natId: 738, name: "Vikavolt", evo: "Final", zone: "Melemele" },
+            { regionalId: 35, natId: 438, name: "Bonsly", evo: "Nv. con Mimético", zone: "Melemele" },
+            { regionalId: 36, natId: 185, name: "Sudowoodo", evo: "Final", zone: "Melemele" },
+            { regionalId: 37, natId: 439, name: "Mime Jr.", evo: "Nv. con Mimético", zone: "Melemele" },
+            { regionalId: 38, natId: 122, name: "Mr. Mime", evo: "Final", zone: "Melemele" },
+            { regionalId: 39, natId: 128, name: "Tauros", evo: "Final", zone: "Melemele" },
+            { regionalId: 40, natId: 241, name: "Miltank", evo: "Final", zone: "Melemele" },
+            { regionalId: 41, natId: 283, name: "Surskit", evo: "Nv. 22", zone: "Melemele" },
+            { regionalId: 42, natId: 284, name: "Masquerain", evo: "Final", zone: "Melemele" },
+            { regionalId: 43, natId: 548, name: "Petilil", evo: "Piedra Sol", zone: "Melemele" },
+            { regionalId: 44, natId: 549, name: "Lilligant", evo: "Final", zone: "Melemele" },
+            { regionalId: 45, natId: 546, name: "Cottonee", evo: "Piedra Solar", zone: "Melemele" },
+            { regionalId: 46, natId: 547, name: "Whimsicott", evo: "Final", zone: "Melemele" },
+            { regionalId: 47, natId: 54, name: "Psyduck", evo: "Nv. 33", zone: "Melemele" },
+            { regionalId: 48, natId: 55, name: "Golduck", evo: "Final", zone: "Melemele" },
+            { regionalId: 49, natId: 62, name: "Poliwag", evo: "Nv. 25", zone: "Melemele" },
+            { regionalId: 50, natId: 61, name: "Poliwhirl", evo: "Piedra Agua / Roca Rey", zone: "Melemele" },
+            { regionalId: 51, natId: 62, name: "Poliwrath", evo: "Final", zone: "Melemele" },
+            { regionalId: 52, natId: 186, name: "Politoed", evo: "Final", zone: "Melemele" },
+            { regionalId: 53, natId: 129, name: "Magikarp", evo: "Nv. 20", zone: "Melemele" },
+            { regionalId: 54, natId: 130, name: "Gyarados", evo: "Final", zone: "Melemele" },
+            { regionalId: 55, natId: 339, name: "Barboach", evo: "Nv. 30", zone: "Melemele" },
+            { regionalId: 56, natId: 340, name: "Whiscash", evo: "Final", zone: "Melemele" },
+            { regionalId: 57, natId: 688, name: "Binacle", evo: "Nv. 39", zone: "Melemele" },
+            { regionalId: 58, natId: 689, name: "Barbaracle", evo: "Final", zone: "Melemele" },
+            { regionalId: 59, natId: 739, name: "Crabrawler", evo: "Subir Nv. en Monte Lanakila", zone: "Melemele" },
+            { regionalId: 60, natId: 740, name: "Crabominable", evo: "Final", zone: "Melemele" },
+            { regionalId: 61, natId: 92, name: "Gastly", evo: "Nv. 25", zone: "Melemele" },
+            { regionalId: 62, natId: 93, name: "Haunter", evo: "Intercambio", zone: "Melemele" },
+            { regionalId: 63, natId: 94, name: "Gengar", evo: "Final", zone: "Melemele" },
+            { regionalId: 64, natId: 425, name: "Drifloon", evo: "Nv. 28", zone: "Melemele" },
+            { regionalId: 65, natId: 426, name: "Drifblim", evo: "Final", zone: "Melemele" },
+            { regionalId: 66, natId: 200, name: "Misdreavus", evo: "Piedra Noche", zone: "Melemele" },
+            { regionalId: 67, natId: 429, name: "Mismagius", evo: "Final", zone: "Melemele" },
+            { regionalId: 68, natId: 41, name: "Zubat", evo: "Nv. 22", zone: "Melemele" },
+            { regionalId: 69, natId: 42, name: "Golbat", evo: "Amistad", zone: "Melemele" },
+            { regionalId: 70, natId: 169, name: "Crobat", evo: "Final", zone: "Melemele" },
+            { regionalId: 71, natId: 27, name: "Diglett de Alola", evo: "Nv. 26", zone: "Melemele" },
+            { regionalId: 72, natId: 28, name: "Dugtrio de Alola", evo: "Final", zone: "Melemele" },
+            { regionalId: 73, natId: 21, name: "Spearow", evo: "Nv. 20", zone: "Melemele" },
+            { regionalId: 74, natId: 22, name: "Fearow", evo: "Final", zone: "Melemele" },
+            { regionalId: 75, natId: 96, name: "Drowzee", evo: "Nv. 26", zone: "Melemele" },
+            { regionalId: 76, natId: 97, name: "Hypno", evo: "Final", zone: "Melemele" },
+            { regionalId: 77, natId: 296, name: "Makuhita", evo: "Nv. 24", zone: "Melemele" },
+            { regionalId: 78, natId: 297, name: "Hariyama", evo: "Final", zone: "Melemele" },
+            { regionalId: 79, natId: 228, name: "Smeargle", evo: "Final", zone: "Melemele" },
+            { regionalId: 80, natId: 741, name: "Oricorio", evo: "Final (Estilo según danza/objeto)", zone: "Melemele" },
+            { regionalId: 81, natId: 679, name: "Cutiefly", evo: "Nv. 25", zone: "Melemele" },
+            { regionalId: 82, natId: 680, name: "Ribombee", evo: "Final", zone: "Melemele" },
+            { regionalId: 83, natId: 540, name: "Petilil", evo: "Piedra Sol", zone: "Melemele" },
+            { regionalId: 84, natId: 114, name: "Tangela", evo: "Nv. con Poder Pasado", zone: "Melemele" },
+            { regionalId: 85, natId: 465, name: "Tangrowth", evo: "Final", zone: "Melemele" },
+            { regionalId: 86, natId: 52, name: "Meowth de Alola", evo: "Amistad", zone: "Melemele" },
+            { regionalId: 87, natId: 53, name: "Persian de Alola", evo: "Final", zone: "Melemele" },
+            { regionalId: 88, natId: 81, name: "Magnemite", evo: "Nv. 30", zone: "Melemele" },
+            { regionalId: 89, natId: 82, name: "Magneton", evo: "Subir Nv. en Cañón de Poni", zone: "Melemele" },
+            { regionalId: 90, natId: 462, name: "Magnezone", evo: "Final", zone: "Melemele" },
+            { regionalId: 91, natId: 88, name: "Grimer de Alola", evo: "Nv. 38", zone: "Melemele" },
+            { regionalId: 92, natId: 89, name: "Muk de Alola", evo: "Final", zone: "Melemele" },
+            { regionalId: 93, natId: 104, name: "Cubone", evo: "Nv. 28 (Noche)", zone: "Melemele" },
+            { regionalId: 94, natId: 105, name: "Marowak de Alola", evo: "Final", zone: "Melemele" },
+            { regionalId: 95, natId: 115, name: "Kangaskhan", evo: "Final", zone: "Melemele" },
+            { regionalId: 96, natId: 240, name: "Magby", evo: "Nv. 30", zone: "Melemele" },
+            { regionalId: 97, natId: 126, name: "Magmar", evo: "Intercambio c/Magmatizador", zone: "Melemele" },
+            { regionalId: 98, natId: 467, name: "Magmortar", evo: "Final", zone: "Melemele" },
+            { regionalId: 99, natId: 742, name: "Rockruff", evo: "Nv. 25 (Según versión)", zone: "Melemele" },
+            { regionalId: 100, natId: 745, name: "Lycanroc", evo: "Final", zone: "Melemele" },
+            { regionalId: 101, natId: 138, name: "Omanyte", evo: "Nv. 40", zone: "Melemele" },
+            { regionalId: 102, natId: 139, name: "Omastar", evo: "Final", zone: "Melemele" },
+            { regionalId: 103, natId: 140, name: "Kabuto", evo: "Nv. 40", zone: "Melemele" },
+            { regionalId: 104, natId: 141, name: "Kabutops", evo: "Final", zone: "Melemele" },
+            { regionalId: 105, natId: 142, name: "Aerodactyl", evo: "Final", zone: "Melemele" },
+            { regionalId: 106, natId: 345, name: "Lileep", evo: "Nv. 40", zone: "Melemele" },
+            { regionalId: 107, natId: 346, name: "Cradily", evo: "Final", zone: "Melemele" },
+            { regionalId: 108, natId: 347, name: "Anorith", evo: "Nv. 40", zone: "Melemele" },
+            { regionalId: 109, natId: 348, name: "Armaldo", evo: "Final", zone: "Melemele" },
+            { regionalId: 110, natId: 408, name: "Cranidos", evo: "Nv. 30", zone: "Melemele" },
+            { regionalId: 111, natId: 409, name: "Rampardos", evo: "Final", zone: "Melemele" },
+            { regionalId: 112, natId: 410, name: "Shieldon", evo: "Nv. 30", zone: "Melemele" },
+            { regionalId: 113, natId: 411, name: "Bastiodon", evo: "Final", zone: "Melemele" },
+            { regionalId: 114, natId: 564, name: "Tirtouga", evo: "Nv. 37", zone: "Melemele" },
+            { regionalId: 115, natId: 565, name: "Carrac
