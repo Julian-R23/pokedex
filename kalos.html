@@ -13,7 +13,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalos Tracker (X / Y) - 100% Rutas y Sitios de Kalos</title>
+    <title>Kalos Tracker (X / Y) - Rutas Desglosadas 100%</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -54,7 +54,7 @@
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Pokédex Regional Completa de Kalos (Centro, Costa y Montaña - 457 Pokémon) - INTACTA
+        // Pokédex Regional Completa de Kalos (457 Pokémon) - Intacta
         const pokedex = [
             // --- KALOS CENTRO ---
             { regionalId: 1, natId: 650, name: "Chespin", evo: "Nv. 16", zone: "Centro" },
@@ -417,195 +417,73 @@
             { regionalId: 108, natId: 150, name: "Mewtwo", evo: "Villa Pokémon", zone: "Montaña" }
         ];
 
-        // Rutas y sitios 100% completos con TODAS las rutas de Kalos (1 a 22), cuevas, bahías y post-game
+        // Rutas y sitios 100% desglosados individualmente (Sin agrupar)
         const routeData = {
             "Pokémon X": [
-                {
-                    name: "Pueblo Boceto y Rutas 2 y 3",
-                    encounters: [
-                        { id: 659, rate: "Común (30%)", method: "Hierba alta (Rutas 2 y 3)" },
-                        { id: 661, rate: "Común (30%)", method: "Hierba alta (Rutas 2 y 3)" },
-                        { id: 16, rate: "Frecuente (20%)", method: "Hierba alta (Rutas 2 y 3)" },
-                        { id: 664, rate: "Frecuente (20%)", method: "Hierba alta / Flores (Ruta 3)" }
-                    ]
-                },
-                {
-                    name: "Bosque Novarte y Ruta 4",
-                    encounters: [
-                        { id: 664, rate: "Muy Común (40%)", method: "Hierba del Bosque Novarte" },
-                        { id: 10, rate: "Común (20%)", method: "Hierba del Bosque Novarte" },
-                        { id: 13, rate: "Común (20%)", method: "Hierba del Bosque Novarte" },
-                        { id: 25, rate: "Raro (5%)", method: "Hierba del Bosque Novarte" },
-                        { id: 669, rate: "Común (30%)", method: "Parterres de flores (Ruta 4)" },
-                        { id: 165, rate: "Frecuente (20%)", method: "Parterres de flores (Ruta 4)" },
-                        { id: 406, rate: "Raro (10%)", method: "Parterres de flores (Ruta 4)" }
-                    ]
-                },
-                {
-                    name: "Ciudad Lumalia y Rutas 5, 6 y 7",
-                    encounters: [
-                        { id: 1, rate: "Regalo (100%)", method: "Bulbasaur (Laboratorio del Prof. Ciprés)" },
-                        { id: 4, rate: "Regalo (100%)", method: "Charmander (Laboratorio del Prof. Ciprés)" },
-                        { id: 7, rate: "Regalo (100%)", method: "Squirtle (Laboratorio del Prof. Ciprés)" },
-                        { id: 672, rate: "Común (30%)", method: "Hierba alta (Ruta 5)" },
-                        { id: 674, rate: "Frecuente (20%)", method: "Hierba alta (Ruta 5)" },
-                        { id: 684, rate: "Exclusivo X (20%)", method: "Hierba alta (Ruta 7)" },
-                        { id: 280, rate: "Raro (10%)", method: "Hierba alta (Ruta 7)" },
-                        { id: 143, rate: "Único (100%)", method: "Despertar al Snorlax con la Poké Flauta (Ruta 7)" }
-                    ]
-                },
-                {
-                    name: "Cueva Conectividad, Rutas 8, 9 y 10",
-                    encounters: [
-                        { id: 686, rate: "Común (30%)", method: "Hierba (Ruta 8)" },
-                        { id: 692, rate: "Exclusivo X (15%)", method: "Pesca con Caña Buena (Ruta 8 / Costa)" },
-                        { id: 694, rate: "Común (30%)", method: "Zonas áridas y desérticas (Ruta 9)" },
-                        { id: 41, rate: "Común (30%)", method: "Interior de Cueva Conectividad" },
-                        { id: 701, rate: "Frecuente (20%)", method: "Hierba alta (Ruta 10)" },
-                        { id: 133, rate: "Raro (10%)", method: "Hierba alta (Ruta 10)" }
-                    ]
-                },
-                {
-                    name: "Pueblo Petroglifo y Rutas 11 y 12",
-                    encounters: [
-                        { id: 696, rate: "Fósil (100%)", method: "Recibir Fósil Garra en Pueblo Petroglifo" },
-                        { id: 702, rate: "Frecuente (20%)", method: "Hierba alta (Ruta 11)" },
-                        { id: 104, rate: "Raro (10%)", method: "Hierba alta (Ruta 11)" },
-                        { id: 129, rate: "Común (50%)", method: "Pesca con Caña Vieja (Ruta 12 / Bahía)" },
-                        { id: 341, rate: "Frecuente (20%)", method: "Pesca con Caña Buena (Ruta 12)" }
-                    ]
-                },
-                {
-                    name: "Cueva Reflejos, Rutas 13, 14, 15 y 16",
-                    encounters: [
-                        { id: 304, rate: "Exclusivo X (15%)", method: "Zonas rocosas de Cueva Reflejos" },
-                        { id: 524, rate: "Común (30%)", method: "Zonas rocosas de Cueva Reflejos" },
-                        { id: 704, rate: "Raro (10%)", method: "Agua / Pantano (Ruta 14)" },
-                        { id: 679, rate: "Frecuente (20%)", method: "Hierba alta (Ruta 15)" },
-                        { id: 708, rate: "Común (25%)", method: "Hierba y flores (Ruta 16)" }
-                    ]
-                },
-                {
-                    name: "Ruta 17, Ruta 18, Caverna Helada y Calle Victoria",
-                    encounters: [
-                        { id: 712, rate: "Común (30%)", method: "Nieve profunda (Ruta 17)" },
-                        { id: 220, rate: "Frecuente (20%)", method: "Nieve profunda (Ruta 17)" },
-                        { id: 443, rate: "Raro (10%)", method: "Cueva / Zona rocosa (Calle Victoria)" },
-                        { id: 610, rate: "Raro (10%)", method: "Hierba alta (Ruta 18)" }
-                    ]
-                },
-                {
-                    name: "Rutas 19, 20, 21 y 22 (Pueblo Furia, Pueblo Romantis)",
-                    encounters: [
-                        { id: 333, rate: "Común (30%)", method: "Hierba alta (Ruta 19 / Pueblo Furia)" },
-                        { id: 353, rate: "Frecuente (20%)", method: "Hierba alta / Bosque (Ruta 20)" },
-                        { id: 447, rate: "Raro (10%)", method: "Hierba alta (Ruta 22)" },
-                        { id: 667, rate: "Frecuente (20%)", method: "Hierba alta (Ruta 22)" }
-                    ]
-                },
-                {
-                    name: "Post-game, Cueva Desenlace y Legendarios",
-                    encounters: [
-                        { id: 716, rate: "Historia (100%)", method: "Guarida del Team Flare (Nivel 50)" },
-                        { id: 718, rate: "Único (100%)", method: "Cueva Desenlace (Al fondo en el Post-game)" },
-                        { id: 150, rate: "Único (100%)", method: "Villa Pokémon (Cueva Desconocida)" },
-                        { id: 144, rate: "Errante (100%)", method: "Aparece tras huir 10 veces si elegiste a Chespin" }
-                    ]
-                }
+                { name: "Pueblo Boceto", encounters: [{ id: 650, rate: "Inicial (100%)", method: "Elección con el Profesor Ciprés" }, { id: 653, rate: "Inicial (100%)", method: "Elección con el Profesor Ciprés" }, { id: 656, rate: "Inicial (100%)", method: "Elección con el Profesor Ciprés" }] },
+                { name: "Ruta 2", encounters: [{ id: 659, rate: "Común (35%)", method: "Hierba alta" }, { id: 661, rate: "Común (30%)", method: "Hierba alta" }, { id: 16, rate: "Frecuente (20%)", method: "Hierba alta" }, { id: 664, rate: "Raro (15%)", method: "Hierba alta" }] },
+                { name: "Bosque Novarte", encounters: [{ id: 664, rate: "Muy Común (40%)", method: "Hierba alta" }, { id: 10, rate: "Común (20%)", method: "Hierba alta" }, { id: 13, rate: "Común (20%)", method: "Hierba alta" }, { id: 25, rate: "Raro (5%)", method: "Hierba alta" }] },
+                { name: "Ruta 3", encounters: [{ id: 659, rate: "Común (30%)", method: "Hierba alta" }, { id: 661, rate: "Común (30%)", method: "Hierba alta" }, { id: 22, rate: "Frecuente (20%)", method: "Hierba alta" }, { id: 298, rate: "Raro (10%)", method: "Hierba alta" }] },
+                { name: "Ruta 4", encounters: [{ id: 669, rate: "Común (30%)", method: "Parterres de flores" }, { id: 165, rate: "Frecuente (20%)", method: "Parterres de flores" }, { id: 406, rate: "Raro (10%)", method: "Parterres de flores" }] },
+                { name: "Ciudad Lumalia", encounters: [{ id: 1, rate: "Regalo (100%)", method: "Bulbasaur (Laboratorio del Prof. Ciprés)" }, { id: 4, rate: "Regalo (100%)", method: "Charmander (Laboratorio del Prof. Ciprés)" }, { id: 7, rate: "Regalo (100%)", method: "Squirtle (Laboratorio del Prof. Ciprés)" }] },
+                { name: "Ruta 5", encounters: [{ id: 672, rate: "Común (30%)", method: "Hierba alta" }, { id: 674, rate: "Frecuente (20%)", method: "Hierba alta" }, { id: 83, rate: "Raro (10%)", method: "Hierba alta" }, { id: 311, rate: "Raro (10%)", method: "Hierba alta" }] },
+                { name: "Palacio Etual y Ruta 6", encounters: [{ id: 447, rate: "Raro (10%)", method: "Hierba alta (Ruta 6)" }, { id: 316, rate: "Común (30%)", method: "Hierba alta (Ruta 6)" }, { id: 129, rate: "Común (50%)", method: "Pesca en Estanque del Palacio" }] },
+                { name: "Ruta 7", encounters: [{ id: 684, rate: "Exclusivo X (20%)", method: "Hierba alta" }, { id: 280, rate: "Raro (10%)", method: "Hierba alta" }, { id: 143, rate: "Único (100%)", method: "Despertar al Snorlax" }] },
+                { name: "Cueva Conectividad", encounters: [{ id: 41, rate: "Común (40%)", method: "Interior de la cueva" }, { id: 399, rate: "Frecuente (30%)", method: "Interior de la cueva" }, { id: 524, rate: "Raro (15%)", method: "Interior de la cueva" }] },
+                { name: "Ruta 8", encounters: [{ id: 686, rate: "Común (30%)", method: "Hierba" }, { id: 692, rate: "Exclusivo X (15%)", method: "Pesca con Caña Buena" }, { id: 129, rate: "Común (50%)", method: "Pesca con Caña Vieja" }] },
+                { name: "Ruta 9", encounters: [{ id: 694, rate: "Común (40%)", method: "Zonas áridas y rocosas" }, { id: 84, rate: "Frecuente (30%)", method: "Zonas áridas y rocosas" }] },
+                { name: "Ruta 10", encounters: [{ id: 701, rate: "Común (30%)", method: "Hierba alta" }, { id: 133, rate: "Raro (10%)", method: "Hierba alta" }, { id: 417, rate: "Frecuente (20%)", method: "Hierba alta" }] },
+                { name: "Pueblo Petroglifo", encounters: [{ id: 696, rate: "Fósil (100%)", method: "Recibir Fósil Garra" }] },
+                { name: "Ruta 11", encounters: [{ id: 702, rate: "Frecuente (25%)", method: "Hierba alta" }, { id: 104, rate: "Raro (10%)", method: "Hierba alta" }, { id: 557, rate: "Común (30%)", method: "Hierba alta" }] },
+                { name: "Ruta 12", encounters: [{ id: 111, rate: "Frecuente (20%)", method: "Hierba alta" }, { id: 102, rate: "Raro (15%)", method: "Hierba alta" }] },
+                { name: "Bahía Azul", encounters: [{ id: 278, rate: "Común (40%)", method: "Surf / Superficie marina" }, { id: 318, rate: "Raro (15%)", method: "Pesca con Caña Buena" }] },
+                { name: "Cueva Reflejos", encounters: [{ id: 304, rate: "Exclusivo X (15%)", method: "Zonas rocosas interiores" }, { id: 63, rate: "Común (30%)", method: "Zonas interiores" }] },
+                { name: "Ruta 13", encounters: [{ id: 100, rate: "Común (40%)", method: "Central eléctrica / Zonas áridas" }, { id: 81, rate: "Frecuente (30%)", method: "Central eléctrica" }] },
+                { name: "Ruta 14", encounters: [{ id: 704, rate: "Raro (10%)", method: "Pantano / Agua" }, { id: 453, rate: "Común (30%)", method: "Pantano" }] },
+                { name: "Ruta 15", encounters: [{ id: 679, rate: "Frecuente (25%)", method: "Hierba alta" }, { id: 451, rate: "Común (30%)", method: "Hierba alta" }] },
+                { name: "Ruta 16", encounters: [{ id: 708, rate: "Común (30%)", method: "Hierba alta" }, { id: 568, rate: "Frecuente (25%)", method: "Hierba alta" }] },
+                { name: "Ruta 17", encounters: [{ id: 712, rate: "Común (40%)", method: "Nieve profunda" }, { id: 220, rate: "Frecuente (30%)", method: "Nieve profunda" }] },
+                { name: "Caverna Helada", encounters: [{ id: 582, rate: "Común (35%)", method: "Interior helado" }, { id: 459, rate: "Raro (15%)", method: "Interior helado" }] },
+                { name: "Ruta 18", encounters: [{ id: 610, rate: "Raro (15%)", method: "Hierba alta" }, { id: 216, rate: "Común (30%)", method: "Hierba alta" }] },
+                { name: "Termas Wyntown y Ruta 19", encounters: [{ id: 333, rate: "Común (30%)", method: "Hierba alta (Ruta 19)" }, { id: 619, rate: "Raro (15%)", method: "Hierba alta (Ruta 19)" }] },
+                { name: "Ruta 20", encounters: [{ id: 353, rate: "Frecuente (25%)", method: "Bosque / Hierba" }, { id: 163, rate: "Común (35%)", method: "Hierba" }] },
+                { name: "Ruta 21", encounters: [{ id: 371, rate: "Raro (10%)", method: "Hierba alta" }, { id: 214, rate: "Raro (15%)", method: "Hierba alta" }] },
+                { name: "Ruta 22", encounters: [{ id: 667, rate: "Frecuente (25%)", method: "Hierba alta" }, { id: 447, rate: "Raro (10%)", method: "Hierba alta" }] },
+                { name: "Calle Victoria", encounters: [{ id: 443, rate: "Raro (15%)", method: "Cueva / Zonas rocosas" }, { id: 111, rate: "Común (30%)", method: "Interior" }] },
+                { name: "Post-game y Legendarios", encounters: [{ id: 716, rate: "Historia (100%)", method: "Guarida del Team Flare" }, { id: 718, rate: "Único (100%)", method: "Cueva Desenlace" }, { id: 150, rate: "Único (100%)", method: "Villa Pokémon" }, { id: 144, rate: "Errante (100%)", method: "Aparece tras huir (Si elegiste a Chespin)" }] }
             ],
             "Pokémon Y": [
-                {
-                    name: "Pueblo Boceto y Rutas 2 y 3",
-                    encounters: [
-                        { id: 659, rate: "Común (30%)", method: "Hierba alta (Rutas 2 y 3)" },
-                        { id: 661, rate: "Común (30%)", method: "Hierba alta (Rutas 2 y 3)" },
-                        { id: 16, rate: "Frecuente (20%)", method: "Hierba alta (Rutas 2 y 3)" },
-                        { id: 664, rate: "Frecuente (20%)", method: "Hierba alta / Flores (Ruta 3)" }
-                    ]
-                },
-                {
-                    name: "Bosque Novarte y Ruta 4",
-                    encounters: [
-                        { id: 664, rate: "Muy Común (40%)", method: "Hierba del Bosque Novarte" },
-                        { id: 10, rate: "Común (20%)", method: "Hierba del Bosque Novarte" },
-                        { id: 13, rate: "Común (20%)", method: "Hierba del Bosque Novarte" },
-                        { id: 25, rate: "Raro (5%)", method: "Hierba del Bosque Novarte" },
-                        { id: 669, rate: "Común (30%)", method: "Parterres de flores (Ruta 4)" },
-                        { id: 165, rate: "Frecuente (20%)", method: "Parterres de flores (Ruta 4)" },
-                        { id: 406, rate: "Raro (10%)", method: "Parterres de flores (Ruta 4)" }
-                    ]
-                },
-                {
-                    name: "Ciudad Lumalia y Rutas 5, 6 y 7",
-                    encounters: [
-                        { id: 1, rate: "Regalo (100%)", method: "Bulbasaur (Laboratorio del Prof. Ciprés)" },
-                        { id: 4, rate: "Regalo (100%)", method: "Charmander (Laboratorio del Prof. Ciprés)" },
-                        { id: 7, rate: "Regalo (100%)", method: "Squirtle (Laboratorio del Prof. Ciprés)" },
-                        { id: 672, rate: "Común (30%)", method: "Hierba alta (Ruta 5)" },
-                        { id: 674, rate: "Frecuente (20%)", method: "Hierba alta (Ruta 5)" },
-                        { id: 682, rate: "Exclusivo Y (20%)", method: "Hierba alta (Ruta 7)" },
-                        { id: 280, rate: "Raro (10%)", method: "Hierba alta (Ruta 7)" },
-                        { id: 143, rate: "Único (100%)", method: "Despertar al Snorlax con la Poké Flauta (Ruta 7)" }
-                    ]
-                },
-                {
-                    name: "Cueva Conectividad, Rutas 8, 9 y 10",
-                    encounters: [
-                        { id: 686, rate: "Común (30%)", method: "Hierba (Ruta 8)" },
-                        { id: 690, rate: "Exclusivo Y (15%)", method: "Pesca con Caña Buena (Ruta 8 / Costa)" },
-                        { id: 694, rate: "Común (30%)", method: "Zonas áridas y desérticas (Ruta 9)" },
-                        { id: 41, rate: "Común (30%)", method: "Interior de Cueva Conectividad" },
-                        { id: 701, rate: "Frecuente (20%)", method: "Hierba alta (Ruta 10)" },
-                        { id: 133, rate: "Raro (10%)", method: "Hierba alta (Ruta 10)" }
-                    ]
-                },
-                {
-                    name: "Pueblo Petroglifo y Rutas 11 y 12",
-                    encounters: [
-                        { id: 698, rate: "Fósil (100%)", method: "Recibir Fósil Aleta en Pueblo Petroglifo" },
-                        { id: 702, rate: "Frecuente (20%)", method: "Hierba alta (Ruta 11)" },
-                        { id: 104, rate: "Raro (10%)", method: "Hierba alta (Ruta 11)" },
-                        { id: 129, rate: "Común (50%)", method: "Pesca con Caña Vieja (Ruta 12 / Bahía)" },
-                        { id: 341, rate: "Frecuente (20%)", method: "Pesca con Caña Buena (Ruta 12)" }
-                    ]
-                },
-                {
-                    name: "Cueva Reflejos, Rutas 13, 14, 15 y 16",
-                    encounters: [
-                        { id: 246, rate: "Exclusivo Y (10%)", method: "Zonas rocosas de Cueva Reflejos" },
-                        { id: 524, rate: "Común (30%)", method: "Zonas rocosas de Cueva Reflejos" },
-                        { id: 704, rate: "Raro (10%)", method: "Agua / Pantano (Ruta 14)" },
-                        { id: 679, rate: "Frecuente (20%)", method: "Hierba alta (Ruta 15)" },
-                        { id: 708, rate: "Común (25%)", method: "Hierba y flores (Ruta 16)" }
-                    ]
-                },
-                {
-                    name: "Ruta 17, Ruta 18, Caverna Helada y Calle Victoria",
-                    encounters: [
-                        { id: 712, rate: "Común (30%)", method: "Nieve profunda (Ruta 17)" },
-                        { id: 220, rate: "Frecuente (20%)", method: "Nieve profunda (Ruta 17)" },
-                        { id: 443, rate: "Raro (10%)", method: "Cueva / Zona rocosa (Calle Victoria)" },
-                        { id: 610, rate: "Raro (10%)", method: "Hierba alta (Ruta 18)" }
-                    ]
-                },
-                {
-                    name: "Rutas 19, 20, 21 y 22 (Pueblo Furia, Pueblo Romantis)",
-                    encounters: [
-                        { id: 333, rate: "Común (30%)", method: "Hierba alta (Ruta 19 / Pueblo Furia)" },
-                        { id: 353, rate: "Frecuente (20%)", method: "Hierba alta / Bosque (Ruta 20)" },
-                        { id: 447, rate: "Raro (10%)", method: "Hierba alta (Ruta 22)" },
-                        { id: 667, rate: "Frecuente (20%)", method: "Hierba alta (Ruta 22)" }
-                    ]
-                },
-                {
-                    name: "Post-game, Cueva Desenlace y Legendarios",
-                    encounters: [
-                        { id: 717, rate: "Historia (100%)", method: "Guarida del Team Flare (Nivel 50)" },
-                        { id: 718, rate: "Único (100%)", method: "Cueva Desenlace (Al fondo en el Post-game)" },
-                        { id: 150, rate: "Único (100%)", method: "Villa Pokémon (Cueva Desconocida)" },
-                        { id: 145, rate: "Errante (100%)", method: "Aparece tras huir 10 veces si elegiste a Fennekin" }
-                    ]
-                }
+                { name: "Pueblo Boceto", encounters: [{ id: 650, rate: "Inicial (100%)", method: "Elección con el Profesor Ciprés" }, { id: 653, rate: "Inicial (100%)", method: "Elección con el Profesor Ciprés" }, { id: 656, rate: "Inicial (100%)", method: "Elección con el Profesor Ciprés" }] },
+                { name: "Ruta 2", encounters: [{ id: 659, rate: "Común (35%)", method: "Hierba alta" }, { id: 661, rate: "Común (30%)", method: "Hierba alta" }, { id: 16, rate: "Frecuente (20%)", method: "Hierba alta" }, { id: 664, rate: "Raro (15%)", method: "Hierba alta" }] },
+                { name: "Bosque Novarte", encounters: [{ id: 664, rate: "Muy Común (40%)", method: "Hierba alta" }, { id: 10, rate: "Común (20%)", method: "Hierba alta" }, { id: 13, rate: "Común (20%)", method: "Hierba alta" }, { id: 25, rate: "Raro (5%)", method: "Hierba alta" }] },
+                { name: "Ruta 3", encounters: [{ id: 659, rate: "Común (30%)", method: "Hierba alta" }, { id: 661, rate: "Común (30%)", method: "Hierba alta" }, { id: 22, rate: "Frecuente (20%)", method: "Hierba alta" }, { id: 298, rate: "Raro (10%)", method: "Hierba alta" }] },
+                { name: "Ruta 4", encounters: [{ id: 669, rate: "Común (30%)", method: "Parterres de flores" }, { id: 165, rate: "Frecuente (20%)", method: "Parterres de flores" }, { id: 406, rate: "Raro (10%)", method: "Parterres de flores" }] },
+                { name: "Ciudad Lumalia", encounters: [{ id: 1, rate: "Regalo (100%)", method: "Bulbasaur (Laboratorio del Prof. Ciprés)" }, { id: 4, rate: "Regalo (100%)", method: "Charmander (Laboratorio del Prof. Ciprés)" }, { id: 7, rate: "Regalo (100%)", method: "Squirtle (Laboratorio del Prof. Ciprés)" }] },
+                { name: "Ruta 5", encounters: [{ id: 672, rate: "Común (30%)", method: "Hierba alta" }, { id: 674, rate: "Frecuente (20%)", method: "Hierba alta" }, { id: 83, rate: "Raro (10%)", method: "Hierba alta" }, { id: 311, rate: "Raro (10%)", method: "Hierba alta" }] },
+                { name: "Palacio Etual y Ruta 6", encounters: [{ id: 447, rate: "Raro (10%)", method: "Hierba alta (Ruta 6)" }, { id: 316, rate: "Común (30%)", method: "Hierba alta (Ruta 6)" }, { id: 129, rate: "Común (50%)", method: "Pesca en Estanque del Palacio" }] },
+                { name: "Ruta 7", encounters: [{ id: 682, rate: "Exclusivo Y (20%)", method: "Hierba alta" }, { id: 280, rate: "Raro (10%)", method: "Hierba alta" }, { id: 143, rate: "Único (100%)", method: "Despertar al Snorlax" }] },
+                { name: "Cueva Conectividad", encounters: [{ id: 41, rate: "Común (40%)", method: "Interior de la cueva" }, { id: 399, rate: "Frecuente (30%)", method: "Interior de la cueva" }, { id: 524, rate: "Raro (15%)", method: "Interior de la cueva" }] },
+                { name: "Ruta 8", encounters: [{ id: 686, rate: "Común (30%)", method: "Hierba" }, { id: 690, rate: "Exclusivo Y (15%)", method: "Pesca con Caña Buena" }, { id: 129, rate: "Común (50%)", method: "Pesca con Caña Vieja" }] },
+                { name: "Ruta 9", encounters: [{ id: 694, rate: "Común (40%)", method: "Zonas áridas y rocosas" }, { id: 84, rate: "Frecuente (30%)", method: "Zonas áridas y rocosas" }] },
+                { name: "Ruta 10", encounters: [{ id: 701, rate: "Común (30%)", method: "Hierba alta" }, { id: 133, rate: "Raro (10%)", method: "Hierba alta" }, { id: 417, rate: "Frecuente (20%)", method: "Hierba alta" }] },
+                { name: "Pueblo Petroglifo", encounters: [{ id: 698, rate: "Fósil (100%)", method: "Recibir Fósil Aleta" }] },
+                { name: "Ruta 11", encounters: [{ id: 702, rate: "Frecuente (25%)", method: "Hierba alta" }, { id: 104, rate: "Raro (10%)", method: "Hierba alta" }, { id: 557, rate: "Común (30%)", method: "Hierba alta" }] },
+                { name: "Ruta 12", encounters: [{ id: 111, rate: "Frecuente (20%)", method: "Hierba alta" }, { id: 102, rate: "Raro (15%)", method: "Hierba alta" }] },
+                { name: "Bahía Azul", encounters: [{ id: 278, rate: "Común (40%)", method: "Surf / Superficie marina" }, { id: 318, rate: "Raro (15%)", method: "Pesca con Caña Buena" }] },
+                { name: "Cueva Reflejos", encounters: [{ id: 246, rate: "Exclusivo Y (10%)", method: "Zonas rocosas interiores" }, { id: 63, rate: "Común (30%)", method: "Zonas interiores" }] },
+                { name: "Ruta 13", encounters: [{ id: 100, rate: "Común (40%)", method: "Central eléctrica / Zonas áridas" }, { id: 81, rate: "Frecuente (30%)", method: "Central eléctrica" }] },
+                { name: "Ruta 14", encounters: [{ id: 704, rate: "Raro (10%)", method: "Pantano / Agua" }, { id: 453, rate: "Común (30%)", method: "Pantano" }] },
+                { name: "Ruta 15", encounters: [{ id: 679, rate: "Frecuente (25%)", method: "Hierba alta" }, { id: 451, rate: "Común (30%)", method: "Hierba alta" }] },
+                { name: "Ruta 16", encounters: [{ id: 708, rate: "Común (30%)", method: "Hierba alta" }, { id: 568, rate: "Frecuente (25%)", method: "Hierba alta" }] },
+                { name: "Ruta 17", encounters: [{ id: 712, rate: "Común (40%)", method: "Nieve profunda" }, { id: 220, rate: "Frecuente (30%)", method: "Nieve profunda" }] },
+                { name: "Caverna Helada", encounters: [{ id: 582, rate: "Común (35%)", method: "Interior helado" }, { id: 459, rate: "Raro (15%)", method: "Interior helado" }] },
+                { name: "Ruta 18", encounters: [{ id: 610, rate: "Raro (15%)", method: "Hierba alta" }, { id: 216, rate: "Común (30%)", method: "Hierba alta" }] },
+                { name: "Termas Wyntown y Ruta 19", encounters: [{ id: 333, rate: "Común (30%)", method: "Hierba alta (Ruta 19)" }, { id: 619, rate: "Raro (15%)", method: "Hierba alta (Ruta 19)" }] },
+                { name: "Ruta 20", encounters: [{ id: 353, rate: "Frecuente (25%)", method: "Bosque / Hierba" }, { id: 163, rate: "Común (35%)", method: "Hierba" }] },
+                { name: "Ruta 21", encounters: [{ id: 371, rate: "Raro (10%)", method: "Hierba alta" }, { id: 214, rate: "Raro (15%)", method: "Hierba alta" }] },
+                { name: "Ruta 22", encounters: [{ id: 667, rate: "Frecuente (25%)", method: "Hierba alta" }, { id: 447, rate: "Raro (10%)", method: "Hierba alta" }] },
+                { name: "Calle Victoria", encounters: [{ id: 443, rate: "Raro (15%)", method: "Cueva / Zonas rocosas" }, { id: 111, rate: "Común (30%)", method: "Interior" }] },
+                { name: "Post-game y Legendarios", encounters: [{ id: 717, rate: "Historia (100%)", method: "Guarida del Team Flare" }, { id: 718, rate: "Único (100%)", method: "Cueva Desenlace" }, { id: 150, rate: "Único (100%)", method: "Villa Pokémon" }, { id: 145, rate: "Errante (100%)", method: "Aparece tras huir (Si elegiste a Fennekin)" }] }
             ]
         };
 
@@ -821,7 +699,7 @@
                     <div class="rounded-xl shadow-lg overflow-hidden border border-white/20 mb-8">
                         <div class="p-8 ${headerStyles}">
                             <h1 class="text-4xl font-extrabold mb-2">Edición ${gameName}</h1>
-                            <p class="text-lg opacity-90">Listado exhaustivo con TODAS las rutas (1 al 22), cuevas, bahías y puntos de encuentro de Kalos.</p>
+                            <p class="text-lg opacity-90">Listado completamente desglosado: cada ruta, cueva y pueblo cuenta con su propia tabla independiente.</p>
                         </div>
                     </div>
                     <div class="space-y-8">
